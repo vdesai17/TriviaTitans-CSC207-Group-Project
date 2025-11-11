@@ -1,0 +1,72 @@
+TriviaTitans/
+│
+├── README.md
+├── .gitignore
+├── pom.xml or build.gradle        # depending on build tool
+├── data/                          # persistent data files (JSON)
+│   ├── quizzes.json
+│   ├── players.json
+│   └── attempts.json
+└── src/
+    ├── main/
+    │   └── java/
+    │       └── trivia/
+    │           ├── entity/
+    │           │   ├── Question.java
+    │           │   ├── Quiz.java
+    │           │   ├── Player.java
+    │           │   └── QuizAttempt.java
+    │           │
+    │           ├── use_case/
+    │           │   ├── create_quiz/
+    │           │   │   ├── CreateQuizInputBoundary.java
+    │           │   │   ├── CreateQuizInteractor.java
+    │           │   │   ├── CreateQuizOutputBoundary.java
+    │           │   │   └── CreateQuizOutputData.java
+    │           │   ├── play_quiz/
+    │           │   │   ├── PlayQuizInteractor.java
+    │           │   │   └── ...
+    │           │   └── review_quiz/
+    │           │       ├── ReviewQuizInteractor.java
+    │           │       └── ...
+    │           │
+    │           ├── interface_adapter/
+    │           │   ├── controller/
+    │           │   │   ├── QuizController.java
+    │           │   │   ├── CreatorController.java
+    │           │   │   └── ReviewController.java
+    │           │   ├── presenter/
+    │           │   │   ├── QuizPresenter.java
+    │           │   │   └── SummaryPresenter.java
+    │           │   ├── dao/
+    │           │   │   ├── QuizDataAccessObject.java
+    │           │   │   ├── PlayerDataAccessObject.java
+    │           │   │   └── LocalFileHandler.java
+    │           │   └── api/
+    │           │       ├── APIManager.java
+    │           │       └── APIResponseParser.java
+    │           │
+    │           └── framework/
+    │               ├── ui/
+    │               │   ├── Main.java
+    │               │   ├── StartScreen.java
+    │               │   ├── QuizScreen.java
+    │               │   ├── SummaryScreen.java
+    │               │   ├── CreateQuizScreen.java
+    │               │   ├── PreviewScreen.java
+    │               │   └── PastQuizScreen.java
+    │               └── SwingAppBuilder.java  # assembles controllers, presenters, views
+    │
+    └── test/
+        └── java/
+            └── trivia/
+                ├── entity/
+                │   ├── QuestionTest.java
+                │   └── QuizTest.java
+                ├── use_case/
+                │   ├── CreateQuizInteractorTest.java
+                │   └── PlayQuizInteractorTest.java
+                ├── dao/
+                │   └── QuizDataAccessObjectTest.java
+                └── api/
+                    └── APIManagerTest.java
