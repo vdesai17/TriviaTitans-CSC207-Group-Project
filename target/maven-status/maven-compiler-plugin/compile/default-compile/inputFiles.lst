@@ -1,3 +1,11 @@
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/entity/Player.java
 /Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/entity/Question.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/entity/Quiz.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/entity/QuizAttempt.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/framework/ui/Main.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/framework/ui/StartScreen.java
 /Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/framework/ui/TestAPI.java
 /Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/interface_adapter/api/APIManager.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/interface_adapter/controller/PlayerController.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/interface_adapter/dao/PlayerDataAccessObject.java
+/Users/vivandesai/Documents/TriviaTitans-CSC207-Group-Project/src/main/java/trivia/use_case/register_player/RegisterPlayerInteractor.java
