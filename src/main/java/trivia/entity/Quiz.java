@@ -12,7 +12,7 @@ public class Quiz {
     private String creatorName;
     private List<Question> questions;
 
-    // constructor for a new Quiz
+    // constructor for creating a new quiz
     public Quiz(String id,
                 String title,
                 String category,
