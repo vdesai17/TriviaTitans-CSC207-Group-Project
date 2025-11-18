@@ -52,7 +52,12 @@ public class StartScreen extends JPanel {
                     "Welcome, " + player.getPlayerName() + "!",
                     "Player Registered", JOptionPane.INFORMATION_MESSAGE);
 
-            // TODO: replace with navigation to SelectQuizScreen
+            // Switch to Select Quiz Screen (Use Case 4)
+            frame.getContentPane().removeAll();
+            frame.add(new SelectQuizScreen(frame));
+            frame.revalidate();
+            frame.repaint();
+
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(frame,
                     ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
