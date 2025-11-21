@@ -9,7 +9,11 @@ public class Main {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(800, 600);
             frame.setLocationRelativeTo(null);
-            frame.add(new StartScreen(frame));
+
+            // Initialize the StartScreen with login/register system
+            StartScreen startScreen = new StartScreen(frame);
+            frame.add(startScreen);
+
             frame.setVisible(true);
         });
     }
