@@ -1,4 +1,19 @@
 package trivia.use_case.review_summary;
 
 public class ReviewSummaryResponseModel {
+    private final int score;
+    private final double accuracy;
+
+    public ReviewSummaryResponseModel(int score, double accuracy) {
+        this.score = score;
+        this.accuracy = accuracy;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
 }
