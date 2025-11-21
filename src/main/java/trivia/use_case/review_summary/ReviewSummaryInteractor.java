@@ -14,7 +14,7 @@ public class ReviewSummaryInteractor implements ReviewSummaryInputBoundary {
         QuizAttempt quizAttempt = request.getQuizAttempt();
 
         ReviewSummaryResponseModel response = new ReviewSummaryResponseModel(quizAttempt.getScore,
-                quizAttempt.getAccuracy);
+                quizAttempt.getAccuracy, quizAttempt.getQuiz.getTitle, quizAttempt.getQuiz.getId);
 
         output.presentReviewSummary(response);
     }
