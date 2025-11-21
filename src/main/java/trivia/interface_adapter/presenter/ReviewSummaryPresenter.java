@@ -1,4 +1,31 @@
 package trivia.interface_adapter.presenter;
 
-public class ReviewSummaryPresenter {
+import trivia.use_case.review_summary.ReviewSummaryOutputBoundary;
+import trivia.use_case.review_summary.ReviewSummaryResponseModel;
+
+public class ReviewSummaryPresenter implements ReviewSummaryOutputBoundary {
+
+    private final ReviewSummaryViewModel viewModel;
+
+    // Getting viewmodel
+    public ReviewSummaryPresenter(ReviewSummaryViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
+    @Override
+    public void presentReviewSummary(ReviewSummaryResponseModel response) {
+        //Format numbers to strings
+        String scoreString = "Score: " + response.getScore();
+        String accuracyString = "Accuracy: " + response.getAccuracy();
+
+        //Set view model
+        viewModel.setScore(scoreString);
+        viewModel.setAccuracy(accuracyString);
+        viewModel.setQuizTitle(response.getQuizTitle());
+        viewModel.setQuizId(response.getQuizId());
+
+    }
+
+
+
 }
