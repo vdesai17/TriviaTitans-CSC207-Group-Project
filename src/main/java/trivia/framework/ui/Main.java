@@ -2,6 +2,10 @@ package trivia.framework.ui;
 
 import javax.swing.*;
 
+/**
+ * Application entry point for Trivia Titans.
+ * Starts with the Login/Register StartScreen.
+ */
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -10,10 +14,8 @@ public class Main {
             frame.setSize(800, 600);
             frame.setLocationRelativeTo(null);
 
-            // Initialize the StartScreen with login/register system
-            StartScreen startScreen = new StartScreen(frame);
-            frame.add(startScreen);
-
+            // Start with login/register screen
+            frame.setContentPane(new StartScreen(frame));
             frame.setVisible(true);
         });
     }

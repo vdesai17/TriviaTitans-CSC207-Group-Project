@@ -22,7 +22,6 @@ public class StartScreen extends JPanel {
     private final JPasswordField passwordField;
     private final PlayerController controller;
     private final PlayerDataAccessObject dao;
-
     private final GenerateFromWrongController generateFromWrongController;
 
     public StartScreen(JFrame frame) {
@@ -89,7 +88,7 @@ public class StartScreen extends JPanel {
             JOptionPane.showMessageDialog(frame, "Invalid credentials. Please try again or register.", "Login Failed", JOptionPane.ERROR_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(frame, "Welcome back, " + player.getPlayerName() + "!", "Login Successful", JOptionPane.INFORMATION_MESSAGE);
-            navigateToQuizSelection();
+            navigateToHome(player);
         }
     }
 
@@ -106,15 +105,15 @@ public class StartScreen extends JPanel {
             Player newPlayer = new Player(name, password);
             dao.savePlayer(newPlayer);
             JOptionPane.showMessageDialog(frame, "Player registered successfully! Welcome, " + newPlayer.getPlayerName() + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
-            navigateToQuizSelection();
+            navigateToHome(newPlayer);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Failed to register player: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void navigateToQuizSelection() {
+    private void navigateToHome(Player player) {
         frame.getContentPane().removeAll();
-        frame.add(new SelectQuizScreen(frame, generateFromWrongController));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController));
         frame.revalidate();
         frame.repaint();
     }
