@@ -1,37 +1,35 @@
 package trivia.framework.ui;
 
+import trivia.entity.Player;
 import trivia.entity.Question;
 import trivia.interface_adapter.api.APIManager;
 import trivia.interface_adapter.controller.SelectQuizController;
 import trivia.use_case.select_quiz.SelectQuizInteractor;
-
-// for UC6
 import trivia.interface_adapter.controller.GenerateFromWrongController;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 import javax.swing.*;
+import javax.swing.SpinnerNumberModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class SelectQuizScreen extends JPanel {
     private final JFrame frame;
+    private final Player currentPlayer;
     private final JComboBox<String> categoryBox;
     private final JComboBox<String> difficultyBox;
     private final SelectQuizController controller;
-
-    // for UC6
     private final GenerateFromWrongController generateFromWrongController;
     private final JSpinner wrongCountSpinner;
-    private final JButton practiceWrongButton;
 
     public SelectQuizScreen(JFrame frame,
-                            GenerateFromWrongController generateFromWrongController) {
+                            GenerateFromWrongController generateFromWrongController,
+                            Player currentPlayer) {
         this.frame = frame;
         this.generateFromWrongController = generateFromWrongController;
+        this.currentPlayer = currentPlayer;
 
-        // Clean-architecture wiring
+        // Architecture wiring
         APIManager apiManager = new APIManager();
         SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
         this.controller = new SelectQuizController(interactor);
@@ -44,27 +42,24 @@ public class SelectQuizScreen extends JPanel {
         add(title, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridLayout(6, 1, 10, 10));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(100, 150, 100, 150));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(60, 150, 60, 150));
 
         JLabel catLabel = new JLabel("Category:");
-        String[] categories = {
-                "9 - General Knowledge", "21 - Sports",
-                "23 - History", "17 - Science & Nature", "11 - Film"
-        };
+        String[] categories = {"9 - General Knowledge", "21 - Sports", "23 - History", "17 - Science & Nature", "11 - Film"};
         categoryBox = new JComboBox<>(categories);
 
         JLabel diffLabel = new JLabel("Difficulty:");
         String[] difficulties = {"easy", "medium", "hard"};
         difficultyBox = new JComboBox<>(difficulties);
 
-        JButton startButton = new JButton("Load Questions");
+        JButton startButton = new JButton("Start Quiz");
         startButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         startButton.addActionListener(this::onStart);
 
         JLabel wrongLabel = new JLabel("Number of wrong questions:");
         wrongCountSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 50, 1));
 
-        practiceWrongButton = new JButton("Practice Wrong Questions");
+        JButton practiceWrongButton = new JButton("Practice Wrong Questions");
         practiceWrongButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         practiceWrongButton.addActionListener(this::onPracticeWrong);
 
@@ -77,7 +72,19 @@ public class SelectQuizScreen extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        JPanel bottomPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 150, 20, 150));
+
+        JButton backButton = new JButton("Back to Home");
+        backButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        backButton.addActionListener(e -> {
+            frame.getContentPane().removeAll();
+            frame.add(new HomeScreen(frame, currentPlayer, generateFromWrongController));
+            frame.revalidate();
+            frame.repaint();
+        });
+
+        bottomPanel.add(backButton);
         bottomPanel.add(practiceWrongButton);
         bottomPanel.add(startButton);
 
@@ -111,18 +118,6 @@ public class SelectQuizScreen extends JPanel {
 
     private void onPracticeWrong(ActionEvent e) {
         int n = (int) wrongCountSpinner.getValue();
-
-        String playerName = JOptionPane.showInputDialog(frame,
-                "Enter your name:", "Player Name",
-                JOptionPane.PLAIN_MESSAGE);
-
-        if (playerName == null || playerName.isEmpty()) {
-            JOptionPane.showMessageDialog(frame,
-                    "Player name required.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        generateFromWrongController.generate(playerName, n);
+        generateFromWrongController.generate(currentPlayer.getPlayerName(), n);
     }
 }
