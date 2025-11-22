@@ -1,73 +1,84 @@
 package trivia.use_case.review_quiz;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReviewQuizResponseModel {
 
-    private String message;
     private List<PastQuizSummary> pastQuizzes;
-    private boolean editing;
+
     private String attemptId;
     private String quizTitle;
     private List<QuestionRow> questions;
+    private boolean editingEnabled;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    private String message; // "No past quizzes found", "Changes saved", etc.
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setEditingEnabled(Boolean editingEnabled) {
-        this.editing = editingEnabled;
-    }
-
-    public boolean isEditingEnabled() {
-        return editing;
-    }
-
-    public void setAttemptId(String attemptId) {
-        this.attemptId = attemptId;
-    }
-
-    public String getAttemptId() {
-        return attemptId;
-    }
-
-    public void setQuizTitle(String quizTitle) {
-        this.quizTitle = quizTitle;
-    }
-
-    public String getQuizTitle() {
-        return quizTitle;
-    }
-
-    public void setQuestions(List<QuestionRow> questions) {
-        this.questions = questions;
-    }
-
-    public List<QuestionRow> getQuestions() {
-        return questions;
+    public List<PastQuizSummary> getPastQuizzes() {
+        return pastQuizzes;
     }
 
     public void setPastQuizzes(List<PastQuizSummary> pastQuizzes) {
         this.pastQuizzes = pastQuizzes;
     }
 
-    public List<PastQuizSummary> getPastQuizzes() {
-        return pastQuizzes;
+    public String getAttemptId() {
+        return attemptId;
     }
 
-    public static class PastQuizSummary {
-        private final String quizTitle;
-        private final String attemptId;
-        private final int score;
+    public void setAttemptId(String attemptId) {
+        this.attemptId = attemptId;
+    }
 
-        public PastQuizSummary(String quizTitle, String attemptId, int score) {
-            this.quizTitle = quizTitle;
+    public String getQuizTitle() {
+        return quizTitle;
+    }
+
+    public void setQuizTitle(String quizTitle) {
+        this.quizTitle = quizTitle;
+    }
+
+    public List<QuestionRow> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuestionRow> questions) {
+        this.questions = questions;
+    }
+
+    public boolean isEditingEnabled() {
+        return editingEnabled;
+    }
+
+    public void setEditingEnabled(boolean editingEnabled) {
+        this.editingEnabled = editingEnabled;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    // inner DTOs --------------
+
+    public static class PastQuizSummary {
+        private final String attemptId;
+        private final String quizTitle;
+        private final int score;
+        private final LocalDateTime completedAt;
+
+        public PastQuizSummary(String attemptId, String quizTitle, int score, LocalDateTime completedAt) {
             this.attemptId = attemptId;
+            this.quizTitle = quizTitle;
             this.score = score;
+            this.completedAt = completedAt;
+        }
+
+        public String getAttemptId() {
+            return attemptId;
         }
 
         public String getQuizTitle() {
@@ -78,23 +89,25 @@ public class ReviewQuizResponseModel {
             return score;
         }
 
-        public String getAttemptId() {
-            return attemptId;
+        public LocalDateTime getCompletedAt() {
+            return completedAt;
         }
     }
 
     public static class QuestionRow {
-
         private final String questionText;
         private final List<String> options;
-        private final int correctOptionIndex;
-        private final int index;
+        private final int correctIndex;
+        private final int selectedIndex;
 
-        public QuestionRow(String questionText, List<String> options, int correctOptionIndex, int index) {
+        public QuestionRow(String questionText,
+                           List<String> options,
+                           int correctIndex,
+                           int selectedIndex) {
             this.questionText = questionText;
             this.options = options;
-            this.correctOptionIndex = correctOptionIndex;
-            this.index = index;
+            this.correctIndex = correctIndex;
+            this.selectedIndex = selectedIndex;
         }
 
         public String getQuestionText() {
@@ -105,12 +118,12 @@ public class ReviewQuizResponseModel {
             return options;
         }
 
-        public int getCorrectOptionIndex() {
-            return correctOptionIndex;
+        public int getCorrectIndex() {
+            return correctIndex;
         }
 
-        public int getIndex() {
-            return index;
+        public int getSelectedIndex() {
+            return selectedIndex;
         }
     }
 }
