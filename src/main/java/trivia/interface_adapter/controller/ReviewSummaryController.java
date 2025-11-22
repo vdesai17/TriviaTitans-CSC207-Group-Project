@@ -12,6 +12,7 @@ public class ReviewSummaryController {
     public ReviewSummaryController(ReviewSummaryInputBoundary input) {
         this.input = input;
     }
+
     //Generates the review summary from the given quiz attempt
     public void generateSummary(QuizAttempt quizAttempt) {
         ReviewSummaryRequestModel requestModel = new ReviewSummaryRequestModel(quizAttempt);
