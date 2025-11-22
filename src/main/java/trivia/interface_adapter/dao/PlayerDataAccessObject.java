@@ -3,20 +3,28 @@ package trivia.interface_adapter.dao;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import trivia.entity.Player;
+import trivia.entity.Quiz;
+import trivia.entity.QuizAttempt;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
 import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
+import trivia.use_case.review_quiz.ReviewQuizAttemptDataAccessInterface;
+import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Player DAO + temporary implementation for UC6.
+ * Player DAO that now also implements Use Case 3 (Review Quiz) and Use Case 6 interfaces.
  * 
- * Now also supports basic login authentication and multiple players saved in one file.
+ * Supports basic login authentication and multiple players saved in one file.
  */
-public class PlayerDataAccessObject implements GenerateFromWrongDataAccessInterface {
+public class PlayerDataAccessObject implements 
+        GenerateFromWrongDataAccessInterface,
+        ReviewQuizAttemptDataAccessInterface,
+        ReviewQuizQuizDataAccessInterface {
 
     private static final String FILE_PATH = "data/player.json";
     private final Gson gson = new Gson();
@@ -90,6 +98,68 @@ public class PlayerDataAccessObject implements GenerateFromWrongDataAccessInterf
         }
         System.out.println("Login failed for: " + name);
         return null;
+    }
+
+    //  UC3: Review Quiz Attempt Interface  ↓↓↓↓↓↓↓↓↓↓↓
+
+    @Override
+    public List<QuizAttempt> getAttemptsForPlayer(String playerName) {
+        Player player = loadPlayer(playerName);
+        if (player != null) {
+            return player.getPastAttempts();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Optional<QuizAttempt> getAttemptById(String attemptId) {
+        List<Player> players = loadAllPlayers();
+        for (Player player : players) {
+            for (QuizAttempt attempt : player.getPastAttempts()) {
+                if (attempt.getAttemptId().equals(attemptId)) {
+                    return Optional.of(attempt);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void updateAttempt(QuizAttempt attempt) {
+        List<Player> players = loadAllPlayers();
+        
+        for (Player player : players) {
+            List<QuizAttempt> attempts = player.getPastAttempts();
+            for (int i = 0; i < attempts.size(); i++) {
+                if (attempts.get(i).getAttemptId().equals(attempt.getAttemptId())) {
+                    attempts.set(i, attempt);
+                    savePlayer(player);  // Save the updated player
+                    System.out.println("[UC3] Updated attempt: " + attempt.getAttemptId());
+                    return;
+                }
+            }
+        }
+        
+        System.err.println("[UC3] Attempt not found: " + attempt.getAttemptId());
+    }
+
+    @Override
+    public Quiz getQuizById(String quizId) {
+        // This is a simplified implementation. In a real app, you'd have a quiz repository.
+        // For now, we'll search through all attempts to find quizzes
+        List<Player> players = loadAllPlayers();
+        
+        for (Player player : players) {
+            for (QuizAttempt attempt : player.getPastAttempts()) {
+                Quiz quiz = attempt.getQuiz();
+                if (quiz != null && quiz.getId().equals(quizId)) {
+                    return quiz;
+                }
+            }
+        }
+        
+        System.err.println("[UC3] Quiz not found: " + quizId);
+        return null;  // Or throw an exception
     }
 
     // ========================================================================
