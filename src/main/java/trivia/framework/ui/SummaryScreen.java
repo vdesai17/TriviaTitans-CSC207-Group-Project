@@ -27,7 +27,7 @@ public class SummaryScreen extends JPanel {
         this.viewmodel = new ReviewSummaryViewModel();
         this.frame = frame;
 
-        ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(quizAttempt.getScore, quizAttempt.getAccuracy);
+        ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(quizAttempt.getScore(), quizAttempt.getAccuracy());
         ReviewSummaryPresenter presenter = new ReviewSummaryPresenter(viewmodel);
         presenter.presentReviewSummary(responseModel);
         ReviewSummaryInteractor interactor = new ReviewSummaryInteractor(presenter);
