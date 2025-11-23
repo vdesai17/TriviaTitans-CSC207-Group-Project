@@ -11,10 +11,10 @@ public class ReviewSummaryInteractor implements ReviewSummaryInputBoundary {
     }
     @Override
     public void generateReviewSummary(ReviewSummaryRequestModel request) {
-        QuizAttempt quizAttempt = request.getQuizAttempt();
+        int score = request.getScore();
+        double accuracy = request.getAccuracy();
 
-        ReviewSummaryResponseModel response = new ReviewSummaryResponseModel(quizAttempt.getScore(),
-                quizAttempt.getAccuracy());
+        ReviewSummaryResponseModel response = new ReviewSummaryResponseModel(score, accuracy);
 
         output.presentReviewSummary(response);
     }

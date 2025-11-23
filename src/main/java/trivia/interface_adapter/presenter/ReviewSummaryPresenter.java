@@ -21,9 +21,6 @@ public class ReviewSummaryPresenter implements ReviewSummaryOutputBoundary {
         //Set view model
         viewModel.setScore(scoreString);
         viewModel.setAccuracy(accuracyString);
-        viewModel.setQuizTitle(response.getQuizTitle());
-        viewModel.setQuizId(response.getQuizId());
-
     }
 
 
