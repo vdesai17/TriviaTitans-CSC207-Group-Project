@@ -1,6 +1,7 @@
 package trivia.interface_adapter.dao;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import trivia.entity.Player;
 import trivia.entity.Quiz;
@@ -12,6 +13,7 @@ import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,15 @@ public class PlayerDataAccessObject implements
         ReviewQuizQuizDataAccessInterface {
 
     private static final String FILE_PATH = "data/player.json";
-    private final Gson gson = new Gson();
+    private final Gson gson;
+
+    public PlayerDataAccessObject() {
+        // Configure Gson with proper adapters for LocalDateTime and other complex types
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .setPrettyPrinting()
+                .create();
+    }
 
     /**
      * Saves a Player object to player.json.
@@ -48,11 +58,18 @@ public class PlayerDataAccessObject implements
 
         if (!updated) players.add(player);
 
-        try (Writer writer = new FileWriter(FILE_PATH)) {
+        try {
+            // Ensure the data directory exists
+            File file = new File(FILE_PATH);
+            file.getParentFile().mkdirs();
+            
+            Writer writer = new FileWriter(FILE_PATH);
             gson.toJson(players, writer);
+            writer.close();
             System.out.println("Saved player: " + player.getPlayerName());
         } catch (IOException e) {
             System.err.println("Failed to save player: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -67,6 +84,7 @@ public class PlayerDataAccessObject implements
                 return p;
             }
         }
+        System.out.println("Player not found: " + name);
         return null;
     }
 
@@ -75,14 +93,31 @@ public class PlayerDataAccessObject implements
      */
     private List<Player> loadAllPlayers() {
         File file = new File(FILE_PATH);
-        if (!file.exists()) return new ArrayList<>();
+        if (!file.exists()) {
+            System.out.println("Player file does not exist yet: " + FILE_PATH);
+            return new ArrayList<>();
+        }
 
-        try (Reader reader = new FileReader(file)) {
+        try {
+            Reader reader = new FileReader(file);
             Type listType = new TypeToken<List<Player>>() {}.getType();
             List<Player> players = gson.fromJson(reader, listType);
-            return players != null ? players : new ArrayList<>();
+            reader.close();
+            
+            if (players == null) {
+                System.out.println("No players found in file");
+                return new ArrayList<>();
+            }
+            
+            System.out.println("Loaded " + players.size() + " players from file");
+            return players;
         } catch (IOException e) {
             System.err.println("Failed to load players: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (Exception e) {
+            System.err.println("Failed to parse player JSON: " + e.getMessage());
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
@@ -91,12 +126,20 @@ public class PlayerDataAccessObject implements
      * Validates player login credentials.
      */
     public Player validateLogin(String name, String password) {
+        System.out.println("Attempting login for: " + name);
         Player p = loadPlayer(name);
-        if (p != null && p.verifyPassword(password)) {
+        
+        if (p == null) {
+            System.out.println("Login failed - player not found: " + name);
+            return null;
+        }
+        
+        if (p.verifyPassword(password)) {
             System.out.println("Login successful for: " + name);
             return p;
         }
-        System.out.println("Login failed for: " + name);
+        
+        System.out.println("Login failed - incorrect password for: " + name);
         return null;
     }
 
