@@ -11,6 +11,8 @@ public class QuizScreen extends JPanel {
     private final JFrame frame;
     private final List<Question> questions;
     private int currentIndex = 0;
+    private int score = 0;
+    private final int numberofquestions;
 
     private JLabel questionLabel;
     private JRadioButton[] optionButtons;
@@ -20,6 +22,7 @@ public class QuizScreen extends JPanel {
     public QuizScreen(JFrame frame, List<Question> questions) {
         this.frame = frame;
         this.questions = questions;
+        this.numberofquestions = questions.size();
         setLayout(new BorderLayout(15,15));
         setBackground(Color.WHITE);
 
@@ -64,10 +67,15 @@ public class QuizScreen extends JPanel {
         } else {
             JOptionPane.showMessageDialog(frame, "Quiz finished!");
             // TODO: move to summary screen later
+            SummaryScreen summaryScreen = new SummaryScreen(score, numberofquestions, frame);
         }
     }
 
     private void handleNext(ActionEvent e) {
+        Question q = questions.get(currentIndex);
+        if (optionButtons[q.getCorrectOptionIndex()].isSelected()) {
+            score++;
+        }
         currentIndex++;
         loadQuestion();
     }

@@ -3,13 +3,20 @@ package trivia.use_case.review_summary;
 import trivia.entity.QuizAttempt;
 
 public class ReviewSummaryRequestModel {
-    private final QuizAttempt quizAttempt;
+    private final int score;
+    private final double accuracy;
 
-    public ReviewSummaryRequestModel(QuizAttempt quizAttempt) {
-        this.quizAttempt = quizAttempt;
+    public ReviewSummaryRequestModel(int score, double accuracy) {
+        this.score = score;
+        this.accuracy = accuracy;
     }
 
-    public QuizAttempt getQuizAttempt() {
-        return quizAttempt;
+    // Getters
+    public int getScore() {
+        return score;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
     }
 }

@@ -1,27 +1,10 @@
 package trivia.interface_adapter.presenter;
 
 public class ReviewSummaryViewModel {
-    private  String quizTitle;
-    private  String quizId;
     private  String score;
     private  String accuracy;
 
     //Getters for view model
-    public String getQuizTitle() {
-        return quizTitle;
-    }
-
-    public void setQuizTitle(String quizTitle) {
-        this.quizTitle = quizTitle;
-    }
-
-    public String getQuizId() {
-        return quizId;
-    }
-
-    public void setQuizId(String quizId) {
-        this.quizId = quizId;
-    }
 
     public String getScore() {
         return score;
