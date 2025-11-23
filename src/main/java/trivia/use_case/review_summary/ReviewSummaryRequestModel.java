@@ -6,7 +6,7 @@ public class ReviewSummaryRequestModel {
     private final int score;
     private final double accuracy;
 
-    public ReviewSummaryRequestModel(int score, int accuracy) {
+    public ReviewSummaryRequestModel(int score, double accuracy) {
         this.score = score;
         this.accuracy = accuracy;
     }
