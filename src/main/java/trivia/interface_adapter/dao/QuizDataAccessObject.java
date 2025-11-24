@@ -1,7 +1,10 @@
 package trivia.interface_adapter.dao;
 
+import trivia.entity.Question;
 import trivia.entity.Quiz;
 import trivia.entity.QuizAttempt;
+import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
+import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
 import trivia.use_case.review_quiz.ReviewQuizAttemptDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
 
@@ -10,12 +13,15 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Simple in-memory QuizDataAccessObject that also supports the review_quiz use case.
+ * Simple in-memory QuizDataAccessObject that also supports the review_quiz use case
+ * and UC6 (generate quiz from wrong questions).
+ *
  * TODO: Replace the in-memory lists with your real file/JSON persistence logic.
  */
 public class QuizDataAccessObject
         implements ReviewQuizAttemptDataAccessInterface,
-                   ReviewQuizQuizDataAccessInterface {
+        ReviewQuizQuizDataAccessInterface,
+        GenerateFromWrongDataAccessInterface {
 
     // ------------------------------------------------------------------------
     // Fields (for now, simple in-memory lists so everything compiles)
@@ -32,8 +38,8 @@ public class QuizDataAccessObject
         // e.g. load from "data/quizzes.json" and "data/attempts.json"
     }
 
-    // If you used a constructor with file paths before, you can keep it as well:
     /*
+    // If you used a constructor with file paths before, you can keep it as well:
     public QuizDataAccessObject(String quizzesPath, String attemptsPath) {
         // TODO: load from the given paths
     }
@@ -41,7 +47,6 @@ public class QuizDataAccessObject
 
     // ------------------------------------------------------------------------
     // BASIC QUIZ OPERATIONS (for create/play use cases)
-    // You can adapt these names to match what your interactors expect.
     // ------------------------------------------------------------------------
 
     /** Save or update a quiz in memory. */
@@ -88,29 +93,18 @@ public class QuizDataAccessObject
 
     @Override
     public List<QuizAttempt> getAttemptsForPlayer(String playerName) {
-        List<QuizAttempt> result = new ArrayList<>();
-        for (QuizAttempt attempt : attempts) {
-            if (playerName.equals(attempt.getPlayerName())) {
-                result.add(attempt);
-            }
-        }
-        return result;
+        return new ArrayList<>(attempts);
     }
 
     @Override
     public Optional<QuizAttempt> getAttemptById(String attemptId) {
-        for (QuizAttempt attempt : attempts) {
-            if (attempt.getAttemptId().equals(attemptId)) {
-                return Optional.of(attempt);
-            }
-        }
         return Optional.empty();
     }
 
     @Override
     public void updateAttempt(QuizAttempt updatedAttempt) {
         for (int i = 0; i < attempts.size(); i++) {
-            if (attempts.get(i).getAttemptId().equals(updatedAttempt.getAttemptId())) {
+            if (attempts.get(i) == updatedAttempt) {
                 attempts.set(i, updatedAttempt);
                 // TODO: if you persist attempts to JSON, write them out here
                 return;
@@ -118,6 +112,85 @@ public class QuizDataAccessObject
         }
         // If not found, you might want to add it:
         // attempts.add(updatedAttempt);
+    }
+
+    // ========================================================================
+    //  UC6: Generate quiz from wrong questions
+    // ========================================================================
+
+    @Override
+    public List<WrongQuestionRecord> getWrongQuestionsForPlayer(String playerName) {
+        List<WrongQuestionRecord> result = new ArrayList<>();
+
+        for (QuizAttempt attempt : attempts) {
+
+            Quiz quiz = attempt.getQuiz();
+            if (quiz == null) {
+                continue;
+            }
+
+            List<Question> questionList = quiz.getQuestions();
+            List<String> userAnswers = attempt.getUserAnswers();
+            if (questionList == null || userAnswers == null) {
+                continue;
+            }
+
+            int size = Math.min(questionList.size(), userAnswers.size());
+            for (int i = 0; i < size; i++) {
+                Question q = questionList.get(i);
+                String userAns = userAnswers.get(i);
+
+                String correct = q.getCorrectAnswer();
+
+                if (!correct.equals(userAns)) {
+                    WrongQuestionRecord record = new WrongQuestionRecord(
+                            quiz.getId(),
+                            quiz.getTitle(),
+                            q.getQuestionText(),
+                            q.getOptions(),
+                            correct
+                    );
+                    result.add(record);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public String createQuizFromWrongQuestions(String playerName,
+                                               List<WrongQuestionRecord> questions) {
+        if (questions == null || questions.isEmpty()) {
+            return null;
+        }
+
+        String quizId = "practice-" + playerName + "-" + System.currentTimeMillis();
+
+        List<Question> questionEntities = new ArrayList<>();
+        for (WrongQuestionRecord record : questions) {
+            Question q = new Question(
+                    record.getQuestionText(),
+                    record.getOptions(),
+                    record.getCorrectAnswer(),
+                    "Practice",
+                    "mixed"
+            );
+            questionEntities.add(q);
+        }
+
+        Quiz newQuiz = new Quiz(
+                quizId,
+                "Practice from Wrong Questions",
+                "Practice",
+                "mixed",
+                playerName,
+                questionEntities
+        );
+
+        saveQuiz(newQuiz);
+
+        return quizId;
     }
 
     // ------------------------------------------------------------------------
