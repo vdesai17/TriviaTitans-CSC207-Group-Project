@@ -1,7 +1,5 @@
 package trivia.framework.ui;
 
-import trivia.entity.Question;
-import trivia.entity.QuizAttempt;
 import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
@@ -24,7 +22,7 @@ public class SummaryScreen extends JPanel {
             accuracy = 0.0;
         }
         else {
-            accuracy = score / numberOfQuestions;
+            accuracy = (double) score / numberOfQuestions;
         }
 
         ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);
@@ -53,13 +51,16 @@ public class SummaryScreen extends JPanel {
         panel.add(scoreLabel);
         panel.add(accuracyLabel);
         panel.add(startScreenButton);
+
+        add(panel, BorderLayout.CENTER);
     }
 
     private void handleMainMenu(ActionEvent actionEvent) {
         StartScreen startScreen = new StartScreen(frame);
+        frame.getContentPane().removeAll();
         frame.add(startScreen);
-
-        frame.setVisible(true);
+        frame.revalidate();
+        frame.repaint();
 
 
     }
