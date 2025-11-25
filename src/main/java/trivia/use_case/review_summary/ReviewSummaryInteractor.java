@@ -12,7 +12,7 @@ public class ReviewSummaryInteractor implements ReviewSummaryInputBoundary {
     @Override
     public void generateReviewSummary(ReviewSummaryRequestModel request) {
         int score = request.getScore();
-        double accuracy = request.getAccuracy();
+        int accuracy = request.getAccuracy();
 
         ReviewSummaryResponseModel response = new ReviewSummaryResponseModel(score, accuracy);
 

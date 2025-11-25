@@ -16,7 +16,7 @@ public class ReviewSummaryPresenter implements ReviewSummaryOutputBoundary {
     public void presentReviewSummary(ReviewSummaryResponseModel response) {
         //Format numbers to strings
         String scoreString = "Score: " + response.getScore();
-        String accuracyString = "Accuracy: " + response.getAccuracy();
+        String accuracyString = "Accuracy: " + response.getAccuracy() + "%";
 
         //Set view model
         viewModel.setScore(scoreString);
