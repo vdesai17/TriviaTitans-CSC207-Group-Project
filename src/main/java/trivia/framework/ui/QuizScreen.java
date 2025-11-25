@@ -66,7 +66,6 @@ public class QuizScreen extends JPanel {
             group.clearSelection();
         } else {
             JOptionPane.showMessageDialog(frame, "Quiz finished!");
-            // TODO: move to summary screen later
             SummaryScreen summaryScreen = new SummaryScreen(score, numberofquestions, frame);
             frame.getContentPane().removeAll();
             frame.add(summaryScreen);

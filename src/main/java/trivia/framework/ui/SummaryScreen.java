@@ -17,12 +17,9 @@ public class SummaryScreen extends JPanel {
 
         ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
         this.frame = frame;
-        double accuracy;
-        if (numberOfQuestions == 0) {
-            accuracy = 0.0;
-        }
-        else {
-            accuracy = (double) score / numberOfQuestions;
+        int accuracy = 0;
+        if (numberOfQuestions != 0) {
+            accuracy =  Math.round(score * 100 / numberOfQuestions);
         }
 
         ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);

@@ -4,9 +4,9 @@ import trivia.entity.QuizAttempt;
 
 public class ReviewSummaryRequestModel {
     private final int score;
-    private final double accuracy;
+    private final int accuracy;
 
-    public ReviewSummaryRequestModel(int score, double accuracy) {
+    public ReviewSummaryRequestModel(int score, int accuracy) {
         this.score = score;
         this.accuracy = accuracy;
     }
@@ -16,7 +16,7 @@ public class ReviewSummaryRequestModel {
         return score;
     }
 
-    public double getAccuracy() {
+    public int getAccuracy() {
         return accuracy;
     }
 }
