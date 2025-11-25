@@ -22,3 +22,4 @@ public class Player {
         pastAttempts.add(attempt);
     }
 }
+
