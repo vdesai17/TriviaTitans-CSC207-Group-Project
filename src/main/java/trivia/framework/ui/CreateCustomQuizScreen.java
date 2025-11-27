@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * CreateCustomQuizScreen — allows the user to build and save a custom quiz.
+ * Uses the unified dark-teal gradient theme with glass panels and modern buttons.
+ */
 public class CreateCustomQuizScreen extends JPanel {
     private final JFrame frame;
     private final Player player;
@@ -22,64 +26,106 @@ public class CreateCustomQuizScreen extends JPanel {
     private final JTextField[] optionFields;
     private final JComboBox<String> correctAnswerBox;
     private final DefaultListModel<String> questionListModel;
-
     private final List<Question> createdQuestions = new ArrayList<>();
 
     public CreateCustomQuizScreen(JFrame frame, Player player) {
         this.frame = frame;
         this.player = player;
-        setLayout(new BorderLayout(15, 15));
-        setBackground(Color.WHITE);
 
+        setLayout(new BorderLayout(20, 20));
+        ThemeUtils.applyGradientBackground(this);
+
+        // --- Header ---
         JLabel title = new JLabel("Create Custom Quiz", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 26));
+        ThemeUtils.styleLabel(title, "title");
         add(title, BorderLayout.NORTH);
 
-        // Quiz Info
-        JPanel topPanel = new JPanel(new GridLayout(2, 1, 10, 10));
-        topPanel.add(new JLabel("Quiz Title:"));
-        quizTitleField = new JTextField();
-        topPanel.add(quizTitleField);
-        add(topPanel, BorderLayout.NORTH);
+        // --- Center Input Panel (Glass Effect) ---
+        JPanel centerPanel = ThemeUtils.createGlassPanel(60);
+        centerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        // Question Input
-        JPanel centerPanel = new JPanel(new GridLayout(8, 1, 5, 5));
-        centerPanel.setBorder(BorderFactory.createTitledBorder("Add a Question"));
+        // Quiz Title
+        JLabel quizTitleLabel = new JLabel("Quiz Title:");
+        ThemeUtils.styleLabel(quizTitleLabel, "body");
+        centerPanel.add(quizTitleLabel, gbc);
 
-        questionField = new JTextField();
+        gbc.gridy++;
+        quizTitleField = new JTextField(20);
+        quizTitleField.setFont(ThemeUtils.BODY_FONT);
+        quizTitleField.setBackground(new Color(255, 255, 255, 220));
+        quizTitleField.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        centerPanel.add(quizTitleField, gbc);
+
+        gbc.gridy++;
+        centerPanel.add(Box.createVerticalStrut(20), gbc);
+
+        // Question
+        JLabel questionLabel = new JLabel("Question:");
+        ThemeUtils.styleLabel(questionLabel, "body");
+        gbc.gridy++;
+        centerPanel.add(questionLabel, gbc);
+
+        gbc.gridy++;
+        questionField = new JTextField(25);
+        questionField.setFont(ThemeUtils.BODY_FONT);
+        questionField.setBackground(new Color(255, 255, 255, 220));
+        questionField.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        centerPanel.add(questionField, gbc);
+
+        // Options
         optionFields = new JTextField[4];
-        correctAnswerBox = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3", "Option 4"});
-
-        centerPanel.add(new JLabel("Question:"));
-        centerPanel.add(questionField);
-
         for (int i = 0; i < 4; i++) {
-            optionFields[i] = new JTextField();
-            centerPanel.add(new JLabel("Option " + (i + 1) + ":"));
-            centerPanel.add(optionFields[i]);
+            gbc.gridy++;
+            JLabel optLabel = new JLabel("Option " + (i + 1) + ":");
+            ThemeUtils.styleLabel(optLabel, "body");
+            centerPanel.add(optLabel, gbc);
+
+            gbc.gridy++;
+            optionFields[i] = new JTextField(20);
+            optionFields[i].setFont(ThemeUtils.BODY_FONT);
+            optionFields[i].setBackground(new Color(255, 255, 255, 220));
+            optionFields[i].setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+            centerPanel.add(optionFields[i], gbc);
         }
 
-        centerPanel.add(new JLabel("Correct Answer:"));
-        centerPanel.add(correctAnswerBox);
+        gbc.gridy++;
+        JLabel correctLabel = new JLabel("Correct Answer:");
+        ThemeUtils.styleLabel(correctLabel, "body");
+        centerPanel.add(correctLabel, gbc);
 
-        JButton addQuestionButton = new JButton("Add Question");
+        gbc.gridy++;
+        correctAnswerBox = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3", "Option 4"});
+        correctAnswerBox.setFont(ThemeUtils.BODY_FONT);
+        centerPanel.add(correctAnswerBox, gbc);
+
+        gbc.gridy++;
+        JButton addQuestionButton = ThemeUtils.createStyledButton("Add Question", ThemeUtils.MINT, ThemeUtils.MINT_HOVER);
         addQuestionButton.addActionListener(this::handleAddQuestion);
-        centerPanel.add(addQuestionButton);
+        centerPanel.add(addQuestionButton, gbc);
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // Sidebar showing added questions
+        // --- Right Sidebar (Added Questions List) ---
         questionListModel = new DefaultListModel<>();
         JList<String> questionList = new JList<>(questionListModel);
+        questionList.setFont(ThemeUtils.BODY_FONT);
         questionList.setBorder(BorderFactory.createTitledBorder("Added Questions"));
+        questionList.setBackground(new Color(255, 255, 255, 230));
         add(new JScrollPane(questionList), BorderLayout.EAST);
 
-        // Bottom Controls
+        // --- Bottom Buttons ---
         JPanel bottomPanel = new JPanel(new FlowLayout());
-        JButton saveButton = new JButton("Save Quiz");
+        bottomPanel.setOpaque(false);
+
+        JButton saveButton = ThemeUtils.createStyledButton("Save Quiz", ThemeUtils.DEEP_TEAL, ThemeUtils.DEEP_TEAL_HOVER);
         saveButton.addActionListener(this::handleSaveQuiz);
 
-        JButton backButton = new JButton("Back to Home");
+        JButton backButton = ThemeUtils.createStyledButton("Back to Home", new Color(180, 60, 60), new Color(210, 80, 80));
         backButton.addActionListener(e -> {
             frame.getContentPane().removeAll();
             frame.add(new HomeScreen(frame, player, null));
@@ -92,6 +138,7 @@ public class CreateCustomQuizScreen extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    /** Handles adding a question to the temporary list */
     private void handleAddQuestion(ActionEvent e) {
         String questionText = questionField.getText().trim();
         List<String> options = new ArrayList<>();
@@ -111,11 +158,13 @@ public class CreateCustomQuizScreen extends JPanel {
                 "Custom",
                 "N/A"
         );
+
         createdQuestions.add(q);
         questionListModel.addElement(questionText);
         clearQuestionFields();
     }
 
+    /** Saves the quiz to the DAO */
     private void handleSaveQuiz(ActionEvent e) {
         if (quizTitleField.getText().trim().isEmpty() || createdQuestions.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please add a title and at least one question.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -132,7 +181,7 @@ public class CreateCustomQuizScreen extends JPanel {
         );
 
         quizDAO.saveQuiz(customQuiz);
-        JOptionPane.showMessageDialog(frame, "Quiz saved successfully!");
+        JOptionPane.showMessageDialog(frame, "Quiz saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, player, null));
