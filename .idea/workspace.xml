@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e60329f-5afa-481d-aeaa-9fd48734476f" name="Changes" comment="Add id attribute to Question entity and resolve errors caused by the change">
-      <change afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizDataAccessInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TriviaTitans.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputData.java" afterDir="false" />
-    </list>
+    <list default="true" id="0e60329f-5afa-481d-aeaa-9fd48734476f" name="Changes" comment="finishing create_quiz use case" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -139,7 +129,7 @@
       <workItem from="1763516214994" duration="66000" />
       <workItem from="1763516302044" duration="17577000" />
       <workItem from="1764209550562" duration="2663000" />
-      <workItem from="1764212257012" duration="7289000" />
+      <workItem from="1764212257012" duration="8413000" />
     </task>
     <task id="LOCAL-00001" summary="Implement the entity Quiz and create files for the use case Create Quiz">
       <option name="closed" value="true" />
@@ -181,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764211817657</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="finishing create_quiz use case">
+      <option name="closed" value="true" />
+      <created>1764269682910</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1764269682910</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -204,6 +202,7 @@
     <MESSAGE value="Add the classes and interfaces for Create QUiz" />
     <MESSAGE value="Implement AddQuestionInputData, CreateQuizInputData and CreateQuizInputBoundary" />
     <MESSAGE value="Add id attribute to Question entity and resolve errors caused by the change" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add id attribute to Question entity and resolve errors caused by the change" />
+    <MESSAGE value="finishing create_quiz use case" />
+    <option name="LAST_COMMIT_MESSAGE" value="finishing create_quiz use case" />
   </component>
 </project>
