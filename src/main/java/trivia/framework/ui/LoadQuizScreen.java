@@ -8,11 +8,13 @@ import trivia.interface_adapter.dao.QuizDataAccessObject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
  * LoadQuizScreen — allows players to view and open their saved custom quizzes.
- * Displays quizzes associated with the logged-in player, stored via QuizDataAccessObject.
+ * Styled with the dark-teal gradient theme and glass-panel design.
  */
 public class LoadQuizScreen extends JPanel {
     private final JFrame frame;
@@ -24,14 +26,20 @@ public class LoadQuizScreen extends JPanel {
         this.player = player;
         this.quizDAO = new QuizDataAccessObject();
 
-        setLayout(new BorderLayout(15, 15));
-        setBackground(Color.WHITE);
+        setLayout(new BorderLayout(20, 20));
+        ThemeUtils.applyGradientBackground(this);
 
+        // --- Header ---
         JLabel title = new JLabel("Your Saved Quizzes", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        ThemeUtils.styleLabel(title, "title");
         add(title, BorderLayout.NORTH);
 
-        // Fetch quizzes belonging to this player
+        // --- Center Panel (Glass Effect) ---
+        JPanel centerPanel = ThemeUtils.createGlassPanel(60);
+        centerPanel.setLayout(new BorderLayout(10, 10));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
+
+        // Retrieve quizzes
         List<Quiz> playerQuizzes = quizDAO.getQuizzesByPlayer(player.getPlayerName());
         DefaultListModel<String> listModel = new DefaultListModel<>();
 
@@ -43,68 +51,82 @@ public class LoadQuizScreen extends JPanel {
             }
         }
 
-        // Display quiz titles in a scrollable list
         JList<String> quizList = new JList<>(listModel);
         quizList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        quizList.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        quizList.setFont(ThemeUtils.BODY_FONT);
+        quizList.setBackground(new Color(255, 255, 255, 230));
+        quizList.setSelectionBackground(new Color(0, 150, 150, 100));
+        quizList.setSelectionForeground(Color.BLACK);
+        quizList.setFixedCellHeight(35);
+        quizList.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         JScrollPane scrollPane = new JScrollPane(quizList);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Select a Quiz"));
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.CENTER);
 
-        // --- Open Selected Quiz ---
-        JButton openButton = new JButton("Open Selected Quiz");
-        openButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        openButton.addActionListener((ActionEvent e) -> {
-            int index = quizList.getSelectedIndex();
-            if (playerQuizzes == null || playerQuizzes.isEmpty() || index == -1) {
-                JOptionPane.showMessageDialog(frame,
-                        "Please select a valid quiz.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        // --- Bottom Buttons ---
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        bottomPanel.setOpaque(false);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(20, 150, 50, 150));
 
-            try {
-                Quiz selected = playerQuizzes.get(index);
-                List<Question> questions = selected.getQuestions();
+        JButton backButton = createStyledButton("Back to Home", new Color(200, 70, 70), new Color(220, 90, 90), this::goBackHome);
+        JButton openButton = createStyledButton("Open Selected Quiz", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, e -> openSelectedQuiz(quizList, playerQuizzes));
 
-                if (questions == null || questions.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame,
-                            "This quiz has no questions.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                frame.getContentPane().removeAll();
-                frame.add(new QuizScreen(frame, questions, player)); // ✅ fixed constructor
-                frame.revalidate();
-                frame.repaint();
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame,
-                        "Failed to load quiz: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        // --- Back Button ---
-        JButton backButton = new JButton("Back");
-        backButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        backButton.addActionListener((ActionEvent e) -> {
-            frame.getContentPane().removeAll();
-            frame.add(new HomeScreen(frame, player, null));
-            frame.revalidate();
-            frame.repaint();
-        });
-
-        // --- Layout for buttons ---
-        JPanel bottomPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 100, 20, 100));
         bottomPanel.add(backButton);
         bottomPanel.add(openButton);
-
         add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    /** Creates unified styled button with hover transitions. */
+    private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setFont(ThemeUtils.BUTTON_FONT);
+        button.setBackground(base);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) { button.setBackground(hover); }
+            @Override
+            public void mouseExited(MouseEvent e) { button.setBackground(base); }
+        });
+        button.addActionListener(listener);
+        return button;
+    }
+
+    /** Opens the selected quiz from the list */
+    private void openSelectedQuiz(JList<String> quizList, List<Quiz> playerQuizzes) {
+        int index = quizList.getSelectedIndex();
+        if (playerQuizzes == null || playerQuizzes.isEmpty() || index == -1) {
+            JOptionPane.showMessageDialog(frame, "Please select a valid quiz.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Quiz selected = playerQuizzes.get(index);
+        List<Question> questions = selected.getQuestions();
+        if (questions == null || questions.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "This quiz has no questions.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        frame.getContentPane().removeAll();
+        frame.add(new QuizScreen(frame, questions, player));
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    /** Returns to Home Screen */
+    private void goBackHome(ActionEvent e) {
+        frame.getContentPane().removeAll();
+        frame.add(new HomeScreen(frame, player, null));
+        frame.revalidate();
+        frame.repaint();
     }
 }

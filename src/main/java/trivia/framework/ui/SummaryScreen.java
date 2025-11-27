@@ -13,7 +13,8 @@ import java.awt.event.ActionEvent;
 
 /**
  * SummaryScreen — displays the final quiz results (score & accuracy)
- * and allows returning to the HomeScreen while keeping the same player session.
+ * using the unified dark-teal gradient UI theme.
+ * Allows returning to the HomeScreen while keeping the same player session.
  */
 public class SummaryScreen extends JPanel {
     private final JFrame frame;
@@ -23,14 +24,12 @@ public class SummaryScreen extends JPanel {
         this.frame = frame;
         this.player = player;
 
+        // --- ViewModel and Logic ---
         ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
+        int accuracy = (numberOfQuestions != 0)
+                ? Math.round(score * 100 / numberOfQuestions)
+                : 0;
 
-        int accuracy = 0;
-        if (numberOfQuestions != 0) {
-            accuracy = Math.round(score * 100 / numberOfQuestions);
-        }
-
-        // Set up Clean Architecture components
         ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);
         ReviewSummaryPresenter presenter = new ReviewSummaryPresenter(viewModel);
         presenter.presentReviewSummary(responseModel);
@@ -38,34 +37,53 @@ public class SummaryScreen extends JPanel {
         ReviewSummaryController controller = new ReviewSummaryController(interactor);
         controller.generateSummary(score, accuracy);
 
-        // UI Components
+        // --- Layout and Theme ---
+        setLayout(new BorderLayout());
+        ThemeUtils.applyGradientBackground(this);
+
+        // --- Header ---
+        JLabel title = new JLabel("Quiz Summary", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(title, "title");
+        title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
+        add(title, BorderLayout.NORTH);
+
+        // --- Content Panel (Glass Effect) ---
+        JPanel contentPanel = ThemeUtils.createGlassPanel(40);
+        contentPanel.setLayout(new GridLayout(3, 1, 15, 15));
+        contentPanel.setOpaque(false);
+
         JLabel scoreLabel = new JLabel(viewModel.getScore(), SwingConstants.CENTER);
-        scoreLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        ThemeUtils.styleLabel(scoreLabel, "subtitle");
 
         JLabel accuracyLabel = new JLabel(viewModel.getAccuracy(), SwingConstants.CENTER);
-        accuracyLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        ThemeUtils.styleLabel(accuracyLabel, "subtitle");
 
-        JButton mainMenuButton = new JButton("Main Menu");
-        mainMenuButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        JButton mainMenuButton = ThemeUtils.createStyledButton(
+                "Return to Main Menu",
+                ThemeUtils.MINT,
+                ThemeUtils.MINT_HOVER
+        );
         mainMenuButton.addActionListener(this::handleMainMenu);
 
-        // Layout
-        setLayout(new BorderLayout(15, 15));
-        setBackground(Color.WHITE);
+        contentPanel.add(scoreLabel);
+        contentPanel.add(accuracyLabel);
+        contentPanel.add(mainMenuButton);
 
-        JPanel infoPanel = new JPanel(new GridLayout(3, 1, 10, 10));
-        infoPanel.setBackground(Color.WHITE);
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(100, 150, 100, 150));
-        infoPanel.add(scoreLabel);
-        infoPanel.add(accuracyLabel);
-        infoPanel.add(mainMenuButton);
+        JPanel centerWrapper = new JPanel(new GridBagLayout());
+        centerWrapper.setOpaque(false);
+        centerWrapper.add(contentPanel);
+        add(centerWrapper, BorderLayout.CENTER);
 
-        add(infoPanel, BorderLayout.CENTER);
+        // --- Footer Message ---
+        JLabel footer = new JLabel("Thank you for playing!", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(footer, "subtitle");
+        footer.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
+        add(footer, BorderLayout.SOUTH);
     }
 
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, null)); // back to logged-in player's home screen
+        frame.add(new HomeScreen(frame, player, null));
         frame.revalidate();
         frame.repaint();
     }
