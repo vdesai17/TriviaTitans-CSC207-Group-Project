@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 
 /**
  * HomeScreen - landing page after login/registration.
- * Provides navigation to Create Quiz, Load Existing Quiz, Profile/Stats, and Logout.
+ * Provides navigation to Create Custom Quiz, API Quizzes, Load Existing Quiz, Profile/Stats, and Logout.
  */
 public class HomeScreen extends JPanel {
     private final JFrame frame;
@@ -27,9 +27,14 @@ public class HomeScreen extends JPanel {
         JLabel title = new JLabel("Welcome, " + player.getPlayerName() + "!", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 28));
 
-        JButton createQuizButton = new JButton("Create New Quiz");
-        createQuizButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        createQuizButton.addActionListener(this::handleCreateQuiz);
+        // Buttons
+        JButton createCustomQuizButton = new JButton("Create Custom Quiz");
+        createCustomQuizButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        createCustomQuizButton.addActionListener(this::handleCreateCustomQuiz);
+
+        JButton apiQuizButton = new JButton("API Quizzes");
+        apiQuizButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        apiQuizButton.addActionListener(this::handleAPIQuiz);
 
         JButton loadQuizButton = new JButton("Load Existing Quiz");
         loadQuizButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
@@ -47,10 +52,12 @@ public class HomeScreen extends JPanel {
         logoutButton.setForeground(Color.WHITE);
         logoutButton.addActionListener(this::handleLogout);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 15, 15));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(100, 200, 50, 200));
+        // Button Layout
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(80, 200, 50, 200));
         buttonPanel.setBackground(Color.WHITE);
-        buttonPanel.add(createQuizButton);
+        buttonPanel.add(createCustomQuizButton);
+        buttonPanel.add(apiQuizButton);
         buttonPanel.add(loadQuizButton);
         buttonPanel.add(profileButton);
 
@@ -63,13 +70,23 @@ public class HomeScreen extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    private void handleCreateQuiz(ActionEvent e) {
+    // Opens custom quiz creation screen
+    private void handleCreateCustomQuiz(ActionEvent e) {
+        frame.getContentPane().removeAll();
+        frame.add(new CreateCustomQuizScreen(frame, currentPlayer));
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    // Opens the API quiz selection screen (unchanged existing logic)
+    private void handleAPIQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new SelectQuizScreen(frame, generateFromWrongController, currentPlayer));
         frame.revalidate();
         frame.repaint();
     }
 
+    // Opens profile/stats
     private void handleViewProfile(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new ProfileScreen(frame, currentPlayer, generateFromWrongController));
@@ -77,6 +94,7 @@ public class HomeScreen extends JPanel {
         frame.repaint();
     }
 
+    // Logs out and returns to StartScreen
     private void handleLogout(ActionEvent e) {
         int confirm = JOptionPane.showConfirmDialog(frame,
                 "Are you sure you want to log out?",
