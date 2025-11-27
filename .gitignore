@@ -1,1 +1,16 @@
+# IntelliJ project files that should NOT be tracked
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+
+.idea/workspace.xml
+
+# Module files
+*.iml
+
+# Maven / Gradle / build
 target/
+build/
+
+# OS files
+.DS_Store
