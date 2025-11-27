@@ -1,5 +1,6 @@
 package trivia.framework.ui;
 
+import trivia.entity.Player;
 import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
@@ -10,17 +11,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * SummaryScreen — displays the final quiz results (score & accuracy)
+ * using the unified dark-teal gradient UI theme.
+ * Allows returning to the HomeScreen while keeping the same player session.
+ */
 public class SummaryScreen extends JPanel {
     private final JFrame frame;
+    private final Player player;
 
-    public SummaryScreen(int score, int numberOfQuestions, JFrame frame) {
-
-        ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
+    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
         this.frame = frame;
-        int accuracy = 0;
-        if (numberOfQuestions != 0) {
-            accuracy =  Math.round(score * 100 / numberOfQuestions);
-        }
+        this.player = player;
+
+        // --- ViewModel and Logic ---
+        ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
+        int accuracy = (numberOfQuestions != 0)
+                ? Math.round(score * 100 / numberOfQuestions)
+                : 0;
 
         ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);
         ReviewSummaryPresenter presenter = new ReviewSummaryPresenter(viewModel);
@@ -29,36 +37,54 @@ public class SummaryScreen extends JPanel {
         ReviewSummaryController controller = new ReviewSummaryController(interactor);
         controller.generateSummary(score, accuracy);
 
+        // --- Layout and Theme ---
+        setLayout(new BorderLayout());
+        ThemeUtils.applyGradientBackground(this);
 
-        JLabel scoreLabel = new JLabel("", SwingConstants.LEFT);
-        scoreLabel.setText(viewModel.getScore());
-        scoreLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        JLabel accuracyLabel = new JLabel("", SwingConstants.CENTER);
-        accuracyLabel.setText(viewModel.getAccuracy());
-        accuracyLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        JButton startScreenButton = new JButton("Start Screen");
-        startScreenButton.setText("Main Menu");
-        startScreenButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        // --- Header ---
+        JLabel title = new JLabel("Quiz Summary", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(title, "title");
+        title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
+        add(title, BorderLayout.NORTH);
 
-        startScreenButton.addActionListener(this::handleMainMenu);
+        // --- Content Panel (Glass Effect) ---
+        JPanel contentPanel = ThemeUtils.createGlassPanel(40);
+        contentPanel.setLayout(new GridLayout(3, 1, 15, 15));
+        contentPanel.setOpaque(false);
 
-        setLayout(new BorderLayout(15,15));
-        setBackground(Color.WHITE);
-        JPanel panel = new JPanel();
-        panel.add(scoreLabel);
-        panel.add(accuracyLabel);
-        panel.add(startScreenButton);
+        JLabel scoreLabel = new JLabel(viewModel.getScore(), SwingConstants.CENTER);
+        ThemeUtils.styleLabel(scoreLabel, "subtitle");
 
-        add(panel, BorderLayout.CENTER);
+        JLabel accuracyLabel = new JLabel(viewModel.getAccuracy(), SwingConstants.CENTER);
+        ThemeUtils.styleLabel(accuracyLabel, "subtitle");
+
+        JButton mainMenuButton = ThemeUtils.createStyledButton(
+                "Return to Main Menu",
+                ThemeUtils.MINT,
+                ThemeUtils.MINT_HOVER
+        );
+        mainMenuButton.addActionListener(this::handleMainMenu);
+
+        contentPanel.add(scoreLabel);
+        contentPanel.add(accuracyLabel);
+        contentPanel.add(mainMenuButton);
+
+        JPanel centerWrapper = new JPanel(new GridBagLayout());
+        centerWrapper.setOpaque(false);
+        centerWrapper.add(contentPanel);
+        add(centerWrapper, BorderLayout.CENTER);
+
+        // --- Footer Message ---
+        JLabel footer = new JLabel("Thank you for playing!", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(footer, "subtitle");
+        footer.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
+        add(footer, BorderLayout.SOUTH);
     }
 
-    private void handleMainMenu(ActionEvent actionEvent) {
-        StartScreen startScreen = new StartScreen(frame);
+    private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(startScreen);
+        frame.add(new HomeScreen(frame, player, null));
         frame.revalidate();
         frame.repaint();
-
-
     }
 }

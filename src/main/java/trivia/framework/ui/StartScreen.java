@@ -15,7 +15,13 @@ import trivia.use_case.generate_from_wrong.GenerateFromWrongOutputBoundary;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+/**
+ * StartScreen — Login/Register entry page for Trivia Titans.
+ * Styled with the unified dark-teal gradient theme.
+ */
 public class StartScreen extends JPanel {
     private final JFrame frame;
     private final JTextField nameField;
@@ -27,7 +33,7 @@ public class StartScreen extends JPanel {
     public StartScreen(JFrame frame) {
         this.frame = frame;
 
-        // ---- Use Case 2 wiring (Player Registration) ----
+        // --- Use Case Wiring ---
         dao = new PlayerDataAccessObject();
         RegisterPlayerInteractor interactor = new RegisterPlayerInteractor(dao);
         this.controller = new PlayerController(interactor);
@@ -35,82 +41,162 @@ public class StartScreen extends JPanel {
         GenerateFromWrongViewModel uc6ViewModel = new GenerateFromWrongViewModel();
         GenerateFromWrongOutputBoundary uc6Presenter = new GenerateFromWrongPresenter(uc6ViewModel);
         GenerateFromWrongDataAccessInterface uc6DataAccess = dao;
-        GenerateFromWrongQuizInteractor uc6Interactor = new GenerateFromWrongQuizInteractor(uc6DataAccess, uc6Presenter);
+        GenerateFromWrongQuizInteractor uc6Interactor =
+                new GenerateFromWrongQuizInteractor(uc6DataAccess, uc6Presenter);
         this.generateFromWrongController = new GenerateFromWrongController(uc6Interactor);
 
-        // ---- UI Design ----
-        setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
+        // --- Layout Setup ---
+        setLayout(new BorderLayout());
+        ThemeUtils.applyGradientBackground(this);
 
-        JLabel title = new JLabel("Login or Register", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 26));
+        // --- Header ---
+        JLabel title = new JLabel("Trivia Titans", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(title, "title");
 
-        nameField = new JTextField();
-        nameField.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        passwordField = new JPasswordField();
-        passwordField.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        JLabel subtitle = new JLabel("Login or Register to Begin", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(subtitle, "subtitle");
 
-        JButton loginButton = new JButton("Login");
-        loginButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        JPanel headerPanel = new JPanel(new GridLayout(2, 1));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+        headerPanel.add(title);
+        headerPanel.add(subtitle);
+        add(headerPanel, BorderLayout.NORTH);
+
+        // --- Center Form ---
+        JPanel formPanel = ThemeUtils.createGlassPanel(40);
+        formPanel.setLayout(new GridBagLayout());
+        formPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        JLabel nameLabel = new JLabel("Username:");
+        ThemeUtils.styleLabel(nameLabel, "body");
+        formPanel.add(nameLabel, gbc);
+
+        gbc.gridy++;
+        nameField = new JTextField(15);
+        nameField.setFont(ThemeUtils.BODY_FONT);
+        nameField.setBackground(new Color(255, 255, 255, 200));
+        nameField.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        formPanel.add(nameField, gbc);
+
+        gbc.gridy++;
+        JLabel passwordLabel = new JLabel("Password:");
+        ThemeUtils.styleLabel(passwordLabel, "body");
+        formPanel.add(passwordLabel, gbc);
+
+        gbc.gridy++;
+        passwordField = new JPasswordField(15);
+        passwordField.setFont(ThemeUtils.BODY_FONT);
+        passwordField.setBackground(new Color(255, 255, 255, 200));
+        passwordField.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        formPanel.add(passwordField, gbc);
+
+        add(formPanel, BorderLayout.CENTER);
+
+        // --- Buttons ---
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 200, 60, 200));
+
+        JButton loginButton = createStyledButton("Login",
+                ThemeUtils.DEEP_TEAL, ThemeUtils.DEEP_TEAL_HOVER);
         loginButton.addActionListener(this::handleLogin);
 
-        JButton registerButton = new JButton("Register");
-        registerButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        JButton registerButton = createStyledButton("Register",
+                ThemeUtils.MINT, ThemeUtils.MINT_HOVER);
         registerButton.addActionListener(this::handleRegister);
 
-        JPanel center = new JPanel(new GridLayout(4, 1, 10, 10));
-        center.setBorder(BorderFactory.createEmptyBorder(100, 150, 100, 150));
-        center.add(new JLabel("Username:"));
-        center.add(nameField);
-        center.add(new JLabel("Password:"));
-        center.add(passwordField);
-
-        JPanel bottom = new JPanel(new GridLayout(1, 2, 10, 10));
-        bottom.add(loginButton);
-        bottom.add(registerButton);
-
-        add(title, BorderLayout.NORTH);
-        add(center, BorderLayout.CENTER);
-        add(bottom, BorderLayout.SOUTH);
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /** Modern styled button with hover color fade. */
+    private JButton createStyledButton(String text, Color base, Color hover) {
+        JButton button = new JButton(text);
+        button.setFont(ThemeUtils.BUTTON_FONT);
+        button.setBackground(base);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover transition
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hover);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(base);
+            }
+        });
+
+        return button;
+    }
+
+    // --- LOGIN ---
     private void handleLogin(ActionEvent e) {
         String name = nameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
 
         if (name.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Please enter both name and password.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Please enter both name and password.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         Player player = dao.validateLogin(name, password);
         if (player == null) {
-            JOptionPane.showMessageDialog(frame, "Invalid credentials. Please try again or register.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Invalid credentials. Please try again or register.",
+                    "Login Failed", JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(frame, "Welcome back, " + player.getPlayerName() + "!", "Login Successful", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Welcome back, " + player.getPlayerName() + "!",
+                    "Login Successful", JOptionPane.INFORMATION_MESSAGE);
             navigateToHome(player);
         }
     }
 
+    // --- REGISTER ---
     private void handleRegister(ActionEvent e) {
         String name = nameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
 
         if (name.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Please enter both name and password.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Please enter both name and password.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
             Player newPlayer = new Player(name, password);
             dao.savePlayer(newPlayer);
-            JOptionPane.showMessageDialog(frame, "Player registered successfully! Welcome, " + newPlayer.getPlayerName() + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Player registered successfully! Welcome, "
+                            + newPlayer.getPlayerName() + ".",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
             navigateToHome(newPlayer);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, "Failed to register player: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Failed to register player: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // --- NAVIGATION ---
     private void navigateToHome(Player player) {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, player, generateFromWrongController));
