@@ -4,19 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e60329f-5afa-481d-aeaa-9fd48734476f" name="Changes" comment="Implement AddQuestionInputData, CreateQuizInputData and CreateQuizInputBoundary">
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TriviaTitans.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/entity/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/entity/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/interface_adapter/api/APIManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/interface_adapter/api/APIManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/interface_adapter/dao/QuizDataAccessObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/interface_adapter/dao/QuizDataAccessObject.java" afterDir="false" />
+    <list default="true" id="0e60329f-5afa-481d-aeaa-9fd48734476f" name="Changes" comment="Add id attribute to Question entity and resolve errors caused by the change">
+      <change afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizDataAccessInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TriviaTitans.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/trivia/use_case/create_quiz/CreateQuizOutputData.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,8 +23,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -141,7 +138,8 @@
       <workItem from="1763515338186" duration="258000" />
       <workItem from="1763516214994" duration="66000" />
       <workItem from="1763516302044" duration="17577000" />
-      <workItem from="1764209550562" duration="2082000" />
+      <workItem from="1764209550562" duration="2663000" />
+      <workItem from="1764212257012" duration="7289000" />
     </task>
     <task id="LOCAL-00001" summary="Implement the entity Quiz and create files for the use case Create Quiz">
       <option name="closed" value="true" />
@@ -175,7 +173,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763447019492</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Add id attribute to Question entity and resolve errors caused by the change">
+      <option name="closed" value="true" />
+      <created>1764211817657</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1764211817657</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -197,6 +203,7 @@
     <MESSAGE value="Implement the entity Quiz" />
     <MESSAGE value="Add the classes and interfaces for Create QUiz" />
     <MESSAGE value="Implement AddQuestionInputData, CreateQuizInputData and CreateQuizInputBoundary" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement AddQuestionInputData, CreateQuizInputData and CreateQuizInputBoundary" />
+    <MESSAGE value="Add id attribute to Question entity and resolve errors caused by the change" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add id attribute to Question entity and resolve errors caused by the change" />
   </component>
 </project>
