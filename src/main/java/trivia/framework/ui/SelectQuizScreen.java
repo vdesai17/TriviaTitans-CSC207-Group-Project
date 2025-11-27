@@ -8,7 +8,7 @@ import trivia.use_case.select_quiz.SelectQuizInteractor;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 
 import javax.swing.*;
-import javax.swing.SpinnerNumberModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -105,9 +105,10 @@ public class SelectQuizScreen extends JPanel {
                         "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 frame.getContentPane().removeAll();
-                frame.add(new QuizScreen(frame, questions));
+                frame.add(new QuizScreen(frame, questions, currentPlayer)); // pass currentPlayer
                 frame.revalidate();
                 frame.repaint();
+
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame,

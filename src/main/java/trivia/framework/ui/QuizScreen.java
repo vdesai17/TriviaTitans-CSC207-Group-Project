@@ -1,5 +1,6 @@
 package trivia.framework.ui;
 
+import trivia.entity.Player;
 import trivia.entity.Question;
 
 import javax.swing.*;
@@ -13,16 +14,18 @@ public class QuizScreen extends JPanel {
     private int currentIndex = 0;
     private int score = 0;
     private final int numberofquestions;
+    private Player currentPlayer;
 
     private JLabel questionLabel;
     private JRadioButton[] optionButtons;
     private ButtonGroup group;
     private JButton nextButton;
 
-    public QuizScreen(JFrame frame, List<Question> questions) {
+    public QuizScreen(JFrame frame, List<Question> questions, Player currentPlayer) {
         this.frame = frame;
         this.questions = questions;
         this.numberofquestions = questions.size();
+        this.currentPlayer = currentPlayer;
         setLayout(new BorderLayout(15,15));
         setBackground(Color.WHITE);
 
@@ -66,7 +69,7 @@ public class QuizScreen extends JPanel {
             group.clearSelection();
         } else {
             JOptionPane.showMessageDialog(frame, "Quiz finished!");
-            SummaryScreen summaryScreen = new SummaryScreen(score, numberofquestions, frame);
+            SummaryScreen summaryScreen = new SummaryScreen(score, numberofquestions, frame, currentPlayer);
             frame.getContentPane().removeAll();
             frame.add(summaryScreen);
             frame.revalidate();

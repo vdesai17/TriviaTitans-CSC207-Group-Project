@@ -1,5 +1,6 @@
 package trivia.framework.ui;
 
+import trivia.entity.Player;
 import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
@@ -10,18 +11,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * SummaryScreen — displays the final quiz results (score & accuracy)
+ * and allows returning to the HomeScreen while keeping the same player session.
+ */
 public class SummaryScreen extends JPanel {
     private final JFrame frame;
+    private final Player player;
 
-    public SummaryScreen(int score, int numberOfQuestions, JFrame frame) {
+    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
+        this.frame = frame;
+        this.player = player;
 
         ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
-        this.frame = frame;
+
         int accuracy = 0;
         if (numberOfQuestions != 0) {
-            accuracy =  Math.round(score * 100 / numberOfQuestions);
+            accuracy = Math.round(score * 100 / numberOfQuestions);
         }
 
+        // Set up Clean Architecture components
         ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);
         ReviewSummaryPresenter presenter = new ReviewSummaryPresenter(viewModel);
         presenter.presentReviewSummary(responseModel);
@@ -29,36 +38,35 @@ public class SummaryScreen extends JPanel {
         ReviewSummaryController controller = new ReviewSummaryController(interactor);
         controller.generateSummary(score, accuracy);
 
+        // UI Components
+        JLabel scoreLabel = new JLabel(viewModel.getScore(), SwingConstants.CENTER);
+        scoreLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
 
-        JLabel scoreLabel = new JLabel("", SwingConstants.LEFT);
-        scoreLabel.setText(viewModel.getScore());
-        scoreLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        JLabel accuracyLabel = new JLabel("", SwingConstants.CENTER);
-        accuracyLabel.setText(viewModel.getAccuracy());
-        accuracyLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        JButton startScreenButton = new JButton("Start Screen");
-        startScreenButton.setText("Main Menu");
-        startScreenButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        JLabel accuracyLabel = new JLabel(viewModel.getAccuracy(), SwingConstants.CENTER);
+        accuracyLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
 
-        startScreenButton.addActionListener(this::handleMainMenu);
+        JButton mainMenuButton = new JButton("Main Menu");
+        mainMenuButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        mainMenuButton.addActionListener(this::handleMainMenu);
 
-        setLayout(new BorderLayout(15,15));
+        // Layout
+        setLayout(new BorderLayout(15, 15));
         setBackground(Color.WHITE);
-        JPanel panel = new JPanel();
-        panel.add(scoreLabel);
-        panel.add(accuracyLabel);
-        panel.add(startScreenButton);
 
-        add(panel, BorderLayout.CENTER);
+        JPanel infoPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        infoPanel.setBackground(Color.WHITE);
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(100, 150, 100, 150));
+        infoPanel.add(scoreLabel);
+        infoPanel.add(accuracyLabel);
+        infoPanel.add(mainMenuButton);
+
+        add(infoPanel, BorderLayout.CENTER);
     }
 
-    private void handleMainMenu(ActionEvent actionEvent) {
-        StartScreen startScreen = new StartScreen(frame);
+    private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(startScreen);
+        frame.add(new HomeScreen(frame, player, null)); // back to logged-in player's home screen
         frame.revalidate();
         frame.repaint();
-
-
     }
 }
