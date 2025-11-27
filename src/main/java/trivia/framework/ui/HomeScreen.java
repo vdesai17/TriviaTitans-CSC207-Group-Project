@@ -38,9 +38,12 @@ public class HomeScreen extends JPanel {
 
         JButton loadQuizButton = new JButton("Load Existing Quiz");
         loadQuizButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        loadQuizButton.addActionListener(e ->
-                JOptionPane.showMessageDialog(frame, "Feature coming soon!", "Info", JOptionPane.INFORMATION_MESSAGE)
-        );
+        loadQuizButton.addActionListener(e -> {
+        frame.getContentPane().removeAll();
+        frame.add(new LoadQuizScreen(frame, currentPlayer));
+        frame.revalidate();
+        frame.repaint();
+        });
 
         JButton profileButton = new JButton("View Profile / Statistics");
         profileButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
