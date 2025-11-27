@@ -43,7 +43,10 @@ public class APIManager {
                 options.add(correct);
                 Collections.shuffle(options);
 
-                Question q = new Question(
+                // generate ID for fetched question
+                String id = UUID.randomUUID().toString();
+
+                Question q = new Question(id,
                         questionText, options, correct,
                         qObj.get("category").getAsString(),
                         qObj.get("difficulty").getAsString()

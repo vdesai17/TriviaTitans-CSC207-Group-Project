@@ -170,6 +170,7 @@ public class QuizDataAccessObject
         List<Question> questionEntities = new ArrayList<>();
         for (WrongQuestionRecord record : questions) {
             Question q = new Question(
+                    record.getQuestionId(),
                     record.getQuestionText(),
                     record.getOptions(),
                     record.getCorrectAnswer(),
