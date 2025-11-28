@@ -3,30 +3,21 @@ package trivia.use_case.generate_from_wrong;
 import java.util.List;
 
 /**
- * Data access interface for Use Case 6.
+ * Data access interface for Use Case 6:
+ * Generate a quiz from the user's past wrong questions.
  *
- * Your DAO implementation (for example, QuizDataAccessObject)
- * will implement this interface.
+ * Implemented by QuizDataAccessObject.
  */
 public interface GenerateFromWrongDataAccessInterface {
 
     /**
-     * Return all questions that the given player has previously
-     * answered incorrectly.
-     *
-     * @param playerName name or id of the player.
-     * @return list of wrong question records.
+     * Return all wrong-question records for a given player.
      */
     List<WrongQuestionRecord> getWrongQuestionsForPlayer(String playerName);
 
     /**
-     * Create a new quiz from the selected wrong questions and return its id.
-     * How this quiz is stored (file / DB / in-memory) is decided by
-     * the implementing DAO.
-     *
-     * @param playerName the player who will take this quiz.
-     * @param questions  questions to include in the quiz.
-     * @return id / name of the created quiz.
+     * Create a new practice quiz (from wrong questions), store it,
+     * and return the new quizId.
      */
     String createQuizFromWrongQuestions(String playerName,
                                         List<WrongQuestionRecord> questions);

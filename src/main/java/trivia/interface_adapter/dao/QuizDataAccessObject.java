@@ -9,6 +9,7 @@ import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
 import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
 import trivia.use_case.review_quiz.ReviewQuizAttemptDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
+import trivia.use_case.complete_quiz.QuizAttemptDataAccessInterface;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -19,15 +20,18 @@ import java.util.Optional;
 public class QuizDataAccessObject
         implements ReviewQuizAttemptDataAccessInterface,
         ReviewQuizQuizDataAccessInterface,
-        GenerateFromWrongDataAccessInterface {
+        GenerateFromWrongDataAccessInterface,
+        QuizAttemptDataAccessInterface {
 
     private static final String FILE_PATH = "data/custom_quizzes.json";
-    private final List<Quiz> quizzes;
-    private final List<QuizAttempt> attempts = new ArrayList<>();
+    private static final List<Quiz> quizzes = new ArrayList<>();
+    private static final List<QuizAttempt> attempts = new ArrayList<>();
     private final Gson gson = new Gson();
 
     public QuizDataAccessObject() {
-        this.quizzes = loadQuizzesFromFile();
+        List<Quiz> loaded = loadQuizzesFromFile();
+        quizzes.clear();
+        quizzes.addAll(loaded);
     }
 
     /** Save or update a quiz, persist to JSON */
@@ -82,7 +86,7 @@ public class QuizDataAccessObject
     }
 
     // ==== Everything below unchanged ====
-
+    @Override
     public void saveAttempt(QuizAttempt attempt) {
         attempts.add(attempt);
     }
@@ -112,11 +116,79 @@ public class QuizDataAccessObject
 
     @Override
     public List<WrongQuestionRecord> getWrongQuestionsForPlayer(String playerName) {
-        return new ArrayList<>();
+        List<WrongQuestionRecord> result = new ArrayList<>();
+
+        for (QuizAttempt attempt : attempts) {
+            if (!playerName.equals(attempt.getUserName())) {
+                continue;
+            }
+
+            Quiz quiz = attempt.getQuiz();
+            if (quiz == null) {
+                continue;
+            }
+
+            List<trivia.entity.Question> questionList = quiz.getQuestions();
+            List<String> userAnswers = attempt.getUserAnswers();
+            if (questionList == null || userAnswers == null) {
+                continue;
+            }
+
+            int size = Math.min(questionList.size(), userAnswers.size());
+            for (int i = 0; i < size; i++) {
+                trivia.entity.Question q = questionList.get(i);
+                String userAns = userAnswers.get(i);
+                String correct = q.getCorrectAnswer();
+
+                if (!correct.equals(userAns)) {
+                    WrongQuestionRecord record = new WrongQuestionRecord(
+                            quiz.getId(),
+                            "Practice from Wrong Questions",
+                            q.getQuestionText(),
+                            q.getOptions(),
+                            correct
+                    );
+                    result.add(record);
+                }
+            }
+        }
+
+        return result;
     }
 
     @Override
-    public String createQuizFromWrongQuestions(String playerName, List<WrongQuestionRecord> questions) {
-        return null;
+    public String createQuizFromWrongQuestions(String playerName,
+                                               List<WrongQuestionRecord> questions) {
+        if (questions == null || questions.isEmpty()) {
+            return null;
+        }
+
+        String quizId = "practice-" + playerName + "-" + System.currentTimeMillis();
+
+        List<trivia.entity.Question> questionEntities = new ArrayList<>();
+        for (WrongQuestionRecord record : questions) {
+            trivia.entity.Question q = new trivia.entity.Question(
+                    "",
+                    record.getQuestionText(),
+                    record.getOptions(),
+                    record.getCorrectAnswer(),
+                    "Practice",
+                    "mixed"
+            );
+            questionEntities.add(q);
+        }
+
+        Quiz newQuiz = new Quiz(
+                quizId,
+                "Practice from Wrong Questions",
+                "Practice",
+                "mixed",
+                playerName,
+                questionEntities
+        );
+
+        saveQuiz(newQuiz);
+
+        return quizId;
     }
 }

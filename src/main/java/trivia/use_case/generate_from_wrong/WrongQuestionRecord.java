@@ -3,38 +3,33 @@ package trivia.use_case.generate_from_wrong;
 import java.util.List;
 
 /**
- * A simple data holder representing one question that the player
- * previously answered incorrectly.
- *
- * This is on the use-case layer so that we don't depend on entity classes
- * like Question directly.
+ * A simple data structure representing one wrong question the player has done.
  */
 public class WrongQuestionRecord {
-
-    private final String questionId;     // optional: id of the question
-    private final String quizId;         // optional: which quiz it came from
+    private final String sourceQuizId;
+    private final String label;
     private final String questionText;
-    private final List<String> options;  // multiple choice options
+    private final List<String> options;
     private final String correctAnswer;
 
-    public WrongQuestionRecord(String questionId,
-                               String quizId,
+    public WrongQuestionRecord(String sourceQuizId,
+                               String label,
                                String questionText,
                                List<String> options,
                                String correctAnswer) {
-        this.questionId = questionId;
-        this.quizId = quizId;
+        this.sourceQuizId = sourceQuizId;
+        this.label = label;
         this.questionText = questionText;
         this.options = options;
         this.correctAnswer = correctAnswer;
     }
 
-    public String getQuestionId() {
-        return questionId;
+    public String getSourceQuizId() {
+        return sourceQuizId;
     }
 
-    public String getQuizId() {
-        return quizId;
+    public String getLabel() {
+        return label;
     }
 
     public String getQuestionText() {

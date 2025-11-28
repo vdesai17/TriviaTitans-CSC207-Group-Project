@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * State object for Use Case 6.
- * The ViewModel holds an instance of this, and UI observes its changes.
+ * State object for UC6 ViewModel.
  */
 public class GenerateFromWrongState {
-
     private String quizId;
+    private int requestedNumber;
+    private int totalAvailableWrongQuestions;
     private List<String> questionTexts = new ArrayList<>();
     private String errorMessage;
 
@@ -19,6 +19,22 @@ public class GenerateFromWrongState {
 
     public void setQuizId(String quizId) {
         this.quizId = quizId;
+    }
+
+    public int getRequestedNumber() {
+        return requestedNumber;
+    }
+
+    public void setRequestedNumber(int requestedNumber) {
+        this.requestedNumber = requestedNumber;
+    }
+
+    public int getTotalAvailableWrongQuestions() {
+        return totalAvailableWrongQuestions;
+    }
+
+    public void setTotalAvailableWrongQuestions(int totalAvailableWrongQuestions) {
+        this.totalAvailableWrongQuestions = totalAvailableWrongQuestions;
     }
 
     public List<String> getQuestionTexts() {

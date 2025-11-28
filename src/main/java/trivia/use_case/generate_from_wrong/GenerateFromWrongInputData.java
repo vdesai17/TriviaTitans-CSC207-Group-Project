@@ -1,24 +1,22 @@
 package trivia.use_case.generate_from_wrong;
 
 /**
- * Input data for Use Case 6.
+ * Input data for UC6.
  */
 public class GenerateFromWrongInputData {
-
     private final String playerName;
-    private final int requestedNumberOfQuestions;
+    private final int requestedNumber;
 
-    public GenerateFromWrongInputData(String playerName,
-                                      int requestedNumberOfQuestions) {
+    public GenerateFromWrongInputData(String playerName, int requestedNumber) {
         this.playerName = playerName;
-        this.requestedNumberOfQuestions = requestedNumberOfQuestions;
+        this.requestedNumber = requestedNumber;
     }
 
     public String getPlayerName() {
         return playerName;
     }
 
-    public int getRequestedNumberOfQuestions() {
-        return requestedNumberOfQuestions;
+    public int getRequestedNumber() {
+        return requestedNumber;
     }
 }

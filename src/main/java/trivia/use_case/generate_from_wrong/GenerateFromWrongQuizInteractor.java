@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Interactor (Use Case) for Use Case 6:
- * Generate a quiz from the user's past wrong questions.
+ * Interactor for Use Case 6: generate a new quiz from the user's wrong questions.
  */
 public class GenerateFromWrongQuizInteractor implements GenerateFromWrongInputBoundary {
 
@@ -22,52 +21,42 @@ public class GenerateFromWrongQuizInteractor implements GenerateFromWrongInputBo
     @Override
     public void execute(GenerateFromWrongInputData inputData) {
         String playerName = inputData.getPlayerName();
-        int requested = inputData.getRequestedNumberOfQuestions();
+        int requested = inputData.getRequestedNumber();
 
-        if (playerName == null || playerName.trim().isEmpty()) {
-            presenter.prepareFailView("Player name is missing.");
+        if (playerName == null || playerName.isBlank()) {
+            presenter.prepareFailView("Player name must not be empty.");
+            return;
+        }
+        if (requested <= 0) {
+            presenter.prepareFailView("Number of questions must be positive.");
             return;
         }
 
         List<WrongQuestionRecord> allWrong =
                 dataAccess.getWrongQuestionsForPlayer(playerName);
 
-        if (allWrong == null || allWrong.isEmpty()) {
-            presenter.prepareFailView("You have no past wrong questions yet.");
+        if (allWrong.isEmpty()) {
+            presenter.prepareFailView("No wrong questions found for player: " + playerName);
             return;
         }
 
-        int totalAvailable = allWrong.size();
-
-        // If requested <= 0, treat it as "use all".
-        int numberToUse = requested <= 0 ? totalAvailable : requested;
-
-        if (numberToUse > totalAvailable) {
-            numberToUse = totalAvailable;
-        }
-
-        // Randomize the selection so that the quiz is not always the same.
         List<WrongQuestionRecord> shuffled = new ArrayList<>(allWrong);
         Collections.shuffle(shuffled);
+        List<WrongQuestionRecord> selected =
+                shuffled.subList(0, Math.min(requested, shuffled.size()));
 
-        List<WrongQuestionRecord> selected = shuffled.subList(0, numberToUse);
-
-        // Let the DAO actually create and store the quiz.
         String quizId = dataAccess.createQuizFromWrongQuestions(playerName, selected);
-
-        // Prepare a simple view of the selected questions (only texts).
-        List<String> questionTexts = new ArrayList<>();
-        for (WrongQuestionRecord record : selected) {
-            questionTexts.add(record.getQuestionText());
+        if (quizId == null) {
+            presenter.prepareFailView("Failed to create practice quiz.");
+            return;
         }
 
+        List<String> texts = new ArrayList<>();
+        for (WrongQuestionRecord record : selected) {
+            texts.add(record.getQuestionText());
+        }
         GenerateFromWrongOutputData outputData =
-                new GenerateFromWrongOutputData(
-                        quizId,
-                        questionTexts,
-                        requested,
-                        totalAvailable
-                );
+                new GenerateFromWrongOutputData(quizId, selected.size(), texts);
 
         presenter.prepareSuccessView(outputData);
     }
