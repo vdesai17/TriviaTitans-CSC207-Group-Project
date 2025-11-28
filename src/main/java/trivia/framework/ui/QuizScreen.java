@@ -25,11 +25,16 @@ public class QuizScreen extends JPanel {
     private final int numberOfQuestions;
     private final CompleteQuizController controller;
     private final List<String> userAnswers = new ArrayList<>();
+    
+    // Track selected answer index for each question (-1 means no selection)
+    private final List<Integer> selectedAnswerIndices;
 
     private final JTextArea questionArea;
     private final JRadioButton[] optionButtons;
     private final ButtonGroup group;
     private final JButton nextButton;
+    private final JButton previousButton;
+    private final JLabel progressLabel;
 
     public QuizScreen(JFrame frame,
                       List<Question> questions,
@@ -40,13 +45,29 @@ public class QuizScreen extends JPanel {
         this.currentPlayer = currentPlayer;
         this.numberOfQuestions = questions.size();
         this.controller = controller;
+        
+        // Initialize tracking lists
+        this.selectedAnswerIndices = new ArrayList<>();
+        for (int i = 0; i < numberOfQuestions; i++) {
+            selectedAnswerIndices.add(-1); // -1 means no answer selected yet
+            userAnswers.add(""); // Empty string for unanswered
+        }
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
 
         JLabel title = new JLabel("Quiz in Progress", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
-        add(title, BorderLayout.NORTH);
+        
+        // Add progress indicator
+        progressLabel = new JLabel("Question 1 of " + numberOfQuestions, SwingConstants.CENTER);
+        ThemeUtils.styleLabel(progressLabel, "body");
+        
+        JPanel headerPanel = new JPanel(new GridLayout(2, 1));
+        headerPanel.setOpaque(false);
+        headerPanel.add(title);
+        headerPanel.add(progressLabel);
+        add(headerPanel, BorderLayout.NORTH);
 
         JPanel quizPanel = ThemeUtils.createGlassPanel(60);
         quizPanel.setLayout(new BorderLayout(20, 20));
@@ -104,7 +125,12 @@ public class QuizScreen extends JPanel {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         bottomPanel.setOpaque(false);
 
+        previousButton = createStyledButton("Previous", new Color(100, 100, 100), new Color(130, 130, 130), this::handlePrevious);
         nextButton = createStyledButton("Next", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, this::handleNext);
+        
+        previousButton.setEnabled(false); // Disabled on first question
+        
+        bottomPanel.add(previousButton);
         bottomPanel.add(nextButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
@@ -142,6 +168,9 @@ public class QuizScreen extends JPanel {
             Question q = questions.get(currentIndex);
             questionArea.setText(q.getQuestionText());
 
+            // Update progress label
+            progressLabel.setText("Question " + (currentIndex + 1) + " of " + numberOfQuestions);
+
             List<String> opts = q.getOptions();
             for (int i = 0; i < optionButtons.length; i++) {
                 if (i < opts.size()) {
@@ -151,36 +180,85 @@ public class QuizScreen extends JPanel {
                     optionButtons[i].setVisible(false);
                 }
             }
+            
+            // Restore previously selected answer if any
+            int previouslySelected = selectedAnswerIndices.get(currentIndex);
             group.clearSelection();
-        } else {
-            endQuiz();
+            if (previouslySelected >= 0 && previouslySelected < optionButtons.length) {
+                optionButtons[previouslySelected].setSelected(true);
+            }
+            
+            // Update button states
+            previousButton.setEnabled(currentIndex > 0);
+            
+            // Change "Next" to "Finish" on last question
+            if (currentIndex == numberOfQuestions - 1) {
+                nextButton.setText("Finish Quiz");
+            } else {
+                nextButton.setText("Next");
+            }
+        }
+    }
+
+    private void saveCurrentAnswer() {
+        // Save the current answer before moving
+        String chosen = null;
+        int chosenIndex = -1;
+        
+        for (int i = 0; i < optionButtons.length; i++) {
+            if (optionButtons[i].isVisible() && optionButtons[i].isSelected()) {
+                chosen = optionButtons[i].getText();
+                chosenIndex = i;
+                break;
+            }
+        }
+        
+        if (chosen == null) {
+            chosen = ""; // No answer selected
+            chosenIndex = -1;
+        }
+        
+        // Update the tracking lists
+        if (currentIndex < userAnswers.size()) {
+            userAnswers.set(currentIndex, chosen);
+            selectedAnswerIndices.set(currentIndex, chosenIndex);
         }
     }
 
     private void handleNext(ActionEvent e) {
-        Question q = questions.get(currentIndex);
-        String chosen = null;
-        for (JRadioButton btn : optionButtons) {
-            if (btn.isVisible() && btn.isSelected()) {
-                chosen = btn.getText();
-                break;
-            }
+        saveCurrentAnswer();
+        
+        if (currentIndex == numberOfQuestions - 1) {
+            // This is the last question - finish the quiz
+            finishQuiz();
+        } else {
+            currentIndex++;
+            loadQuestion();
         }
-        if (chosen == null) {
-            chosen = "";
+    }
+    
+    private void handlePrevious(ActionEvent e) {
+        saveCurrentAnswer();
+        
+        if (currentIndex > 0) {
+            currentIndex--;
+            loadQuestion();
         }
-        userAnswers.add(chosen);
-
-        int correctIndex = q.getCorrectOptionIndex();
-        if (correctIndex >= 0 && correctIndex < optionButtons.length && optionButtons[correctIndex].isSelected()) {
-            score++;
-        }
-
-        currentIndex++;
-        loadQuestion();
     }
 
-    private void endQuiz() {
+    private void finishQuiz() {
+        // Calculate final score
+        score = 0;
+        for (int i = 0; i < questions.size(); i++) {
+            Question q = questions.get(i);
+            int correctIndex = q.getCorrectOptionIndex();
+            int selectedIndex = selectedAnswerIndices.get(i);
+            
+            if (correctIndex >= 0 && correctIndex == selectedIndex) {
+                score++;
+            }
+        }
+
         QuizDataAccessObject quizDAO = new QuizDataAccessObject();
 
         String quizId = "api-" + System.currentTimeMillis();
