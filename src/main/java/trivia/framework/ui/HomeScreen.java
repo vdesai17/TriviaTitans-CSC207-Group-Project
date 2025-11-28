@@ -3,7 +3,12 @@ package trivia.framework.ui;
 import trivia.entity.Player;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
+import trivia.interface_adapter.controller.ReviewController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.dao.PlayerDataAccessObject;
+import trivia.interface_adapter.presenter.PastQuizPresenter;
+import trivia.interface_adapter.presenter.PastQuizViewModel;
+import trivia.use_case.review_quiz.ReviewQuizInteractor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +26,7 @@ public class HomeScreen extends JPanel {
     private final GenerateFromWrongController generateFromWrongController;
     private final CompleteQuizController completeQuizController;
     private final QuizDataAccessObject quizDAO;
+    private final ReviewController reviewController;
 
     public HomeScreen(JFrame frame,
                       Player player,
@@ -32,6 +38,17 @@ public class HomeScreen extends JPanel {
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.quizDAO = quizDAO;
+
+        // Initialize Review Quiz components
+        PastQuizViewModel pastQuizViewModel = new PastQuizViewModel();
+        PastQuizPresenter pastQuizPresenter = new PastQuizPresenter(pastQuizViewModel);
+        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
+        ReviewQuizInteractor reviewQuizInteractor = new ReviewQuizInteractor(
+                playerDAO, // implements ReviewQuizAttemptDataAccessInterface
+                playerDAO, // implements ReviewQuizQuizDataAccessInterface
+                pastQuizPresenter
+        );
+        this.reviewController = new ReviewController(reviewQuizInteractor);
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -59,6 +76,12 @@ public class HomeScreen extends JPanel {
                 ThemeUtils.DEEP_TEAL_HOVER,
                 this::handleLoadQuiz);
 
+        JButton reviewQuizButton = createStyledButton(
+                "Review Past Quizzes",
+                new Color(100, 100, 200),
+                new Color(120, 120, 230),
+                this::handleReviewQuizzes);
+
         JButton profileButton = createStyledButton(
                 "View Profile / Statistics",
                 new Color(60, 180, 130),
@@ -72,12 +95,13 @@ public class HomeScreen extends JPanel {
                 this::handleLogout);
 
         JPanel buttonPanel = ThemeUtils.createGlassPanel(60);
-        buttonPanel.setLayout(new GridLayout(5, 1, 15, 15));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(80, 250, 80, 250));
+        buttonPanel.setLayout(new GridLayout(6, 1, 15, 15));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(60, 250, 60, 250));
 
         buttonPanel.add(createQuizButton);
         buttonPanel.add(apiQuizButton);
         buttonPanel.add(loadQuizButton);
+        buttonPanel.add(reviewQuizButton);
         buttonPanel.add(profileButton);
         buttonPanel.add(logoutButton);
 
@@ -126,6 +150,27 @@ public class HomeScreen extends JPanel {
     private void handleLoadQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new LoadQuizScreen(frame, currentPlayer, quizDAO, completeQuizController, generateFromWrongController));
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    private void handleReviewQuizzes(ActionEvent e) {
+        // Create new ViewModel and Presenter for this screen instance
+        PastQuizViewModel viewModel = new PastQuizViewModel();
+        PastQuizPresenter presenter = new PastQuizPresenter(viewModel);
+        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
+        
+        ReviewQuizInteractor interactor = new ReviewQuizInteractor(
+                playerDAO,
+                playerDAO,
+                presenter
+        );
+        
+        ReviewController controller = new ReviewController(interactor);
+        
+        frame.getContentPane().removeAll();
+        frame.add(new PastQuizScreen(frame, controller, viewModel, currentPlayer, 
+                generateFromWrongController, completeQuizController));
         frame.revalidate();
         frame.repaint();
     }

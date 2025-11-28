@@ -1,6 +1,9 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
+import trivia.entity.Question;
+import trivia.entity.Quiz;
+import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.ReviewController;
 import trivia.interface_adapter.presenter.PastQuizViewModel;
@@ -16,6 +19,7 @@ import java.util.List;
 
 /**
  * UI Screen for viewing and editing past quiz attempts (Use Case 3)
+ * Now with REDO functionality!
  */
 public class PastQuizScreen extends JPanel implements PropertyChangeListener {
     
@@ -24,24 +28,32 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
     private final PastQuizViewModel viewModel;
     private final Player currentPlayer;
     private final GenerateFromWrongController generateFromWrongController;
+    private final CompleteQuizController completeQuizController;
 
     // UI Components
     private JList<String> pastQuizzesList;
     private DefaultListModel<String> listModel;
     private JPanel questionsPanel;
     private JButton saveButton;
+    private JButton redoButton;  // NEW: Redo quiz button
     private JButton backButton;
     private JLabel messageLabel;
     private List<ButtonGroup> answerGroups;  // One ButtonGroup per question
+    
+    private Quiz currentQuiz;  // Store the current quiz for redo functionality
 
-    public PastQuizScreen(JFrame frame, ReviewController controller, 
-                         PastQuizViewModel viewModel, Player currentPlayer,
-                         GenerateFromWrongController generateFromWrongController) {
+    public PastQuizScreen(JFrame frame, 
+                         ReviewController controller, 
+                         PastQuizViewModel viewModel, 
+                         Player currentPlayer,
+                         GenerateFromWrongController generateFromWrongController,
+                         CompleteQuizController completeQuizController) {
         this.frame = frame;
         this.controller = controller;
         this.viewModel = viewModel;
         this.currentPlayer = currentPlayer;
         this.generateFromWrongController = generateFromWrongController;
+        this.completeQuizController = completeQuizController;
 
         // Listen for ViewModel changes
         viewModel.addPropertyChangeListener(this);
@@ -51,39 +63,70 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
         // Load past quizzes when screen is created
         controller.viewPastQuizzes(currentPlayer.getPlayerName());
     }
+    
+    // Constructor overload for backward compatibility
+    public PastQuizScreen(JFrame frame, 
+                         ReviewController controller, 
+                         PastQuizViewModel viewModel, 
+                         Player currentPlayer,
+                         GenerateFromWrongController generateFromWrongController) {
+        this(frame, controller, viewModel, currentPlayer, generateFromWrongController, null);
+    }
 
     private void initComponents() {
         setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
+        ThemeUtils.applyGradientBackground(this);
 
         // Title
-        JLabel title = new JLabel("Past Quizzes - Review & Edit", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        JLabel title = new JLabel("Past Quizzes - Review & Redo", SwingConstants.CENTER);
+        ThemeUtils.styleLabel(title, "title");
+        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        add(title, BorderLayout.NORTH);
 
         // Left panel: List of past quizzes
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBorder(BorderFactory.createTitledBorder("Your Quiz History"));
+        leftPanel.setOpaque(false);
+        leftPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(0, 100, 100), 2),
+            "Your Quiz History",
+            0, 0,
+            ThemeUtils.BODY_FONT,
+            new Color(0, 100, 100)
+        ));
         
         listModel = new DefaultListModel<>();
         pastQuizzesList = new JList<>(listModel);
         pastQuizzesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        pastQuizzesList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        pastQuizzesList.setFont(ThemeUtils.BODY_FONT);
+        pastQuizzesList.setBackground(new Color(255, 255, 255, 230));
+        pastQuizzesList.setSelectionBackground(new Color(0, 150, 150, 100));
+        pastQuizzesList.setSelectionForeground(Color.BLACK);
+        pastQuizzesList.setFixedCellHeight(40);
         pastQuizzesList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 onPastQuizSelected();
             }
         });
         JScrollPane listScroll = new JScrollPane(pastQuizzesList);
+        listScroll.setOpaque(false);
+        listScroll.getViewport().setOpaque(false);
         leftPanel.add(listScroll, BorderLayout.CENTER);
 
         // Right panel: Questions display
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.setBorder(BorderFactory.createTitledBorder("Quiz Details"));
+        JPanel rightPanel = ThemeUtils.createGlassPanel(40);
+        rightPanel.setLayout(new BorderLayout(10, 10));
+        rightPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(0, 100, 100), 2),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
         
         questionsPanel = new JPanel();
         questionsPanel.setLayout(new BoxLayout(questionsPanel, BoxLayout.Y_AXIS));
-        questionsPanel.setBackground(Color.WHITE);
+        questionsPanel.setOpaque(false);
         JScrollPane questionsScroll = new JScrollPane(questionsPanel);
+        questionsScroll.setOpaque(false);
+        questionsScroll.getViewport().setOpaque(false);
+        questionsScroll.setBorder(null);
         rightPanel.add(questionsScroll, BorderLayout.CENTER);
 
         // Message label
@@ -93,30 +136,38 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
 
         // Bottom buttons
         JPanel bottomPanel = new JPanel(new FlowLayout());
+        bottomPanel.setOpaque(false);
         
-        saveButton = new JButton("Save Changes");
-        saveButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        saveButton.setBackground(new Color(76, 175, 80));
-        saveButton.setForeground(Color.WHITE);
+        saveButton = ThemeUtils.createStyledButton("Save Changes", 
+            new Color(76, 175, 80), 
+            new Color(100, 200, 100));
         saveButton.addActionListener(this::onSaveClicked);
         saveButton.setEnabled(false);
 
-        backButton = new JButton("Back to Home");
-        backButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        redoButton = ThemeUtils.createStyledButton("Redo This Quiz", 
+            ThemeUtils.MINT,
+            ThemeUtils.MINT_HOVER);
+        redoButton.addActionListener(this::onRedoClicked);
+        redoButton.setEnabled(false);
+
+        backButton = ThemeUtils.createStyledButton("Back to Home", 
+            new Color(180, 60, 60),
+            new Color(210, 80, 80));
         backButton.addActionListener(e -> navigateToHome());
 
         bottomPanel.add(saveButton);
+        bottomPanel.add(redoButton);
         bottomPanel.add(backButton);
 
         // Add to main panel
-        add(title, BorderLayout.NORTH);
-        
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
                                               leftPanel, rightPanel);
         splitPane.setDividerLocation(300);
+        splitPane.setOpaque(false);
         add(splitPane, BorderLayout.CENTER);
         
         JPanel bottomContainer = new JPanel(new BorderLayout());
+        bottomContainer.setOpaque(false);
         bottomContainer.add(messageLabel, BorderLayout.NORTH);
         bottomContainer.add(bottomPanel, BorderLayout.SOUTH);
         add(bottomContainer, BorderLayout.SOUTH);
@@ -138,8 +189,11 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
 
             // 3. Enable/disable Save button
             saveButton.setEnabled(viewModel.isEditingEnabled());
+            
+            // 4. Enable/disable Redo button (enabled when quiz is selected)
+            redoButton.setEnabled(currentQuiz != null);
 
-            // 4. Show message
+            // 5. Show message
             String message = viewModel.getMessage();
             if (message != null && !message.isEmpty()) {
                 messageLabel.setText(message);
@@ -171,12 +225,13 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
         if (questions == null || questions.isEmpty()) {
             JLabel placeholder = new JLabel("← Select a quiz from the list to view details");
             placeholder.setFont(new Font("SansSerif", Font.ITALIC, 16));
-            placeholder.setForeground(Color.GRAY);
+            placeholder.setForeground(new Color(100, 100, 100));
             questionsPanel.add(placeholder);
         } else {
             // Show quiz title
             JLabel quizTitleLabel = new JLabel("Quiz: " + viewModel.getQuizTitle());
             quizTitleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+            quizTitleLabel.setForeground(new Color(0, 80, 80));
             quizTitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             questionsPanel.add(quizTitleLabel);
             questionsPanel.add(Box.createVerticalStrut(15));
@@ -200,9 +255,9 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(new Color(255, 255, 255, 200));
 
         // Question text
         JLabel questionLabel = new JLabel(
@@ -224,7 +279,7 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
         for (int i = 0; i < options.size(); i++) {
             JRadioButton radioButton = new JRadioButton(options.get(i));
             radioButton.setFont(new Font("SansSerif", Font.PLAIN, 13));
-            radioButton.setBackground(Color.WHITE);
+            radioButton.setBackground(new Color(255, 255, 255, 0));
             radioButton.setAlignmentX(Component.LEFT_ALIGNMENT);
             
             // Mark correct answer in green
@@ -262,7 +317,27 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
             if (quizzes != null && selectedIndex < quizzes.size()) {
                 String attemptId = quizzes.get(selectedIndex).getAttemptId();
                 controller.openAttempt(attemptId);
+                
+                // Load the quiz for redo functionality
+                loadQuizForRedo(attemptId);
             }
+        }
+    }
+
+    private void loadQuizForRedo(String attemptId) {
+        // Load the quiz from the attempt
+        trivia.interface_adapter.dao.PlayerDataAccessObject playerDAO = 
+            new trivia.interface_adapter.dao.PlayerDataAccessObject();
+        
+        java.util.Optional<trivia.entity.QuizAttempt> maybeAttempt = 
+            playerDAO.getAttemptById(attemptId);
+        
+        if (maybeAttempt.isPresent()) {
+            currentQuiz = maybeAttempt.get().getQuiz();
+            redoButton.setEnabled(true);
+        } else {
+            currentQuiz = null;
+            redoButton.setEnabled(false);
         }
     }
 
@@ -286,6 +361,42 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
                 "Changes saved successfully!", 
                 "Success", 
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void onRedoClicked(ActionEvent e) {
+        if (currentQuiz == null) {
+            JOptionPane.showMessageDialog(this, 
+                    "Please select a quiz to redo.", 
+                    "No Quiz Selected", 
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to redo this quiz?\n" +
+                "Your current attempt will remain saved.",
+                "Redo Quiz",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Get the questions from the quiz
+            List<Question> questions = currentQuiz.getQuestions();
+            
+            if (questions == null || questions.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "This quiz has no questions to redo.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Navigate to QuizScreen with these questions
+            frame.getContentPane().removeAll();
+            frame.add(new QuizScreen(frame, questions, currentPlayer, completeQuizController));
+            frame.revalidate();
+            frame.repaint();
+        }
     }
 
     private List<Integer> readSelectedIndicesFromUI() {
