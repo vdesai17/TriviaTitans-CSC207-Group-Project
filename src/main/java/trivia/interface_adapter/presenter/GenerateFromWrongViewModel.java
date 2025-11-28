@@ -4,13 +4,11 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * ViewModel for Use Case 6.
- * Holds a GenerateFromWrongState and notifies listeners when it changes.
+ * ViewModel for UC6.
+ * For now we mainly use it to show dialogs; if你们以后要有专门的 Screen，可以复用这里的 state。
  */
 public class GenerateFromWrongViewModel {
-
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
-
     private GenerateFromWrongState state = new GenerateFromWrongState();
 
     public GenerateFromWrongState getState() {

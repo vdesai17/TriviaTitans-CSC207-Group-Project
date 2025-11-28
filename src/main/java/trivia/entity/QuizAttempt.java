@@ -1,5 +1,6 @@
 package trivia.entity;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuizAttempt {
@@ -11,14 +12,29 @@ public class QuizAttempt {
     private List<Integer> selectedOptionIndices;
     private LocalDateTime completedAt;
     private boolean editable;
+    private String userName;
 
     // Constructor
-    public QuizAttempt(String attemptId, Quiz quiz, int totalQuestions) {
+    public QuizAttempt(String attemptId, Quiz quiz, int totalQuestions, String userName, LocalDateTime completedAt, List<String> userAnswers, int score) {
+
         this.attemptId = attemptId;
         this.quiz = quiz;
         this.totalQuestions = totalQuestions;
-        this.score = 0;
-        this.completedAt = LocalDateTime.now();
+        this.userName = userName;
+        this.completedAt = completedAt;
+        this.userAnswers = new ArrayList<>(userAnswers);
+        this.score = score;
+        this.editable = false;
+    }
+
+
+    //old one
+    public QuizAttempt(String attemptId, Quiz quiz, int totalQuestions) {
+        this(attemptId, quiz, totalQuestions,
+                null,
+                LocalDateTime.now(),
+                new ArrayList<>(),
+                0);
         this.editable = true;
     }
 
@@ -43,9 +59,7 @@ public class QuizAttempt {
         return totalQuestions;
     }
 
-    public List<String> getUserAnswers() {
-        return userAnswers;
-    }
+    public List<String> getUserAnswers() { return new ArrayList<>(userAnswers); }
 
     public List<Integer> getSelectedOptionIndices() {
         return selectedOptionIndices;
@@ -58,6 +72,8 @@ public class QuizAttempt {
     public boolean isEditable() {
         return editable;
     }
+
+    public String getUserName() { return userName; }
 
     // Setters
     public void setScore(int score) {
@@ -78,6 +94,10 @@ public class QuizAttempt {
 
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     // Calculate accuracy percentage

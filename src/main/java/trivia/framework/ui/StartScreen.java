@@ -12,6 +12,12 @@ import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongQuizInteractor;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongOutputBoundary;
 
+import trivia.interface_adapter.controller.CompleteQuizController;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.use_case.complete_quiz.CompleteQuizInteractor;
+import trivia.use_case.complete_quiz.CompleteQuizOutputBoundary;
+import trivia.use_case.complete_quiz.CompleteQuizOutputData;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,6 +36,9 @@ public class StartScreen extends JPanel {
     private final PlayerDataAccessObject dao;
     private final GenerateFromWrongController generateFromWrongController;
 
+    private final QuizDataAccessObject quizDAO;
+    private final CompleteQuizController completeQuizController;
+
     public StartScreen(JFrame frame) {
         this.frame = frame;
 
@@ -38,12 +47,26 @@ public class StartScreen extends JPanel {
         RegisterPlayerInteractor interactor = new RegisterPlayerInteractor(dao);
         this.controller = new PlayerController(interactor);
 
+        // UC6: Generate from wrong questions
         GenerateFromWrongViewModel uc6ViewModel = new GenerateFromWrongViewModel();
         GenerateFromWrongOutputBoundary uc6Presenter = new GenerateFromWrongPresenter(uc6ViewModel);
         GenerateFromWrongDataAccessInterface uc6DataAccess = dao;
         GenerateFromWrongQuizInteractor uc6Interactor =
                 new GenerateFromWrongQuizInteractor(uc6DataAccess, uc6Presenter);
         this.generateFromWrongController = new GenerateFromWrongController(uc6Interactor);
+
+        this.quizDAO = new QuizDataAccessObject();
+
+        CompleteQuizOutputBoundary completePresenter = new CompleteQuizOutputBoundary() {
+            @Override
+            public void present(CompleteQuizOutputData data) {
+            }
+        };
+
+        CompleteQuizInteractor completeInteractor =
+                new CompleteQuizInteractor(quizDAO, completePresenter);
+
+        this.completeQuizController = new CompleteQuizController(completeInteractor);
 
         // --- Layout Setup ---
         setLayout(new BorderLayout());
@@ -199,7 +222,10 @@ public class StartScreen extends JPanel {
     // --- NAVIGATION ---
     private void navigateToHome(Player player) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController));
+        frame.add(new HomeScreen(frame, player,
+                generateFromWrongController,
+                completeQuizController,
+                quizDAO));
         frame.revalidate();
         frame.repaint();
     }

@@ -8,7 +8,6 @@ import java.util.Collections;
 
 /**
  * Presenter for Use Case 6.
- * Updates ViewModel and gives UI feedback.
  */
 public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBoundary {
 
@@ -24,10 +23,12 @@ public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBounda
         state.setQuizId(response.getQuizId());
         state.setQuestionTexts(response.getQuestionTexts());
         state.setErrorMessage(null);
+
         viewModel.fireStateChanged();
 
         JOptionPane.showMessageDialog(null,
-                "Generated practice quiz: " + response.getQuizId(),
+                "Generated practice quiz: " + response.getQuizId() +
+                        "\n(" + response.getNumberOfQuestions() + " questions)",
                 "Practice Quiz Ready",
                 JOptionPane.INFORMATION_MESSAGE);
     }
@@ -38,11 +39,12 @@ public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBounda
         state.setQuizId(null);
         state.setQuestionTexts(Collections.emptyList());
         state.setErrorMessage(errorMessage);
+
         viewModel.fireStateChanged();
 
         JOptionPane.showMessageDialog(null,
                 errorMessage,
-                "No Wrong Questions",
+                "Cannot Generate Practice Quiz",
                 JOptionPane.ERROR_MESSAGE);
     }
 }

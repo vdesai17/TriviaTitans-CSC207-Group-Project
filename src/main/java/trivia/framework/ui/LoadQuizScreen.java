@@ -3,6 +3,8 @@ package trivia.framework.ui;
 import trivia.entity.Player;
 import trivia.entity.Quiz;
 import trivia.entity.Question;
+import trivia.interface_adapter.controller.CompleteQuizController;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 
 import javax.swing.*;
@@ -20,11 +22,19 @@ public class LoadQuizScreen extends JPanel {
     private final JFrame frame;
     private final Player player;
     private final QuizDataAccessObject quizDAO;
+    private final CompleteQuizController completeQuizController;
+    private final GenerateFromWrongController generateFromWrongController;
 
-    public LoadQuizScreen(JFrame frame, Player player) {
+    public LoadQuizScreen(JFrame frame,
+                          Player player,
+                          QuizDataAccessObject quizDAO,
+                          CompleteQuizController completeQuizController,
+                          GenerateFromWrongController generateFromWrongController) {
         this.frame = frame;
         this.player = player;
-        this.quizDAO = new QuizDataAccessObject();
+        this.quizDAO = quizDAO;
+        this.completeQuizController = completeQuizController;
+        this.generateFromWrongController = generateFromWrongController;
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -72,8 +82,17 @@ public class LoadQuizScreen extends JPanel {
         bottomPanel.setOpaque(false);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(20, 150, 50, 150));
 
-        JButton backButton = createStyledButton("Back to Home", new Color(200, 70, 70), new Color(220, 90, 90), this::goBackHome);
-        JButton openButton = createStyledButton("Open Selected Quiz", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, e -> openSelectedQuiz(quizList, playerQuizzes));
+        JButton backButton = createStyledButton(
+                "Back to Home",
+                new Color(200, 70, 70),
+                new Color(220, 90, 90),
+                this::goBackHome);
+
+        JButton openButton = createStyledButton(
+                "Open Selected Quiz",
+                ThemeUtils.MINT,
+                ThemeUtils.MINT_HOVER,
+                e -> openSelectedQuiz(quizList, playerQuizzes));
 
         bottomPanel.add(backButton);
         bottomPanel.add(openButton);
@@ -81,7 +100,8 @@ public class LoadQuizScreen extends JPanel {
     }
 
     /** Creates unified styled button with hover transitions. */
-    private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
+    private JButton createStyledButton(String text, Color base, Color hover,
+                                       java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
         button.setBackground(base);
@@ -117,7 +137,7 @@ public class LoadQuizScreen extends JPanel {
         }
 
         frame.getContentPane().removeAll();
-        frame.add(new QuizScreen(frame, questions, player));
+        frame.add(new QuizScreen(frame, questions, player, completeQuizController));
         frame.revalidate();
         frame.repaint();
     }
@@ -125,7 +145,11 @@ public class LoadQuizScreen extends JPanel {
     /** Returns to Home Screen */
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, null));
+        frame.add(new HomeScreen(frame,
+                player,
+                generateFromWrongController,
+                completeQuizController,
+                quizDAO));
         frame.revalidate();
         frame.repaint();
     }
