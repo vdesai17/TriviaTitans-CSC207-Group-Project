@@ -6,6 +6,7 @@ import trivia.entity.Quiz;
 import trivia.entity.QuizAttempt;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.dao.PlayerDataAccessObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -259,9 +260,8 @@ public class QuizScreen extends JPanel {
             }
         }
 
-        QuizDataAccessObject quizDAO = new QuizDataAccessObject();
-
-        String quizId = "api-" + System.currentTimeMillis();
+        // Create quiz object
+        String quizId = "quiz-" + System.currentTimeMillis();
         Quiz quiz = new Quiz(
                 quizId,
                 "API Quiz",
@@ -271,6 +271,7 @@ public class QuizScreen extends JPanel {
                 questions
         );
 
+        // Create attempt
         QuizAttempt attempt = new QuizAttempt(
                 "attempt-" + System.currentTimeMillis(),
                 quiz,
@@ -280,10 +281,30 @@ public class QuizScreen extends JPanel {
                 userAnswers,
                 score
         );
+        
+        // Set the selected indices for review
+        attempt.setSelectedOptionIndices(new ArrayList<>(selectedAnswerIndices));
 
+        // ===== FIX: Save to BOTH data stores =====
+        
+        // 1. Save to QuizDataAccessObject (for quiz management)
+        QuizDataAccessObject quizDAO = new QuizDataAccessObject();
         quizDAO.saveQuiz(quiz);
         quizDAO.saveAttempt(attempt);
 
+        // 2. Save to PlayerDataAccessObject (for review past quizzes)
+        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
+        Player player = playerDAO.loadPlayer(currentPlayer.getPlayerName());
+        if (player != null) {
+            player.addAttempt(attempt);
+            player.setScore(player.getScore() + score); // Update total score
+            playerDAO.savePlayer(player);
+            System.out.println("✓ Quiz attempt saved to player: " + player.getPlayerName());
+        } else {
+            System.err.println("⚠ Warning: Could not load player to save attempt");
+        }
+
+        // Call controller if available
         if (controller != null) {
             controller.execute(
                     currentPlayer.getPlayerName(),
