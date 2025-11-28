@@ -108,7 +108,19 @@ public class CreateCustomQuizScreen extends JPanel {
         addQuestionButton.addActionListener(this::handleAddQuestion);
         centerPanel.add(addQuestionButton, gbc);
 
-        add(centerPanel, BorderLayout.CENTER);
+        // scroll
+        JScrollPane centerScrollPane = new JScrollPane(
+                centerPanel,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
+
+        centerScrollPane.setBorder(null);
+        centerScrollPane.getViewport().setOpaque(false);
+        centerScrollPane.setOpaque(false);
+
+        add(centerScrollPane, BorderLayout.CENTER);
+
 
         // --- Right Sidebar (Added Questions List) ---
         questionListModel = new DefaultListModel<>();
