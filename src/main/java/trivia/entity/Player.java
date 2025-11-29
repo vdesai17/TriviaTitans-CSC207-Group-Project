@@ -37,3 +37,4 @@ public class Player {
         return this.password != null && this.password.equals(inputPassword);
     }
 }
+
