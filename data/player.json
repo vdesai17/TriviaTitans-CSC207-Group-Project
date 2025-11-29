@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 14,
+    "score": 15,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -295,6 +295,42 @@
           1
         ],
         "completedAt": "2025-11-27T23:51:25.3962265",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764451103021",
+        "quiz": {
+          "id": "quiz-1764451103019",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "In what sport is a \u0026quot;shuttlecock\u0026quot; used?",
+              "options": [
+                "Table Tennis",
+                "Badminton",
+                "Cricket",
+                "Rugby"
+              ],
+              "correctAnswer": "Badminton",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "Badminton"
+        ],
+        "selectedOptionIndices": [
+          1
+        ],
+        "completedAt": "2025-11-29T16:18:23.033544",
         "editable": false,
         "userName": "test"
       }

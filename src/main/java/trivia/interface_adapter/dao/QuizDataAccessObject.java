@@ -24,14 +24,19 @@ public class QuizDataAccessObject
         QuizAttemptDataAccessInterface {
 
     private static final String FILE_PATH = "data/custom_quizzes.json";
+    private static final String ATTEMPT_FILE_PATH = "data/quiz_attempts.json";
+
     private static final List<Quiz> quizzes = new ArrayList<>();
     private static final List<QuizAttempt> attempts = new ArrayList<>();
     private final Gson gson = new Gson();
 
     public QuizDataAccessObject() {
-        List<Quiz> loaded = loadQuizzesFromFile();
-        quizzes.clear();
-        quizzes.addAll(loaded);
+        if (quizzes.isEmpty()) {
+            quizzes.addAll(loadQuizzesFromFile());
+        }
+        if (attempts.isEmpty()) {
+            attempts.addAll(loadAttemptsFromFile());
+        }
     }
 
     /** Save or update a quiz, persist to JSON */
@@ -85,10 +90,32 @@ public class QuizDataAccessObject
         }
     }
 
+    private List<QuizAttempt> loadAttemptsFromFile() {
+        File file = new File(ATTEMPT_FILE_PATH);
+        if (!file.exists()) return new ArrayList<>();
+        try (Reader reader = new FileReader(file)) {
+            Type listType = new TypeToken<List<QuizAttempt>>() {}.getType();
+            List<QuizAttempt> loaded = gson.fromJson(reader, listType);
+            return loaded != null ? loaded : new ArrayList<>();
+        } catch (Exception e) {
+            System.err.println("Failed to load attempts, starting with empty list: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    private void saveAttemptsToFile() {
+        try (Writer writer = new FileWriter(ATTEMPT_FILE_PATH)) {
+            gson.toJson(attempts, writer);
+        } catch (Exception e) {
+            System.err.println("Failed to save attempts: " + e.getMessage());
+        }
+    }
+
     // ==== Everything below unchanged ====
     @Override
     public void saveAttempt(QuizAttempt attempt) {
         attempts.add(attempt);
+        saveAttemptsToFile();
     }
 
     @Override
@@ -103,23 +130,63 @@ public class QuizDataAccessObject
 
     @Override
     public List<QuizAttempt> getAttemptsForPlayer(String playerName) {
-        return new ArrayList<>(attempts);
+        List<QuizAttempt> result = new ArrayList<>();
+
+        for (QuizAttempt attempt : attempts) {
+            if (attempt == null) {
+                continue;
+            }
+
+            boolean matchPlayer = false;
+
+            if (attempt.getUserName() != null) {
+                matchPlayer = playerName.equals(attempt.getUserName());
+            }
+            else if (attempt.getQuiz() != null
+                    && attempt.getQuiz().getCreatorName() != null) {
+                matchPlayer = playerName.equals(attempt.getQuiz().getCreatorName());
+            }
+
+            if (matchPlayer) {
+                result.add(attempt);
+            }
+        }
+
+        return result;
     }
 
     @Override
     public Optional<QuizAttempt> getAttemptById(String attemptId) {
+        for (QuizAttempt attempt : attempts) {
+            if (attempt.getAttemptId().equals(attemptId)) {
+                return Optional.of(attempt);
+            }
+        }
         return Optional.empty();
     }
 
     @Override
-    public void updateAttempt(QuizAttempt updatedAttempt) {}
+    public void updateAttempt(QuizAttempt updatedAttempt) {
+        for (int i = 0; i < attempts.size(); i++) {
+            if (attempts.get(i).getAttemptId().equals(updatedAttempt.getAttemptId())) {
+                attempts.set(i, updatedAttempt);
+                saveAttemptsToFile();
+                return;
+            }
+        }
+        attempts.add(updatedAttempt);
+        saveAttemptsToFile();
+    }
 
     @Override
     public List<WrongQuestionRecord> getWrongQuestionsForPlayer(String playerName) {
         List<WrongQuestionRecord> result = new ArrayList<>();
 
-        for (QuizAttempt attempt : attempts) {
-            if (!playerName.equals(attempt.getUserName())) {
+        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
+        List<QuizAttempt> playerAttempts = playerDAO.getAttemptsForPlayer(playerName);
+
+        for (QuizAttempt attempt : playerAttempts) {
+            if (attempt == null) {
                 continue;
             }
 
@@ -128,22 +195,48 @@ public class QuizDataAccessObject
                 continue;
             }
 
-            List<trivia.entity.Question> questionList = quiz.getQuestions();
-            List<String> userAnswers = attempt.getUserAnswers();
-            if (questionList == null || userAnswers == null) {
+            List<Question> questionList = quiz.getQuestions();
+            if (questionList == null || questionList.isEmpty()) {
                 continue;
             }
 
-            int size = Math.min(questionList.size(), userAnswers.size());
+            List<String> userAnswers = attempt.getUserAnswers();
+            List<Integer> selectedIndices = attempt.getSelectedOptionIndices();
+
+            int size = questionList.size();
+
             for (int i = 0; i < size; i++) {
-                trivia.entity.Question q = questionList.get(i);
-                String userAns = userAnswers.get(i);
+                Question q = questionList.get(i);
+                if (q == null) {
+                    continue;
+                }
+
                 String correct = q.getCorrectAnswer();
+                if (correct == null) {
+                    continue;
+                }
+
+                String userAns = null;
+
+                if (userAnswers != null && i < userAnswers.size()) {
+                    userAns = userAnswers.get(i);
+                }
+                else if (selectedIndices != null && i < selectedIndices.size()) {
+                    Integer idx = selectedIndices.get(i);
+                    List<String> opts = q.getOptions();
+                    if (idx != null && idx >= 0 && opts != null && idx < opts.size()) {
+                        userAns = opts.get(idx);
+                    }
+                }
+
+                if (userAns == null) {
+                    continue;
+                }
 
                 if (!correct.equals(userAns)) {
                     WrongQuestionRecord record = new WrongQuestionRecord(
                             quiz.getId(),
-                            "Practice from Wrong Questions",
+                            quiz.getTitle(),
                             q.getQuestionText(),
                             q.getOptions(),
                             correct
@@ -156,6 +249,7 @@ public class QuizDataAccessObject
         return result;
     }
 
+
     @Override
     public String createQuizFromWrongQuestions(String playerName,
                                                List<WrongQuestionRecord> questions) {
@@ -165,9 +259,9 @@ public class QuizDataAccessObject
 
         String quizId = "practice-" + playerName + "-" + System.currentTimeMillis();
 
-        List<trivia.entity.Question> questionEntities = new ArrayList<>();
+        List<Question> questionEntities = new ArrayList<>();
         for (WrongQuestionRecord record : questions) {
-            trivia.entity.Question q = new trivia.entity.Question(
+            Question q = new Question(
                     "",
                     record.getQuestionText(),
                     record.getOptions(),
