@@ -237,7 +237,12 @@ public class SelectQuizScreen extends JPanel {
         }
 
         frame.getContentPane().removeAll();
-        frame.add(new QuizScreen(frame, practiceQuiz.getQuestions(), currentPlayer, completeQuizController));
+        frame.add(new QuizScreen(
+                frame,
+                practiceQuiz.getQuestions(),
+                currentPlayer,
+                completeQuizController
+        ));
         frame.revalidate();
         frame.repaint();
     }
