@@ -21,11 +21,12 @@ public class CompleteQuizInteractor implements CompleteQuizInputBoundary {
     @Override
     public void execute(CompleteQuizInputData input) {
 
+        // Get data from the input object
         List<Question> questions = input.getQuestions();
         List<String> answers = input.getUserAnswers();
-        String playerName = input.getPlayerName();
+        String playerName = input.getPlayerName();  // current player's name
 
-        // Score
+        // 1. Compute the score
         int score = 0;
         for (int i = 0; i < questions.size(); i++) {
             if (questions.get(i).getCorrectAnswer().equals(answers.get(i))) {
@@ -33,29 +34,32 @@ public class CompleteQuizInteractor implements CompleteQuizInputBoundary {
             }
         }
 
-        // Build quiz object
+        // 2. Build a Quiz object as a snapshot of this quiz
         String quizId = "quiz-" + System.currentTimeMillis();
         Quiz quiz = new Quiz(
                 quizId,
-                "API Quiz",
-                "general",
-                "mixed",
-                playerName,
+                "API Quiz",   // title
+                "general",    // category
+                "mixed",      // difficulty
+                playerName,   // record which player took this quiz
                 questions
         );
 
+        // 3. Build a QuizAttempt object and include the player name
         QuizAttempt attempt = new QuizAttempt(
                 "attempt-" + System.currentTimeMillis(),
                 quiz,
                 questions.size(),
-                playerName,
+                playerName,          // store the player's name in userName
                 LocalDateTime.now(),
                 answers,
                 score
         );
 
+        // 4. Save this attempt to the repository
         repo.saveAttempt(attempt);
 
+        // 5. Send the result to the presenter for the UI layer
         presenter.present(
                 new CompleteQuizOutputData(score, questions.size())
         );
