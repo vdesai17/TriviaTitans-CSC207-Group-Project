@@ -7,7 +7,7 @@ public class ReviewSummaryPresenter implements ReviewSummaryOutputBoundary {
 
     private final ReviewSummaryViewModel viewModel;
 
-    // Getting viewmodel
+    // Getting viewModel
     public ReviewSummaryPresenter(ReviewSummaryViewModel viewModel) {
         this.viewModel = viewModel;
     }
