@@ -248,72 +248,79 @@ public class QuizScreen extends JPanel {
     }
 
     private void finishQuiz() {
-        // Calculate final score
+        // 1. Compute final score based on selected answers
         score = 0;
         for (int i = 0; i < questions.size(); i++) {
             Question q = questions.get(i);
             int correctIndex = q.getCorrectOptionIndex();
             int selectedIndex = selectedAnswerIndices.get(i);
-            
+
             if (correctIndex >= 0 && correctIndex == selectedIndex) {
                 score++;
             }
         }
 
-        // Create quiz object
+        // 2. Create a Quiz object as a snapshot of this quiz session
         String quizId = "quiz-" + System.currentTimeMillis();
         Quiz quiz = new Quiz(
                 quizId,
                 "API Quiz",
                 "general",
                 "mixed",
-                currentPlayer.getPlayerName(),
+                currentPlayer.getPlayerName(), // use the current player's name
                 questions
         );
 
-        // Create attempt
+        // 3. Create a QuizAttempt and store the player name in userName
         QuizAttempt attempt = new QuizAttempt(
                 "attempt-" + System.currentTimeMillis(),
                 quiz,
                 questions.size(),
-                currentPlayer.getPlayerName(),
+                currentPlayer.getPlayerName(),      // store the player name here
                 LocalDateTime.now(),
                 userAnswers,
                 score
         );
-        
-        // Set the selected indices for review
+
+        // Save the selected option indices for review
         attempt.setSelectedOptionIndices(new ArrayList<>(selectedAnswerIndices));
 
-        // ===== FIX: Save to BOTH data stores =====
-        
-        // 1. Save to QuizDataAccessObject (for quiz management)
+        // ===== Persist to both data stores =====
+
+        // 3.1 Save quiz and attempt using QuizDataAccessObject
         QuizDataAccessObject quizDAO = new QuizDataAccessObject();
         quizDAO.saveQuiz(quiz);
         quizDAO.saveAttempt(attempt);
 
-        // 2. Save to PlayerDataAccessObject (for review past quizzes)
+        // 3.2 Save attempt under the Player using PlayerDataAccessObject
         PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
         Player player = playerDAO.loadPlayer(currentPlayer.getPlayerName());
         if (player != null) {
             player.addAttempt(attempt);
-            player.setScore(player.getScore() + score); // Update total score
+            player.setScore(player.getScore() + score); // update total score
             playerDAO.savePlayer(player);
             System.out.println("✓ Quiz attempt saved to player: " + player.getPlayerName());
         } else {
             System.err.println("⚠ Warning: Could not load player to save attempt");
         }
 
-        // Call controller if available
+        // 4. Call the use case through the controller if available
         if (controller != null) {
             controller.execute(
-                    currentPlayer.getPlayerName(),
+                    currentPlayer.getPlayerName(), // pass playerName to the interactor
                     questions,
                     userAnswers
             );
         }
 
-        JOptionPane.showMessageDialog(frame, "Quiz complete!", "Summary", JOptionPane.INFORMATION_MESSAGE);
+        // 5. Show a message and navigate to the summary screen
+        JOptionPane.showMessageDialog(
+                frame,
+                "Quiz complete!",
+                "Summary",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
         frame.getContentPane().removeAll();
         frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer));
         frame.revalidate();

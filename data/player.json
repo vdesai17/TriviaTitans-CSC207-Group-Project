@@ -299,5 +299,108 @@
         "userName": "test"
       }
     ]
+  },
+  {
+    "playerName": "jordan",
+    "password": "123",
+    "score": 1,
+    "pastAttempts": [
+      {
+        "attemptId": "attempt-1764446692114",
+        "quiz": {
+          "id": "quiz-1764446692114",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "jordan",
+          "questions": [
+            {
+              "id": "f1a39026-39ca-4ee7-a0cc-8710c2bf45e5",
+              "questionText": "What is the name of Poland in Polish?",
+              "options": [
+                "Polszka",
+                "Pupcia",
+                "P\u0026oacute;land",
+                "Polska"
+              ],
+              "correctAnswer": "Polska",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "8b736dea-e2d6-4dba-a8d6-b0d777ebcb9b",
+              "questionText": "Which of these colours is NOT featured in the logo for Google?",
+              "options": [
+                "Green",
+                "Yellow",
+                "Blue",
+                "Pink"
+              ],
+              "correctAnswer": "Pink",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e981867b-20e1-4933-84f7-34b5e8b5c548",
+              "questionText": "Which of these Marvel games was released on the Playstation 2?",
+              "options": [
+                "Silver Surfer",
+                "Spider-Man 2",
+                "Wolverine: Adamantium Rage",
+                "Howard the Duck"
+              ],
+              "correctAnswer": "Spider-Man 2",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "09c31c84-0b1d-47b4-9578-3f8c5e78d23b",
+              "questionText": "What is on display in the Madame Tussaud\u0026#039;s museum in London?",
+              "options": [
+                "Vintage cars",
+                "Wax sculptures",
+                "Unreleased film reels",
+                "Designer clothing"
+              ],
+              "correctAnswer": "Wax sculptures",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "2108b9b5-bc9d-42a8-b761-a4c69106a9ce",
+              "questionText": "Antibiotics are generally taken to combat what?",
+              "options": [
+                "Viruses",
+                "Muscular pains",
+                "Bacterial infections",
+                "Migraines"
+              ],
+              "correctAnswer": "Bacterial infections",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "P\u0026oacute;land",
+          "Blue",
+          "Wolverine: Adamantium Rage",
+          "Unreleased film reels",
+          "Bacterial infections"
+        ],
+        "selectedOptionIndices": [
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "completedAt": "2025-11-29T15:04:52.1140966",
+        "editable": false,
+        "userName": "jordan"
+      }
+    ]
   }
 ]
