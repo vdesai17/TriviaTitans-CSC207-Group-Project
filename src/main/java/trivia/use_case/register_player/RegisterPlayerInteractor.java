@@ -1,14 +1,12 @@
 package trivia.use_case.register_player;
 
 import trivia.entity.Player;
+import trivia.interface_adapter.dao.PlayerDataAccessObject;
 
-/**
- * FIXED: Now depends on interface instead of concrete DAO.
- */
 public class RegisterPlayerInteractor {
-    private final RegisterPlayerDataAccessInterface playerDAO;  // ✅ FIXED: Now interface
+    private final PlayerDataAccessObject playerDAO;
 
-    public RegisterPlayerInteractor(RegisterPlayerDataAccessInterface playerDAO) {
+    public RegisterPlayerInteractor(PlayerDataAccessObject playerDAO) {
         this.playerDAO = playerDAO;
     }
 

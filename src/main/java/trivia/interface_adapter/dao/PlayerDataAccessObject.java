@@ -10,8 +10,6 @@ import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
 import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
 import trivia.use_case.review_quiz.ReviewQuizAttemptDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
-import trivia.use_case.register_player.RegisterPlayerDataAccessInterface;
-import trivia.use_case.view_profile.ViewProfileDataAccessInterface;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -21,30 +19,34 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Player DAO that implements multiple use case data access interfaces.
- * Now properly implements ViewProfileDataAccessInterface and RegisterPlayerDataAccessInterface.
+ * Player DAO that now also implements Use Case 3 (Review Quiz) and Use Case 6 interfaces.
+ * 
+ * Supports basic login authentication and multiple players saved in one file.
  */
-public class PlayerDataAccessObject implements
+public class PlayerDataAccessObject implements 
         GenerateFromWrongDataAccessInterface,
         ReviewQuizAttemptDataAccessInterface,
-        ReviewQuizQuizDataAccessInterface,
-        ViewProfileDataAccessInterface,
-        RegisterPlayerDataAccessInterface {
+        ReviewQuizQuizDataAccessInterface {
 
     private static final String FILE_PATH = "data/player.json";
     private final Gson gson;
 
     public PlayerDataAccessObject() {
+        // Configure Gson with proper adapters for LocalDateTime and other complex types
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .setPrettyPrinting()
                 .create();
     }
 
-    @Override
+    /**
+     * Saves a Player object to player.json.
+     * Supports multiple players — appends or updates existing one.
+     */
     public void savePlayer(Player player) {
         List<Player> players = loadAllPlayers();
 
+        // Check if player already exists (update instead of duplicate)
         boolean updated = false;
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getPlayerName().equalsIgnoreCase(player.getPlayerName())) {
@@ -57,9 +59,10 @@ public class PlayerDataAccessObject implements
         if (!updated) players.add(player);
 
         try {
+            // Ensure the data directory exists
             File file = new File(FILE_PATH);
             file.getParentFile().mkdirs();
-
+            
             Writer writer = new FileWriter(FILE_PATH);
             gson.toJson(players, writer);
             writer.close();
@@ -70,7 +73,9 @@ public class PlayerDataAccessObject implements
         }
     }
 
-    @Override
+    /**
+     * Attempts to load a player by name.
+     */
     public Player loadPlayer(String name) {
         List<Player> players = loadAllPlayers();
         for (Player p : players) {
@@ -83,6 +88,9 @@ public class PlayerDataAccessObject implements
         return null;
     }
 
+    /**
+     * Loads all saved players from JSON file.
+     */
     private List<Player> loadAllPlayers() {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
@@ -95,12 +103,12 @@ public class PlayerDataAccessObject implements
             Type listType = new TypeToken<List<Player>>() {}.getType();
             List<Player> players = gson.fromJson(reader, listType);
             reader.close();
-
+            
             if (players == null) {
                 System.out.println("No players found in file");
                 return new ArrayList<>();
             }
-
+            
             System.out.println("Loaded " + players.size() + " players from file");
             return players;
         } catch (IOException e) {
@@ -114,30 +122,37 @@ public class PlayerDataAccessObject implements
         }
     }
 
-    @Override
+    /**
+     * Returns all players currently stored in the JSON file.
+     * Used for ranking and comparing players.
+     */
     public List<Player> getAllPlayers() {
+        // Simply delegate to the private helper that reads from player.json
         return loadAllPlayers();
     }
 
+    /**
+     * Validates player login credentials.
+     */
     public Player validateLogin(String name, String password) {
         System.out.println("Attempting login for: " + name);
         Player p = loadPlayer(name);
-
+        
         if (p == null) {
             System.out.println("Login failed - player not found: " + name);
             return null;
         }
-
+        
         if (p.verifyPassword(password)) {
             System.out.println("Login successful for: " + name);
             return p;
         }
-
+        
         System.out.println("Login failed - incorrect password for: " + name);
         return null;
     }
 
-    //  UC3: Review Quiz Attempt Interface
+    //  UC3: Review Quiz Attempt Interface  ↓↓↓↓↓↓↓↓↓↓↓
 
     @Override
     public List<QuizAttempt> getAttemptsForPlayer(String playerName) {
@@ -164,26 +179,28 @@ public class PlayerDataAccessObject implements
     @Override
     public void updateAttempt(QuizAttempt attempt) {
         List<Player> players = loadAllPlayers();
-
+        
         for (Player player : players) {
             List<QuizAttempt> attempts = player.getPastAttempts();
             for (int i = 0; i < attempts.size(); i++) {
                 if (attempts.get(i).getAttemptId().equals(attempt.getAttemptId())) {
                     attempts.set(i, attempt);
-                    savePlayer(player);
+                    savePlayer(player);  // Save the updated player
                     System.out.println("[UC3] Updated attempt: " + attempt.getAttemptId());
                     return;
                 }
             }
         }
-
+        
         System.err.println("[UC3] Attempt not found: " + attempt.getAttemptId());
     }
 
     @Override
     public Quiz getQuizById(String quizId) {
+        // This is a simplified implementation. In a real app, you'd have a quiz repository.
+        // For now, we'll search through all attempts to find quizzes
         List<Player> players = loadAllPlayers();
-
+        
         for (Player player : players) {
             for (QuizAttempt attempt : player.getPastAttempts()) {
                 Quiz quiz = attempt.getQuiz();
@@ -192,12 +209,14 @@ public class PlayerDataAccessObject implements
                 }
             }
         }
-
+        
         System.err.println("[UC3] Quiz not found: " + quizId);
-        return null;
+        return null;  // Or throw an exception
     }
 
-    //  UC6: Generate From Wrong Questions
+    // ========================================================================
+    //  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  UC6: Generate From Wrong Questions  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // ========================================================================
 
     @Override
     public List<WrongQuestionRecord> getWrongQuestionsForPlayer(String playerName) {
