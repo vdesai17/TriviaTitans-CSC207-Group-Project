@@ -291,7 +291,7 @@ public class QuizScreen extends JPanel {
                 quiz,
                 questions.size(),
                 currentPlayer.getPlayerName(),      // store the player name here
-                LocalDateTime.now(),
+                java.time.LocalDateTime.now().toString(),
                 userAnswers,
                 score
         );

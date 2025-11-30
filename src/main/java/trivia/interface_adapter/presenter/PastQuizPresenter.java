@@ -3,9 +3,12 @@ package trivia.interface_adapter.presenter;
 import trivia.use_case.review_quiz.ReviewQuizOutputBoundary;
 import trivia.use_case.review_quiz.ReviewQuizResponseModel;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Presenter for Use Case 3: Review & Edit Past Questions
@@ -23,20 +26,31 @@ public class PastQuizPresenter implements ReviewQuizOutputBoundary {
 
     @Override
     public void presentPastQuizList(ReviewQuizResponseModel responseModel) {
-        List<ReviewQuizResponseModel.PastQuizSummary> summaries = 
+        List<ReviewQuizResponseModel.PastQuizSummary> summaries =
                 responseModel.getPastQuizzes();
 
         if (summaries == null || summaries.isEmpty()) {
             viewModel.setPastQuizzes(new ArrayList<>());
-            viewModel.setMessage(responseModel.getMessage() != null ? 
+            viewModel.setMessage(responseModel.getMessage() != null ?
                     responseModel.getMessage() : "No past quizzes found.");
         } else {
-            List<PastQuizViewModel.PastQuizSummaryViewModel> viewModelList = 
+            List<PastQuizViewModel.PastQuizSummaryViewModel> viewModelList =
                     new ArrayList<>();
 
             for (ReviewQuizResponseModel.PastQuizSummary summary : summaries) {
-                String formattedDate = summary.getCompletedAt().format(DATE_FORMATTER);
-                
+                String raw = summary.getCompletedAt();
+                String formattedDate = raw;
+
+                if (raw != null && !raw.isEmpty()) {
+                    try {
+                        LocalDateTime dt = LocalDateTime.parse(raw);
+                        formattedDate = dt.format(DATE_FORMATTER);
+                    } catch (DateTimeParseException e) {
+
+                        formattedDate = raw;
+                    }
+                }
+
                 viewModelList.add(new PastQuizViewModel.PastQuizSummaryViewModel(
                         summary.getAttemptId(),
                         summary.getQuizTitle(),
@@ -49,6 +63,7 @@ public class PastQuizPresenter implements ReviewQuizOutputBoundary {
             viewModel.setMessage("");
         }
     }
+
 
     @Override
     public void presentQuizAttempt(ReviewQuizResponseModel responseModel) {
