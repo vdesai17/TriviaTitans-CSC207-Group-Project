@@ -9,8 +9,6 @@ import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.presenter.PastQuizViewModel;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
-import trivia.interface_adapter.dao.PlayerDataAccessObject;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.use_case.review_quiz.ReviewQuizRequestModel;
 
 import javax.swing.*;
@@ -44,7 +42,8 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
     private JLabel messageLabel;
     private List<ButtonGroup> answerGroups;
 
-    private Quiz currentQuiz;
+    // ✅ REMOVED: private Quiz currentQuiz; 
+    // Quiz is now stored in ViewModel following Clean Architecture
 
     public PastQuizScreen(JFrame frame,
                           ReviewController controller,
@@ -172,6 +171,16 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        // ✅ CLEAN ARCHITECTURE FIX: Check if this is a redo quiz event
+        if ("quizToRedo".equals(evt.getPropertyName())) {
+            Quiz quizToRedo = viewModel.getQuizToRedo();
+            if (quizToRedo != null) {
+                handleRedoQuizNavigation(quizToRedo);
+                return;
+            }
+        }
+        
+        // Regular UI refresh
         refreshFromViewModel();
     }
 
@@ -180,7 +189,9 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
             updatePastQuizzesList();
             updateQuestionsPanel();
             saveButton.setEnabled(viewModel.isEditingEnabled());
-            redoButton.setEnabled(currentQuiz != null);
+            
+            // ✅ CLEAN ARCHITECTURE FIX: Use ViewModel instead of currentQuiz
+            redoButton.setEnabled(viewModel.getCurrentAttemptId() != null);
 
             String message = viewModel.getMessage();
             if (message != null && !message.isEmpty()) {
@@ -296,28 +307,19 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
             List<PastQuizViewModel.PastQuizSummaryViewModel> quizzes = viewModel.getPastQuizzes();
             if (quizzes != null && selectedIndex < quizzes.size()) {
                 String attemptId = quizzes.get(selectedIndex).getAttemptId();
+                
+                // ✅ CLEAN ARCHITECTURE: Use controller for all data access
                 controller.openAttempt(attemptId);
-
-                loadQuizForRedo(attemptId);
+                
+                // ✅ REMOVED: loadQuizForRedo(attemptId);
+                // Quiz data now flows through: Controller → Interactor → ViewModel
             }
         }
     }
 
-    private void loadQuizForRedo(String attemptId) {
-        PlayerDataAccessObject playerDAO =
-                new PlayerDataAccessObject();
-
-        java.util.Optional<QuizAttempt> maybeAttempt =
-                playerDAO.getAttemptById(attemptId);
-
-        if (maybeAttempt.isPresent()) {
-            currentQuiz = maybeAttempt.get().getQuiz();
-            redoButton.setEnabled(true);
-        } else {
-            currentQuiz = null;
-            redoButton.setEnabled(false);
-        }
-    }
+    // ✅ REMOVED: loadQuizForRedo() method
+    // This method violated Clean Architecture by directly instantiating DAO
+    // Quiz data now properly flows through the use case layer
 
     private void onSaveClicked(ActionEvent e) {
         String attemptId = viewModel.getCurrentAttemptId();
@@ -340,8 +342,14 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * ✅ CLEAN ARCHITECTURE FIX: Redo now goes through proper layers
+     * Controller → Interactor → Presenter → ViewModel → UI (via propertyChange)
+     */
     private void onRedoClicked(ActionEvent e) {
-        if (currentQuiz == null) {
+        String attemptId = viewModel.getCurrentAttemptId();
+        
+        if (attemptId == null) {
             JOptionPane.showMessageDialog(this,
                     "Please select a quiz to redo.",
                     "No Quiz Selected",
@@ -357,21 +365,35 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            List<Question> questions = currentQuiz.getQuestions();
-
-            if (questions == null || questions.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "This quiz has no questions to redo.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            frame.getContentPane().removeAll();
-            frame.add(new QuizScreen(frame, questions, currentPlayer, completeQuizController, generateFromWrongController, generateFromWrongViewModel));
-            frame.revalidate();
-            frame.repaint();
+            // ✅ CLEAN ARCHITECTURE: Use controller instead of direct access
+            // This triggers: Controller → Interactor → Presenter → ViewModel
+            // Then propertyChange() listener handles the navigation
+            controller.prepareRedoQuiz(attemptId);
         }
+    }
+
+    /**
+     * ✅ NEW METHOD: Handles navigation when ViewModel has a quiz to redo
+     * This is triggered by the propertyChange listener when "quizToRedo" changes
+     */
+    private void handleRedoQuizNavigation(Quiz quiz) {
+        List<Question> questions = quiz.getQuestions();
+        
+        if (questions == null || questions.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "This quiz has no questions to redo.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Navigate to QuizScreen
+        frame.getContentPane().removeAll();
+        frame.add(new QuizScreen(frame, questions, currentPlayer, 
+                  completeQuizController, generateFromWrongController, 
+                  generateFromWrongViewModel));
+        frame.revalidate();
+        frame.repaint();
     }
 
     private List<Integer> readSelectedIndicesFromUI() {
@@ -398,7 +420,8 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
     private void navigateToHome() {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, currentPlayer, generateFromWrongController,
-                completeQuizController, new QuizDataAccessObject(), generateFromWrongViewModel));
+                completeQuizController, new trivia.interface_adapter.dao.QuizDataAccessObject(), 
+                generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

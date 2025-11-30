@@ -1,6 +1,6 @@
 package trivia.interface_adapter.presenter;
 
-import trivia.use_case.review_quiz.ReviewQuizResponseModel;
+import trivia.entity.Quiz;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * ViewModel for Use Case 3: Review & Edit Past Questions
+ * Now includes quiz to redo following Clean Architecture
  * Holds the state for the PastQuizScreen UI
  */
 public class PastQuizViewModel {
@@ -22,6 +23,9 @@ public class PastQuizViewModel {
     private List<QuestionRowViewModel> questions;
     private boolean editingEnabled;
     private String message;
+    
+    // ✅ NEW: Quiz to redo
+    private Quiz quizToRedo;
 
     public PastQuizViewModel() {
         this.support = new PropertyChangeSupport(this);
@@ -29,6 +33,7 @@ public class PastQuizViewModel {
         this.questions = new ArrayList<>();
         this.editingEnabled = false;
         this.message = "";
+        this.quizToRedo = null;
     }
 
     // PropertyChangeListener support
@@ -69,6 +74,11 @@ public class PastQuizViewModel {
         return message;
     }
 
+    // ✅ NEW: Getter for quiz to redo
+    public Quiz getQuizToRedo() {
+        return quizToRedo;
+    }
+
     // Setters (these trigger UI updates)
     public void setPastQuizzes(List<PastQuizSummaryViewModel> pastQuizzes) {
         this.pastQuizzes = pastQuizzes;
@@ -95,6 +105,15 @@ public class PastQuizViewModel {
 
     public void setMessage(String message) {
         this.message = message;
+        firePropertyChanged();
+    }
+
+    // ✅ NEW: Setter for quiz to redo (triggers property change)
+    public void setQuizToRedo(Quiz quizToRedo) {
+        Quiz oldQuiz = this.quizToRedo;
+        this.quizToRedo = quizToRedo;
+        // Fire property change with specific property name so UI can listen
+        support.firePropertyChange("quizToRedo", oldQuiz, quizToRedo);
         firePropertyChanged();
     }
 

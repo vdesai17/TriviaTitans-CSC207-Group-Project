@@ -9,9 +9,9 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Presenter for Use Case 3: Review & Edit Past Questions
+ * Now includes redo quiz presentation following Clean Architecture
  * Converts use case response models into ViewModel format for UI
  */
 public class PastQuizPresenter implements ReviewQuizOutputBoundary {
@@ -46,7 +46,6 @@ public class PastQuizPresenter implements ReviewQuizOutputBoundary {
                         LocalDateTime dt = LocalDateTime.parse(raw);
                         formattedDate = dt.format(DATE_FORMATTER);
                     } catch (DateTimeParseException e) {
-
                         formattedDate = raw;
                     }
                 }
@@ -63,7 +62,6 @@ public class PastQuizPresenter implements ReviewQuizOutputBoundary {
             viewModel.setMessage("");
         }
     }
-
 
     @Override
     public void presentQuizAttempt(ReviewQuizResponseModel responseModel) {
@@ -110,5 +108,22 @@ public class PastQuizPresenter implements ReviewQuizOutputBoundary {
 
         // If editing is now disabled, reflect that in the view
         viewModel.setEditingEnabled(responseModel.isEditingEnabled());
+    }
+
+    /**
+     * ✅ NEW: Present redo quiz to the ViewModel
+     * This triggers the UI to navigate to the quiz screen
+     */
+    @Override
+    public void presentRedoQuiz(ReviewQuizResponseModel responseModel) {
+        if (responseModel.getQuizToRedo() != null) {
+            // Set the quiz in the ViewModel - UI will observe this change
+            viewModel.setQuizToRedo(responseModel.getQuizToRedo());
+            viewModel.setMessage(""); // Clear any error messages
+        } else {
+            // Error case - quiz not found or has no questions
+            viewModel.setQuizToRedo(null);
+            viewModel.setMessage(responseModel.getMessage());
+        }
     }
 }

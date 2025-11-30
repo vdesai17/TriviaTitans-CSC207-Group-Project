@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interactor for Review Quiz use case (UC3)
+ * Now includes redo quiz functionality following Clean Architecture
+ */
 public class ReviewQuizInteractor implements ReviewQuizInputBoundary {
 
     private final ReviewQuizAttemptDataAccessInterface attemptDataAccess;
@@ -124,5 +128,33 @@ public class ReviewQuizInteractor implements ReviewQuizInputBoundary {
         response.setEditingEnabled(true);
         response.setMessage("Changes saved.");
         presenter.presentSaveResult(response);
+    }
+
+    // ✅ NEW: Redo quiz use case implementation
+    @Override
+    public void prepareRedoQuiz(String attemptId) {
+        Optional<QuizAttempt> maybeAttempt = attemptDataAccess.getAttemptById(attemptId);
+        ReviewQuizResponseModel response = new ReviewQuizResponseModel();
+
+        if (!maybeAttempt.isPresent()) {
+            response.setMessage("Quiz attempt not found.");
+            response.setQuizToRedo(null);
+            presenter.presentRedoQuiz(response);
+            return;
+        }
+
+        QuizAttempt attempt = maybeAttempt.get();
+        Quiz quiz = quizDataAccess.getQuizById(attempt.getQuizId());
+
+        if (quiz == null || quiz.getQuestions() == null || quiz.getQuestions().isEmpty()) {
+            response.setMessage("This quiz has no questions to redo.");
+            response.setQuizToRedo(null);
+            presenter.presentRedoQuiz(response);
+            return;
+        }
+
+        response.setQuizToRedo(quiz);
+        response.setMessage(""); // No error
+        presenter.presentRedoQuiz(response);
     }
 }
