@@ -5,7 +5,8 @@ import trivia.entity.Quiz;
 import trivia.entity.Question;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.controller.LoadQuizController;
+import trivia.interface_adapter.presenter.LoadQuizViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,25 +17,28 @@ import java.util.List;
 
 /**
  * LoadQuizScreen — allows players to view and open their saved custom quizzes.
- * Styled with the dark-teal gradient theme and glass-panel design.
- *
- * FIXED: Now properly passes generateFromWrongController to QuizScreen
+ * Now follows Clean Architecture:
+ *  - UI depends only on the Controller and ViewModel
+ *  - No direct DAO access
  */
 public class LoadQuizScreen extends JPanel {
     private final JFrame frame;
     private final Player player;
-    private final QuizDataAccessObject quizDAO;
+    private final LoadQuizController loadQuizController;
+    private final LoadQuizViewModel loadQuizViewModel;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
 
     public LoadQuizScreen(JFrame frame,
                           Player player,
-                          QuizDataAccessObject quizDAO,
+                          LoadQuizController loadQuizController,
+                          LoadQuizViewModel loadQuizViewModel,
                           CompleteQuizController completeQuizController,
                           GenerateFromWrongController generateFromWrongController) {
         this.frame = frame;
         this.player = player;
-        this.quizDAO = quizDAO;
+        this.loadQuizController = loadQuizController;
+        this.loadQuizViewModel = loadQuizViewModel;
         this.completeQuizController = completeQuizController;
         this.generateFromWrongController = generateFromWrongController;
 
@@ -51,10 +55,11 @@ public class LoadQuizScreen extends JPanel {
         centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
 
-        // Retrieve quizzes
-        List<Quiz> playerQuizzes = quizDAO.getQuizzesByPlayer(player.getPlayerName());
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        // Retrieve quizzes through controller instead of DAO
+        List<Quiz> playerQuizzes = loadQuizController.loadQuizzesForPlayer(player.getPlayerName());
+        loadQuizViewModel.setQuizzes(playerQuizzes);
 
+        DefaultListModel<String> listModel = new DefaultListModel<>();
         if (playerQuizzes == null || playerQuizzes.isEmpty()) {
             listModel.addElement("No saved quizzes found.");
         } else {
@@ -139,7 +144,6 @@ public class LoadQuizScreen extends JPanel {
         }
 
         frame.getContentPane().removeAll();
-        // FIXED: Pass generateFromWrongController to QuizScreen so it can be passed to SummaryScreen
         frame.add(new QuizScreen(frame, questions, player, completeQuizController, generateFromWrongController));
         frame.revalidate();
         frame.repaint();
@@ -148,11 +152,14 @@ public class LoadQuizScreen extends JPanel {
     /** Returns to Home Screen */
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame,
+        frame.add(new HomeScreen(
+                frame,
                 player,
                 generateFromWrongController,
                 completeQuizController,
-                quizDAO));
+                // We don’t need quizDAO anymore since controller handles that
+                null
+        ));
         frame.revalidate();
         frame.repaint();
     }
