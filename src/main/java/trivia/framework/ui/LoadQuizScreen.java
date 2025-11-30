@@ -17,6 +17,8 @@ import java.util.List;
 /**
  * LoadQuizScreen — allows players to view and open their saved custom quizzes.
  * Styled with the dark-teal gradient theme and glass-panel design.
+ *
+ * FIXED: Now properly passes generateFromWrongController to QuizScreen
  */
 public class LoadQuizScreen extends JPanel {
     private final JFrame frame;
@@ -137,7 +139,8 @@ public class LoadQuizScreen extends JPanel {
         }
 
         frame.getContentPane().removeAll();
-        frame.add(new QuizScreen(frame, questions, player, completeQuizController));
+        // FIXED: Pass generateFromWrongController to QuizScreen so it can be passed to SummaryScreen
+        frame.add(new QuizScreen(frame, questions, player, completeQuizController, generateFromWrongController));
         frame.revalidate();
         frame.repaint();
     }
