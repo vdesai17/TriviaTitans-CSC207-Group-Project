@@ -202,6 +202,15 @@ public class SelectQuizScreen extends JPanel {
     }
 
     private void onPracticeWrong(ActionEvent e) {
+        if (generateFromWrongController == null) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Review Mistakes can't work",
+                    "Review Mistakes",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
         int requested = (int) wrongCountSpinner.getValue();
         String playerName = currentPlayer.getPlayerName();
 
