@@ -4,10 +4,14 @@ import trivia.entity.Player;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.ReviewController;
+import trivia.interface_adapter.controller.LoadQuizController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
 import trivia.interface_adapter.presenter.PastQuizPresenter;
 import trivia.interface_adapter.presenter.PastQuizViewModel;
+import trivia.interface_adapter.presenter.LoadQuizPresenter;
+import trivia.interface_adapter.presenter.LoadQuizViewModel;
+import trivia.use_case.load_quiz.LoadQuizInteractor;
 import trivia.use_case.review_quiz.ReviewQuizInteractor;
 
 import javax.swing.*;
@@ -148,8 +152,15 @@ public class HomeScreen extends JPanel {
     }
 
     private void handleLoadQuiz(ActionEvent e) {
+        // Instantiate LoadQuiz dependencies (new architecture)
+        LoadQuizPresenter loadQuizPresenter = new LoadQuizPresenter();
+        LoadQuizInteractor loadQuizInteractor = new LoadQuizInteractor(quizDAO, loadQuizPresenter);
+        LoadQuizController loadQuizController = new LoadQuizController(loadQuizInteractor, loadQuizPresenter);
+        LoadQuizViewModel loadQuizViewModel = new LoadQuizViewModel();
+
+        // Switch screen
         frame.getContentPane().removeAll();
-        frame.add(new LoadQuizScreen(frame, currentPlayer, quizDAO, completeQuizController, generateFromWrongController));
+        frame.add(new LoadQuizScreen(frame, currentPlayer, loadQuizController, loadQuizViewModel, completeQuizController, generateFromWrongController));
         frame.revalidate();
         frame.repaint();
     }
