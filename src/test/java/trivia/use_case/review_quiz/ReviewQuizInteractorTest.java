@@ -401,6 +401,81 @@ class ReviewQuizInteractorTest {
     }
 
     // ========================================================================
+    //  prepareRedoQuiz() Tests - COMPLETE Coverage
+    // ========================================================================
+
+    @Test
+    void testPrepareRedoQuizAttemptNotFound() {
+        attemptDataAccess.attemptToReturn = Optional.empty();
+
+        interactor.prepareRedoQuiz("missing-attempt");
+
+        assertTrue(presenter.presentRedoQuizCalled);
+        assertEquals("Quiz attempt not found.", presenter.lastResponse.getMessage());
+        assertNull(presenter.lastResponse.getQuizToRedo());
+    }
+
+    @Test
+    void testPrepareRedoQuizWithEmptyQuizQuestions() {
+        Quiz emptyQuiz = createEmptyQuiz();
+        QuizAttempt attempt = createTestAttempt(emptyQuiz);
+
+        attemptDataAccess.attemptToReturn = Optional.of(attempt);
+        quizDataAccess.quiz = emptyQuiz;
+
+        interactor.prepareRedoQuiz(attempt.getAttemptId());
+
+        assertTrue(presenter.presentRedoQuizCalled);
+        assertEquals("This quiz has no questions to redo.", presenter.lastResponse.getMessage());
+        assertNull(presenter.lastResponse.getQuizToRedo());
+    }
+
+    @Test
+    void testPrepareRedoQuizWithNullQuiz() {
+        Quiz quiz = createTestQuiz();
+        QuizAttempt attempt = createTestAttempt(quiz);
+
+        attemptDataAccess.attemptToReturn = Optional.of(attempt);
+        quizDataAccess.quiz = null; // Simulate missing quiz in data store
+
+        interactor.prepareRedoQuiz(attempt.getAttemptId());
+
+        assertTrue(presenter.presentRedoQuizCalled);
+        assertEquals("This quiz has no questions to redo.", presenter.lastResponse.getMessage());
+        assertNull(presenter.lastResponse.getQuizToRedo());
+    }
+
+    @Test
+    void testPrepareRedoQuizWithNullQuestionList() {
+        Quiz quizWithNullQuestions = createQuizWithNullQuestions();
+        QuizAttempt attempt = createTestAttempt(quizWithNullQuestions);
+
+        attemptDataAccess.attemptToReturn = Optional.of(attempt);
+        quizDataAccess.quiz = quizWithNullQuestions;
+
+        interactor.prepareRedoQuiz(attempt.getAttemptId());
+
+        assertTrue(presenter.presentRedoQuizCalled);
+        assertEquals("This quiz has no questions to redo.", presenter.lastResponse.getMessage());
+        assertNull(presenter.lastResponse.getQuizToRedo());
+    }
+
+    @Test
+    void testPrepareRedoQuizSuccess() {
+        Quiz quiz = createTestQuiz();
+        QuizAttempt attempt = createTestAttempt(quiz);
+
+        attemptDataAccess.attemptToReturn = Optional.of(attempt);
+        quizDataAccess.quiz = quiz;
+
+        interactor.prepareRedoQuiz(attempt.getAttemptId());
+
+        assertTrue(presenter.presentRedoQuizCalled);
+        assertEquals("", presenter.lastResponse.getMessage());
+        assertEquals(quiz, presenter.lastResponse.getQuizToRedo());
+    }
+
+    // ========================================================================
     //  Helper Methods
     // ========================================================================
 
@@ -453,21 +528,40 @@ class ReviewQuizInteractorTest {
         return new Quiz("quiz-multi", "Multi Question Quiz", "Test", "easy", "creator", questions);
     }
 
+    private Quiz createEmptyQuiz() {
+        return new Quiz("empty-quiz", "Empty Quiz", "Test", "easy", "creator", new ArrayList<>());
+    }
+
+    private Quiz createQuizWithNullQuestions() {
+        return new Quiz("null-quiz", "Null Questions Quiz", "Test", "easy", "creator", null);
+    }
+
     private QuizAttempt createTestAttempt(Quiz quiz) {
         return createTestAttemptWithScore(quiz, 1);
     }
 
     private QuizAttempt createTestAttemptWithScore(Quiz quiz, int score) {
+        int questionCount = (quiz.getQuestions() == null) ? 0 : quiz.getQuestions().size();
+
+        List<String> providedAnswers = new ArrayList<>();
+        for (int i = 0; i < questionCount; i++) {
+            providedAnswers.add("answer-" + i);
+        }
+
         QuizAttempt attempt = new QuizAttempt(
                 "attempt1",
                 quiz,
-                quiz.getQuestions().size(),
+                questionCount,
                 "testPlayer",
-                LocalDateTime.now().toString(),  // ✅ FIXED: Convert to String
-                Arrays.asList("4", "5"),
+                LocalDateTime.now().toString(),  // FIXED: Convert to String
+                providedAnswers,
                 score
         );
-        attempt.setSelectedOptionIndices(Arrays.asList(0, 0));
+        List<Integer> selected = new ArrayList<>();
+        for (int i = 0; i < questionCount; i++) {
+            selected.add(0);
+        }
+        attempt.setSelectedOptionIndices(selected);
         attempt.setEditable(true);
         return attempt;
     }
@@ -513,6 +607,7 @@ class ReviewQuizInteractorTest {
         boolean presentPastQuizListCalled = false;
         boolean presentQuizAttemptCalled = false;
         boolean presentSaveResultCalled = false;
+        boolean presentRedoQuizCalled = false;
 
         @Override
         public void presentPastQuizList(ReviewQuizResponseModel responseModel) {
@@ -529,6 +624,12 @@ class ReviewQuizInteractorTest {
         @Override
         public void presentSaveResult(ReviewQuizResponseModel responseModel) {
             presentSaveResultCalled = true;
+            lastResponse = responseModel;
+        }
+
+        @Override
+        public void presentRedoQuiz(ReviewQuizResponseModel responseModel) {
+            presentRedoQuizCalled = true;
             lastResponse = responseModel;
         }
     }
