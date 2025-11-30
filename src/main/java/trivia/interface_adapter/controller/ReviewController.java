@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Controller for Use Case 3: Review & Edit Past Questions
+ * Now includes redo quiz functionality following Clean Architecture
  * Handles user actions from the UI and delegates to the use case
  */
 public class ReviewController {
@@ -36,5 +37,13 @@ public class ReviewController {
      */
     public void saveEditedAnswers(ReviewQuizRequestModel requestModel) {
         inputBoundary.saveEditedAnswers(requestModel);
+    }
+
+    /**
+     * ✅ NEW: Prepare to redo a quiz from a past attempt
+     * This follows Clean Architecture by going through the use case layer
+     */
+    public void prepareRedoQuiz(String attemptId) {
+        inputBoundary.prepareRedoQuiz(attemptId);
     }
 }

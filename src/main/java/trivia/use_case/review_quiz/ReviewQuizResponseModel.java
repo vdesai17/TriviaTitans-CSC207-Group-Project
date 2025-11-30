@@ -1,5 +1,6 @@
 package trivia.use_case.review_quiz;
 
+import trivia.entity.Quiz;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,6 +14,9 @@ public class ReviewQuizResponseModel {
     private boolean editingEnabled;
 
     private String message; // "No past quizzes found", "Changes saved", etc.
+
+    // ✅ NEW: For redo functionality
+    private Quiz quizToRedo;
 
     public List<PastQuizSummary> getPastQuizzes() {
         return pastQuizzes;
@@ -60,6 +64,15 @@ public class ReviewQuizResponseModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    // ✅ NEW: Getters/Setters for redo
+    public Quiz getQuizToRedo() {
+        return quizToRedo;
+    }
+
+    public void setQuizToRedo(Quiz quizToRedo) {
+        this.quizToRedo = quizToRedo;
     }
 
     // inner DTOs --------------
