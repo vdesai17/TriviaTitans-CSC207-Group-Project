@@ -8,7 +8,8 @@ import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.SelectQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
+import trivia.interface_adapter.presenter.GenerateFromWrongState;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 import trivia.use_case.select_quiz.SelectQuizInteractor;
 
 import javax.swing.*;
@@ -17,9 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * SelectQuizScreen — choose quiz category, difficulty, or practice from wrong questions.
@@ -30,6 +28,7 @@ public class SelectQuizScreen extends JPanel {
     private final Player currentPlayer;
     private final SelectQuizController controller;
     private final GenerateFromWrongController generateFromWrongController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
     private final CompleteQuizController completeQuizController;
 
     private final JComboBox<String> categoryBox;
@@ -39,15 +38,37 @@ public class SelectQuizScreen extends JPanel {
     public SelectQuizScreen(JFrame frame,
                             GenerateFromWrongController generateFromWrongController,
                             CompleteQuizController completeQuizController,
-                            Player currentPlayer) {
+                            Player currentPlayer,
+                            GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.currentPlayer = currentPlayer;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
         APIManager apiManager = new APIManager();
         SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
         this.controller = new SelectQuizController(interactor);
+
+        this.generateFromWrongViewModel.addPropertyChangeListener(evt -> {
+            GenerateFromWrongState state = generateFromWrongViewModel.getState();
+            if (state.getErrorMessage() != null) {
+                return;
+            }
+            if (state.getQuizId() != null) {
+                QuizDataAccessObject quizDAO = new QuizDataAccessObject();
+                Quiz practiceQuiz = quizDAO.getQuizById(state.getQuizId());
+
+                if (practiceQuiz == null) {
+                    JOptionPane.showMessageDialog(frame, "Failed to load generated practice quiz.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                frame.getContentPane().removeAll();
+                frame.add(new QuizScreen(frame, practiceQuiz.getQuestions(), currentPlayer, completeQuizController));
+                frame.revalidate();
+                frame.repaint();
+            }
+        });
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -173,78 +194,9 @@ public class SelectQuizScreen extends JPanel {
 
     private void onPracticeWrong(ActionEvent e) {
         int requested = (int) wrongCountSpinner.getValue();
+        String playerName = currentPlayer.getPlayerName();
 
-        QuizDataAccessObject quizDAO = new QuizDataAccessObject();
-
-        List<WrongQuestionRecord> allWrong =
-                quizDAO.getWrongQuestionsForPlayer(currentPlayer.getPlayerName());
-
-        if (allWrong == null || allWrong.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "You don't have any recorded wrong questions yet.\n" +
-                            "Please finish at least one quiz first.",
-                    "No Wrong Questions",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            return;
-        }
-
-        List<WrongQuestionRecord> distinctWrong = new ArrayList<>();
-        Set<String> seen = new HashSet<>();
-
-        for (WrongQuestionRecord r : allWrong) {
-            String key =
-                    r.getQuestionText() + "||" +
-                            r.getCorrectAnswer() + "||" +
-                            String.join("||", r.getOptions());
-
-            if (seen.add(key)) {
-                distinctWrong.add(r);
-            }
-        }
-
-        int available = distinctWrong.size();
-
-        if (requested > available) {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "You currently have only " + available + " wrong questions available.\n" +
-                            "Please request at most " + available + " questions.",
-                    "Not Enough Wrong Questions",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            return;
-        }
-
-        List<WrongQuestionRecord> subset =
-                new ArrayList<>(distinctWrong.subList(0, requested));
-
-        String quizId = quizDAO.createQuizFromWrongQuestions(
-                currentPlayer.getPlayerName(),
-                subset
-        );
-
-        Quiz practiceQuiz = quizDAO.getQuizById(quizId);
-        if (practiceQuiz == null) {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "Failed to create practice quiz from wrong questions.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        frame.getContentPane().removeAll();
-        frame.add(new QuizScreen(
-                frame,
-                practiceQuiz.getQuestions(),
-                currentPlayer,
-                completeQuizController
-        ));
-        frame.revalidate();
-        frame.repaint();
+        generateFromWrongController.generate(playerName, requested);
     }
 
     private void goBackHome(ActionEvent e) {
@@ -254,7 +206,8 @@ public class SelectQuizScreen extends JPanel {
                 currentPlayer,
                 generateFromWrongController,
                 completeQuizController,
-                new QuizDataAccessObject()
+                new QuizDataAccessObject(),
+                generateFromWrongViewModel
         ));
         frame.revalidate();
         frame.repaint();

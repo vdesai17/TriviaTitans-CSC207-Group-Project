@@ -2,7 +2,10 @@ package trivia.framework.ui;
 
 import trivia.entity.Player;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
+import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,17 +22,22 @@ import java.util.List;
 public class ProfileScreen extends JPanel {
     private final JFrame frame;
     private final GenerateFromWrongController generateFromWrongController;
+    private final CompleteQuizController completeQuizController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
     private final PlayerDataAccessObject playerDAO;
 
-    // We keep a local copy of the player so that we can reload the latest data from the DAO
     private Player player;
 
-    public ProfileScreen(JFrame frame, Player player, GenerateFromWrongController generateFromWrongController) {
+    public ProfileScreen(JFrame frame, Player player,
+                         GenerateFromWrongController generateFromWrongController,
+                         CompleteQuizController completeQuizController,
+                         GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.generateFromWrongController = generateFromWrongController;
+        this.completeQuizController = completeQuizController;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
         this.playerDAO = new PlayerDataAccessObject();
 
-        // Reload the most recent version of this player (score & attempts may have changed)
         Player reloaded = playerDAO.loadPlayer(player.getPlayerName());
         if (reloaded != null) {
             this.player = reloaded;
@@ -40,14 +48,11 @@ public class ProfileScreen extends JPanel {
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
 
-        // --- Header ---
         JLabel title = new JLabel("Player Profile", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
         add(title, BorderLayout.NORTH);
 
-        // --- Center Glass Panel ---
         JPanel profilePanel = ThemeUtils.createGlassPanel(60);
-        // 4 rows: username, total score, attempts, ranking text
         profilePanel.setLayout(new GridLayout(4, 1, 15, 15));
         profilePanel.setBorder(BorderFactory.createEmptyBorder(60, 150, 60, 150));
 
@@ -63,7 +68,6 @@ public class ProfileScreen extends JPanel {
         JLabel attemptsLabel = new JLabel("Total Quizzes Attempted: " + attemptsCount);
         ThemeUtils.styleLabel(attemptsLabel, "body");
 
-        // NEW: label that explains how this player performed against others
         JLabel rankingLabel = new JLabel(getRankingText());
         ThemeUtils.styleLabel(rankingLabel, "body");
         rankingLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -74,7 +78,6 @@ public class ProfileScreen extends JPanel {
         profilePanel.add(rankingLabel);
         add(profilePanel, BorderLayout.CENTER);
 
-        // --- Bottom Buttons ---
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 20));
         bottomPanel.setOpaque(false);
 
@@ -96,19 +99,12 @@ public class ProfileScreen extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    /**
-     * Calculates a ranking message like:
-     * "Your total score: 10 | Rank: 2 out of 5 players."
-     * so that the player can see where they performed against others.
-     */
     private String getRankingText() {
         List<Player> allPlayers = playerDAO.getAllPlayers();
         if (allPlayers == null || allPlayers.isEmpty()) {
-            // No data yet
             return "No players have played any quizzes yet.";
         }
 
-        // Sort players by total score in descending order (highest score first)
         allPlayers.sort(Comparator.comparingInt(Player::getScore).reversed());
 
         int totalPlayers = allPlayers.size();
@@ -125,7 +121,6 @@ public class ProfileScreen extends JPanel {
         }
 
         if (rank == -1) {
-            // Should not normally happen if DAO is consistent
             return "Your total score: " + myScore + " | You are not in the ranking yet.";
         } else {
             return "Your total score: " + myScore +
@@ -133,7 +128,6 @@ public class ProfileScreen extends JPanel {
         }
     }
 
-    /** Creates a styled button with hover transitions */
     private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
@@ -156,7 +150,8 @@ public class ProfileScreen extends JPanel {
 
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController,
+                completeQuizController, new QuizDataAccessObject(), generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

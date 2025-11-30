@@ -22,9 +22,12 @@ public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBounda
         GenerateFromWrongState state = viewModel.getState();
         state.setQuizId(response.getQuizId());
         state.setQuestionTexts(response.getQuestionTexts());
+        state.setRequestedNumber(response.getNumberOfQuestions());
         state.setErrorMessage(null);
 
+        viewModel.setState(state);
         viewModel.fireStateChanged();
+
 
         JOptionPane.showMessageDialog(null,
                 "Generated practice quiz: " + response.getQuizId() +
@@ -38,8 +41,10 @@ public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBounda
         GenerateFromWrongState state = viewModel.getState();
         state.setQuizId(null);
         state.setQuestionTexts(Collections.emptyList());
+        state.setRequestedNumber(0);
         state.setErrorMessage(errorMessage);
 
+        viewModel.setState(state);
         viewModel.fireStateChanged();
 
         JOptionPane.showMessageDialog(null,

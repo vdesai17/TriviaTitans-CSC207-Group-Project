@@ -8,13 +8,13 @@ import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +27,7 @@ public class QuizScreen extends JPanel {
     private final int numberOfQuestions;
     private final CompleteQuizController controller;
     private final GenerateFromWrongController generateFromWrongController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
     private final List<String> userAnswers = new ArrayList<>();
 
     // Track selected answer index for each question (-1 means no selection)
@@ -43,19 +44,20 @@ public class QuizScreen extends JPanel {
                       List<Question> questions,
                       Player currentPlayer,
                       CompleteQuizController controller,
-                      GenerateFromWrongController generateFromWrongController) {
+                      GenerateFromWrongController generateFromWrongController,
+                      GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.questions = questions;
         this.currentPlayer = currentPlayer;
         this.numberOfQuestions = questions.size();
         this.controller = controller;
         this.generateFromWrongController = generateFromWrongController;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
-        // Initialize tracking lists
         this.selectedAnswerIndices = new ArrayList<>();
         for (int i = 0; i < numberOfQuestions; i++) {
-            selectedAnswerIndices.add(-1); // -1 means no answer selected yet
-            userAnswers.add(""); // Empty string for unanswered
+            selectedAnswerIndices.add(-1);
+            userAnswers.add("");
         }
 
         setLayout(new BorderLayout(20, 20));
@@ -64,7 +66,6 @@ public class QuizScreen extends JPanel {
         JLabel title = new JLabel("Quiz in Progress", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
 
-        // Add progress indicator
         progressLabel = new JLabel("Question 1 of " + numberOfQuestions, SwingConstants.CENTER);
         ThemeUtils.styleLabel(progressLabel, "body");
 
@@ -133,7 +134,7 @@ public class QuizScreen extends JPanel {
         previousButton = createStyledButton("Previous", new Color(100, 100, 100), new Color(130, 130, 130), this::handlePrevious);
         nextButton = createStyledButton("Next", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, this::handleNext);
 
-        previousButton.setEnabled(false); // Disabled on first question
+        previousButton.setEnabled(false);
 
         bottomPanel.add(previousButton);
         bottomPanel.add(nextButton);
@@ -148,14 +149,22 @@ public class QuizScreen extends JPanel {
     public QuizScreen(JFrame frame,
                       List<Question> questions,
                       Player currentPlayer,
+                      CompleteQuizController controller,
+                      GenerateFromWrongController generateFromWrongController) {
+        this(frame, questions, currentPlayer, controller, generateFromWrongController, null);
+    }
+
+    public QuizScreen(JFrame frame,
+                      List<Question> questions,
+                      Player currentPlayer,
                       CompleteQuizController controller) {
-        this(frame, questions, currentPlayer, controller, null);
+        this(frame, questions, currentPlayer, controller, null, null);
     }
 
     public QuizScreen(JFrame frame,
                       List<Question> questions,
                       Player currentPlayer) {
-        this(frame, questions, currentPlayer, null, null);
+        this(frame, questions, currentPlayer, null, null, null);
     }
 
     private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
@@ -183,7 +192,6 @@ public class QuizScreen extends JPanel {
             Question q = questions.get(currentIndex);
             questionArea.setText(q.getQuestionText());
 
-            // Update progress label
             progressLabel.setText("Question " + (currentIndex + 1) + " of " + numberOfQuestions);
 
             List<String> opts = q.getOptions();
@@ -196,17 +204,14 @@ public class QuizScreen extends JPanel {
                 }
             }
 
-            // Restore previously selected answer if any
             int previouslySelected = selectedAnswerIndices.get(currentIndex);
             group.clearSelection();
             if (previouslySelected >= 0 && previouslySelected < optionButtons.length) {
                 optionButtons[previouslySelected].setSelected(true);
             }
 
-            // Update button states
             previousButton.setEnabled(currentIndex > 0);
 
-            // Change "Next" to "Finish" on last question
             if (currentIndex == numberOfQuestions - 1) {
                 nextButton.setText("Finish Quiz");
             } else {
@@ -216,7 +221,6 @@ public class QuizScreen extends JPanel {
     }
 
     private void saveCurrentAnswer() {
-        // Save the current answer before moving
         String chosen = null;
         int chosenIndex = -1;
 
@@ -229,11 +233,10 @@ public class QuizScreen extends JPanel {
         }
 
         if (chosen == null) {
-            chosen = ""; // No answer selected
+            chosen = "";
             chosenIndex = -1;
         }
 
-        // Update the tracking lists
         if (currentIndex < userAnswers.size()) {
             userAnswers.set(currentIndex, chosen);
             selectedAnswerIndices.set(currentIndex, chosenIndex);
@@ -244,7 +247,6 @@ public class QuizScreen extends JPanel {
         saveCurrentAnswer();
 
         if (currentIndex == numberOfQuestions - 1) {
-            // This is the last question - finish the quiz
             finishQuiz();
         } else {
             currentIndex++;
@@ -262,7 +264,6 @@ public class QuizScreen extends JPanel {
     }
 
     private void finishQuiz() {
-        // 1. Compute final score based on selected answers
         score = 0;
         for (int i = 0; i < questions.size(); i++) {
             Question q = questions.get(i);
@@ -274,60 +275,51 @@ public class QuizScreen extends JPanel {
             }
         }
 
-        // 2. Create a Quiz object as a snapshot of this quiz session
         String quizId = "quiz-" + System.currentTimeMillis();
         Quiz quiz = new Quiz(
                 quizId,
                 "API Quiz",
                 "general",
                 "mixed",
-                currentPlayer.getPlayerName(), // use the current player's name
+                currentPlayer.getPlayerName(),
                 questions
         );
 
-        // 3. Create a QuizAttempt and store the player name in userName
         QuizAttempt attempt = new QuizAttempt(
                 "attempt-" + System.currentTimeMillis(),
                 quiz,
                 questions.size(),
-                currentPlayer.getPlayerName(),      // store the player name here
+                currentPlayer.getPlayerName(),
                 java.time.LocalDateTime.now().toString(),
                 userAnswers,
                 score
         );
 
-        // Save the selected option indices for review
         attempt.setSelectedOptionIndices(new ArrayList<>(selectedAnswerIndices));
 
-        // ===== Persist to both data stores =====
-
-        // 3.1 Save quiz and attempt using QuizDataAccessObject
         QuizDataAccessObject quizDAO = new QuizDataAccessObject();
         quizDAO.saveQuiz(quiz);
         quizDAO.saveAttempt(attempt);
 
-        // 3.2 Save attempt under the Player using PlayerDataAccessObject
         PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
         Player player = playerDAO.loadPlayer(currentPlayer.getPlayerName());
         if (player != null) {
             player.addAttempt(attempt);
-            player.setScore(player.getScore() + score); // update total score
+            player.setScore(player.getScore() + score);
             playerDAO.savePlayer(player);
             System.out.println("✓ Quiz attempt saved to player: " + player.getPlayerName());
         } else {
             System.err.println("⚠ Warning: Could not load player to save attempt");
         }
 
-        // 4. Call the use case through the controller if available
         if (controller != null) {
             controller.execute(
-                    currentPlayer.getPlayerName(), // pass playerName to the interactor
+                    currentPlayer.getPlayerName(),
                     questions,
                     userAnswers
             );
         }
 
-        // 5. Show a message and navigate to the summary screen
         JOptionPane.showMessageDialog(
                 frame,
                 "Quiz complete!",
@@ -336,9 +328,8 @@ public class QuizScreen extends JPanel {
         );
 
         frame.getContentPane().removeAll();
-        // FIXED: Pass all controllers to SummaryScreen so it can properly navigate back to HomeScreen
         frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer,
-                generateFromWrongController, controller));
+                generateFromWrongController, controller, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

@@ -7,6 +7,7 @@ import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.LoadQuizController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 import trivia.interface_adapter.presenter.LoadQuizViewModel;
 
 import javax.swing.*;
@@ -29,7 +30,8 @@ public class LoadQuizScreen extends JPanel {
     private final LoadQuizViewModel loadQuizViewModel;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
-    private final QuizDataAccessObject quizDAO; // ✅ added
+    private final QuizDataAccessObject quizDAO;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;// ✅ added
 
     public LoadQuizScreen(JFrame frame,
                           Player player,
@@ -37,7 +39,8 @@ public class LoadQuizScreen extends JPanel {
                           LoadQuizViewModel loadQuizViewModel,
                           CompleteQuizController completeQuizController,
                           GenerateFromWrongController generateFromWrongController,
-                          QuizDataAccessObject quizDAO) { // ✅ added parameter
+                          QuizDataAccessObject quizDAO,
+                          GenerateFromWrongViewModel generateFromWrongViewModel) { // ✅ added parameter
         this.frame = frame;
         this.player = player;
         this.loadQuizController = loadQuizController;
@@ -45,6 +48,7 @@ public class LoadQuizScreen extends JPanel {
         this.completeQuizController = completeQuizController;
         this.generateFromWrongController = generateFromWrongController;
         this.quizDAO = quizDAO;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -143,7 +147,14 @@ public class LoadQuizScreen extends JPanel {
     /** Returns to Home Screen */
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, quizDAO)); // ✅ reuse DAO
+        frame.add(new HomeScreen(
+                frame,
+                player,
+                generateFromWrongController,
+                completeQuizController,
+                quizDAO,
+                generateFromWrongViewModel   // ✅ 传入 viewModel
+        )); // ✅ reuse DAO
         frame.revalidate();
         frame.repaint();
     }

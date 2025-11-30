@@ -35,6 +35,7 @@ public class StartScreen extends JPanel {
     private final PlayerController controller;
     private final PlayerDataAccessObject dao;
     private final GenerateFromWrongController generateFromWrongController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     private final QuizDataAccessObject quizDAO;
     private final CompleteQuizController completeQuizController;
@@ -42,20 +43,19 @@ public class StartScreen extends JPanel {
     public StartScreen(JFrame frame) {
         this.frame = frame;
 
-        // --- Use Case Wiring ---
         dao = new PlayerDataAccessObject();
+        quizDAO = new QuizDataAccessObject();
+
         RegisterPlayerInteractor interactor = new RegisterPlayerInteractor(dao);
         this.controller = new PlayerController(interactor);
 
-        // UC6: Generate from wrong questions
         GenerateFromWrongViewModel uc6ViewModel = new GenerateFromWrongViewModel();
         GenerateFromWrongOutputBoundary uc6Presenter = new GenerateFromWrongPresenter(uc6ViewModel);
-        GenerateFromWrongDataAccessInterface uc6DataAccess = dao;
+        GenerateFromWrongDataAccessInterface uc6DataAccess = quizDAO;
         GenerateFromWrongQuizInteractor uc6Interactor =
                 new GenerateFromWrongQuizInteractor(uc6DataAccess, uc6Presenter);
         this.generateFromWrongController = new GenerateFromWrongController(uc6Interactor);
-
-        this.quizDAO = new QuizDataAccessObject();
+        this.generateFromWrongViewModel = uc6ViewModel;
 
         CompleteQuizOutputBoundary completePresenter = new CompleteQuizOutputBoundary() {
             @Override
@@ -68,11 +68,9 @@ public class StartScreen extends JPanel {
 
         this.completeQuizController = new CompleteQuizController(completeInteractor);
 
-        // --- Layout Setup ---
         setLayout(new BorderLayout());
         ThemeUtils.applyGradientBackground(this);
 
-        // --- Header ---
         JLabel title = new JLabel("Trivia Titans", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
 
@@ -86,7 +84,6 @@ public class StartScreen extends JPanel {
         headerPanel.add(subtitle);
         add(headerPanel, BorderLayout.NORTH);
 
-        // --- Center Form ---
         JPanel formPanel = ThemeUtils.createGlassPanel(40);
         formPanel.setLayout(new GridBagLayout());
         formPanel.setOpaque(false);
@@ -122,7 +119,6 @@ public class StartScreen extends JPanel {
 
         add(formPanel, BorderLayout.CENTER);
 
-        // --- Buttons ---
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setOpaque(false);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 200, 60, 200));
@@ -140,7 +136,6 @@ public class StartScreen extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    /** Modern styled button with hover color fade. */
     private JButton createStyledButton(String text, Color base, Color hover) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
@@ -151,7 +146,6 @@ public class StartScreen extends JPanel {
         button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover transition
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -167,7 +161,6 @@ public class StartScreen extends JPanel {
         return button;
     }
 
-    // --- LOGIN ---
     private void handleLogin(ActionEvent e) {
         String name = nameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
@@ -192,7 +185,6 @@ public class StartScreen extends JPanel {
         }
     }
 
-    // --- REGISTER ---
     private void handleRegister(ActionEvent e) {
         String name = nameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
@@ -219,13 +211,13 @@ public class StartScreen extends JPanel {
         }
     }
 
-    // --- NAVIGATION ---
     private void navigateToHome(Player player) {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, player,
                 generateFromWrongController,
                 completeQuizController,
-                quizDAO));
+                quizDAO,
+                generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }
