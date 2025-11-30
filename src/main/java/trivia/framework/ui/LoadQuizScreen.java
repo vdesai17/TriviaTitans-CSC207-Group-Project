@@ -6,6 +6,7 @@ import trivia.entity.Question;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.LoadQuizController;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.presenter.LoadQuizViewModel;
 
 import javax.swing.*;
@@ -17,9 +18,9 @@ import java.util.List;
 
 /**
  * LoadQuizScreen — allows players to view and open their saved custom quizzes.
- * Now follows Clean Architecture:
- *  - UI depends only on the Controller and ViewModel
- *  - No direct DAO access
+ * Follows Clean Architecture:
+ *  - UI depends only on Controller and ViewModel
+ *  - Reuses shared DAO to maintain data persistence
  */
 public class LoadQuizScreen extends JPanel {
     private final JFrame frame;
@@ -28,19 +29,22 @@ public class LoadQuizScreen extends JPanel {
     private final LoadQuizViewModel loadQuizViewModel;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
+    private final QuizDataAccessObject quizDAO; // ✅ added
 
     public LoadQuizScreen(JFrame frame,
                           Player player,
                           LoadQuizController loadQuizController,
                           LoadQuizViewModel loadQuizViewModel,
                           CompleteQuizController completeQuizController,
-                          GenerateFromWrongController generateFromWrongController) {
+                          GenerateFromWrongController generateFromWrongController,
+                          QuizDataAccessObject quizDAO) { // ✅ added parameter
         this.frame = frame;
         this.player = player;
         this.loadQuizController = loadQuizController;
         this.loadQuizViewModel = loadQuizViewModel;
         this.completeQuizController = completeQuizController;
         this.generateFromWrongController = generateFromWrongController;
+        this.quizDAO = quizDAO;
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -50,12 +54,12 @@ public class LoadQuizScreen extends JPanel {
         ThemeUtils.styleLabel(title, "title");
         add(title, BorderLayout.NORTH);
 
-        // --- Center Panel (Glass Effect) ---
+        // --- Center Panel ---
         JPanel centerPanel = ThemeUtils.createGlassPanel(60);
         centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
 
-        // Retrieve quizzes through controller instead of DAO
+        // Retrieve quizzes
         List<Quiz> playerQuizzes = loadQuizController.loadQuizzesForPlayer(player.getPlayerName());
         loadQuizViewModel.setQuizzes(playerQuizzes);
 
@@ -89,26 +93,16 @@ public class LoadQuizScreen extends JPanel {
         bottomPanel.setOpaque(false);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(20, 150, 50, 150));
 
-        JButton backButton = createStyledButton(
-                "Back to Home",
-                new Color(200, 70, 70),
-                new Color(220, 90, 90),
-                this::goBackHome);
-
-        JButton openButton = createStyledButton(
-                "Open Selected Quiz",
-                ThemeUtils.MINT,
-                ThemeUtils.MINT_HOVER,
-                e -> openSelectedQuiz(quizList, playerQuizzes));
+        JButton backButton = createStyledButton("Back to Home", new Color(200, 70, 70), new Color(220, 90, 90), this::goBackHome);
+        JButton openButton = createStyledButton("Open Selected Quiz", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, e -> openSelectedQuiz(quizList, playerQuizzes));
 
         bottomPanel.add(backButton);
         bottomPanel.add(openButton);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    /** Creates unified styled button with hover transitions. */
-    private JButton createStyledButton(String text, Color base, Color hover,
-                                       java.awt.event.ActionListener listener) {
+    /** Button factory */
+    private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
         button.setBackground(base);
@@ -117,18 +111,15 @@ public class LoadQuizScreen extends JPanel {
         button.setOpaque(true);
         button.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) { button.setBackground(hover); }
-            @Override
-            public void mouseExited(MouseEvent e) { button.setBackground(base); }
+            @Override public void mouseEntered(MouseEvent e) { button.setBackground(hover); }
+            @Override public void mouseExited(MouseEvent e) { button.setBackground(base); }
         });
         button.addActionListener(listener);
         return button;
     }
 
-    /** Opens the selected quiz from the list */
+    /** Opens selected quiz */
     private void openSelectedQuiz(JList<String> quizList, List<Quiz> playerQuizzes) {
         int index = quizList.getSelectedIndex();
         if (playerQuizzes == null || playerQuizzes.isEmpty() || index == -1) {
@@ -152,14 +143,7 @@ public class LoadQuizScreen extends JPanel {
     /** Returns to Home Screen */
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(
-                frame,
-                player,
-                generateFromWrongController,
-                completeQuizController,
-                // We don’t need quizDAO anymore since controller handles that
-                null
-        ));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, quizDAO)); // ✅ reuse DAO
         frame.revalidate();
         frame.repaint();
     }

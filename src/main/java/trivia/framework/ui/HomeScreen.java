@@ -17,8 +17,6 @@ import trivia.use_case.review_quiz.ReviewQuizInteractor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * HomeScreen — central navigation hub after login.
@@ -62,53 +60,29 @@ public class HomeScreen extends JPanel {
         title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
         add(title, BorderLayout.NORTH);
 
+        // Buttons
         JButton createQuizButton = createStyledButton(
-                "Create Custom Quiz",
-                ThemeUtils.MINT,
-                ThemeUtils.MINT_HOVER,
-                this::handleCreateCustomQuiz);
-
+                "Create Custom Quiz", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, this::handleCreateCustomQuiz);
         JButton apiQuizButton = createStyledButton(
-                "API Quizzes",
-                new Color(0, 180, 180),
-                new Color(0, 200, 200),
-                this::handleAPIQuiz);
-
+                "API Quizzes", new Color(0, 180, 180), new Color(0, 200, 200), this::handleAPIQuiz);
         JButton loadQuizButton = createStyledButton(
-                "Load Existing Quiz",
-                ThemeUtils.DEEP_TEAL,
-                ThemeUtils.DEEP_TEAL_HOVER,
-                this::handleLoadQuiz);
-
+                "Load Existing Quiz", ThemeUtils.DEEP_TEAL, ThemeUtils.DEEP_TEAL_HOVER, this::handleLoadQuiz);
         JButton reviewQuizButton = createStyledButton(
-                "Review Past Quizzes",
-                new Color(100, 100, 200),
-                new Color(120, 120, 230),
-                this::handleReviewQuizzes);
-
+                "Review Past Quizzes", new Color(100, 100, 200), new Color(120, 120, 230), this::handleReviewQuizzes);
         JButton profileButton = createStyledButton(
-                "View Profile / Statistics",
-                new Color(60, 180, 130),
-                new Color(80, 220, 150),
-                this::handleViewProfile);
-
+                "View Profile / Statistics", new Color(60, 180, 130), new Color(80, 220, 150), this::handleViewProfile);
         JButton logoutButton = createStyledButton(
-                "Logout",
-                new Color(220, 80, 80),
-                new Color(240, 100, 100),
-                this::handleLogout);
+                "Logout", new Color(220, 80, 80), new Color(240, 100, 100), this::handleLogout);
 
         JPanel buttonPanel = ThemeUtils.createGlassPanel(60);
         buttonPanel.setLayout(new GridLayout(6, 1, 15, 15));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(60, 250, 60, 250));
-
         buttonPanel.add(createQuizButton);
         buttonPanel.add(apiQuizButton);
         buttonPanel.add(loadQuizButton);
         buttonPanel.add(reviewQuizButton);
         buttonPanel.add(profileButton);
         buttonPanel.add(logoutButton);
-
         add(buttonPanel, BorderLayout.CENTER);
     }
 
@@ -128,10 +102,8 @@ public class HomeScreen extends JPanel {
         button.setBorder(BorderFactory.createEmptyBorder(14, 20, 14, 20));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(hover); }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(base); }
+            @Override public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(hover); }
+            @Override public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(base); }
         });
         button.addActionListener(listener);
         return button;
@@ -152,35 +124,40 @@ public class HomeScreen extends JPanel {
     }
 
     private void handleLoadQuiz(ActionEvent e) {
-        // Instantiate LoadQuiz dependencies (new architecture)
-        LoadQuizPresenter loadQuizPresenter = new LoadQuizPresenter();
-        LoadQuizInteractor loadQuizInteractor = new LoadQuizInteractor(quizDAO, loadQuizPresenter);
-        LoadQuizController loadQuizController = new LoadQuizController(loadQuizInteractor, loadQuizPresenter);
-        LoadQuizViewModel loadQuizViewModel = new LoadQuizViewModel();
+    // ✅ Ensure DAO is reloaded every time user opens Load Existing Quiz
+    QuizDataAccessObject dao = (quizDAO != null) ? quizDAO : new QuizDataAccessObject();
 
-        // Switch screen
-        frame.getContentPane().removeAll();
-        frame.add(new LoadQuizScreen(frame, currentPlayer, loadQuizController, loadQuizViewModel, completeQuizController, generateFromWrongController));
-        frame.revalidate();
-        frame.repaint();
-    }
+    // Reload data from file (fixes “Quiz data not initialized”)
+    dao.getAllQuizzes(); // this call refreshes the internal static list
+
+    LoadQuizPresenter loadQuizPresenter = new LoadQuizPresenter();
+    LoadQuizInteractor loadQuizInteractor = new LoadQuizInteractor(dao, loadQuizPresenter);
+    LoadQuizController loadQuizController = new LoadQuizController(loadQuizInteractor, loadQuizPresenter);
+    LoadQuizViewModel loadQuizViewModel = new LoadQuizViewModel();
+
+    frame.getContentPane().removeAll();
+    frame.add(new LoadQuizScreen(
+            frame,
+            currentPlayer,
+            loadQuizController,
+            loadQuizViewModel,
+            completeQuizController,
+            generateFromWrongController,
+            dao // ✅ pass refreshed DAO
+    ));
+    frame.revalidate();
+    frame.repaint();
+}
 
     private void handleReviewQuizzes(ActionEvent e) {
-        // Create new ViewModel and Presenter for this screen instance
         PastQuizViewModel viewModel = new PastQuizViewModel();
         PastQuizPresenter presenter = new PastQuizPresenter(viewModel);
         PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
-        
-        ReviewQuizInteractor interactor = new ReviewQuizInteractor(
-                playerDAO,
-                playerDAO,
-                presenter
-        );
-        
+        ReviewQuizInteractor interactor = new ReviewQuizInteractor(playerDAO, playerDAO, presenter);
         ReviewController controller = new ReviewController(interactor);
-        
+
         frame.getContentPane().removeAll();
-        frame.add(new PastQuizScreen(frame, controller, viewModel, currentPlayer, 
+        frame.add(new PastQuizScreen(frame, controller, viewModel, currentPlayer,
                 generateFromWrongController, completeQuizController));
         frame.revalidate();
         frame.repaint();
