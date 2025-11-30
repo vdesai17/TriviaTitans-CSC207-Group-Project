@@ -123,6 +123,15 @@ public class PlayerDataAccessObject implements
     }
 
     /**
+     * Returns all players currently stored in the JSON file.
+     * Used for ranking and comparing players.
+     */
+    public List<Player> getAllPlayers() {
+        // Simply delegate to the private helper that reads from player.json
+        return loadAllPlayers();
+    }
+
+    /**
      * Validates player login credentials.
      */
     public Player validateLogin(String name, String password) {
