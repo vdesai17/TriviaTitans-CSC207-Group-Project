@@ -2,8 +2,11 @@ package trivia.framework.ui;
 
 import trivia.entity.Player;
 import trivia.interface_adapter.controller.ReviewSummaryController;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
+import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.use_case.review_summary.ReviewSummaryInteractor;
 import trivia.use_case.review_summary.ReviewSummaryResponseModel;
 
@@ -15,14 +18,22 @@ import java.awt.event.ActionEvent;
  * SummaryScreen — displays the final quiz results (score & accuracy)
  * using the unified dark-teal gradient UI theme.
  * Allows returning to the HomeScreen while keeping the same player session.
+ *
+ * FIXED: Now properly stores and passes all controllers to HomeScreen
  */
 public class SummaryScreen extends JPanel {
     private final JFrame frame;
     private final Player player;
+    private final GenerateFromWrongController generateFromWrongController;
+    private final CompleteQuizController completeQuizController;
 
-    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
+    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player,
+                         GenerateFromWrongController generateFromWrongController,
+                         CompleteQuizController completeQuizController) {
         this.frame = frame;
         this.player = player;
+        this.generateFromWrongController = generateFromWrongController;
+        this.completeQuizController = completeQuizController;
 
         // --- ViewModel and Logic ---
         ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
@@ -81,9 +92,17 @@ public class SummaryScreen extends JPanel {
         add(footer, BorderLayout.SOUTH);
     }
 
+    /**
+     * Backward compatibility constructor for code that doesn't pass controllers
+     */
+    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
+        this(score, numberOfQuestions, frame, player, null, null);
+    }
+
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, null));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController,
+                completeQuizController, new QuizDataAccessObject()));
         frame.revalidate();
         frame.repaint();
     }

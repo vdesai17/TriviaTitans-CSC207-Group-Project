@@ -5,6 +5,7 @@ import trivia.entity.Question;
 import trivia.entity.Quiz;
 import trivia.entity.QuizAttempt;
 import trivia.interface_adapter.controller.CompleteQuizController;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
 
@@ -25,8 +26,9 @@ public class QuizScreen extends JPanel {
     private int score = 0;
     private final int numberOfQuestions;
     private final CompleteQuizController controller;
+    private final GenerateFromWrongController generateFromWrongController;
     private final List<String> userAnswers = new ArrayList<>();
-    
+
     // Track selected answer index for each question (-1 means no selection)
     private final List<Integer> selectedAnswerIndices;
 
@@ -40,13 +42,15 @@ public class QuizScreen extends JPanel {
     public QuizScreen(JFrame frame,
                       List<Question> questions,
                       Player currentPlayer,
-                      CompleteQuizController controller) {
+                      CompleteQuizController controller,
+                      GenerateFromWrongController generateFromWrongController) {
         this.frame = frame;
         this.questions = questions;
         this.currentPlayer = currentPlayer;
         this.numberOfQuestions = questions.size();
         this.controller = controller;
-        
+        this.generateFromWrongController = generateFromWrongController;
+
         // Initialize tracking lists
         this.selectedAnswerIndices = new ArrayList<>();
         for (int i = 0; i < numberOfQuestions; i++) {
@@ -59,11 +63,11 @@ public class QuizScreen extends JPanel {
 
         JLabel title = new JLabel("Quiz in Progress", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
-        
+
         // Add progress indicator
         progressLabel = new JLabel("Question 1 of " + numberOfQuestions, SwingConstants.CENTER);
         ThemeUtils.styleLabel(progressLabel, "body");
-        
+
         JPanel headerPanel = new JPanel(new GridLayout(2, 1));
         headerPanel.setOpaque(false);
         headerPanel.add(title);
@@ -128,9 +132,9 @@ public class QuizScreen extends JPanel {
 
         previousButton = createStyledButton("Previous", new Color(100, 100, 100), new Color(130, 130, 130), this::handlePrevious);
         nextButton = createStyledButton("Next", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, this::handleNext);
-        
+
         previousButton.setEnabled(false); // Disabled on first question
-        
+
         bottomPanel.add(previousButton);
         bottomPanel.add(nextButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -138,10 +142,20 @@ public class QuizScreen extends JPanel {
         loadQuestion();
     }
 
+    /**
+     * Constructor for backward compatibility
+     */
+    public QuizScreen(JFrame frame,
+                      List<Question> questions,
+                      Player currentPlayer,
+                      CompleteQuizController controller) {
+        this(frame, questions, currentPlayer, controller, null);
+    }
+
     public QuizScreen(JFrame frame,
                       List<Question> questions,
                       Player currentPlayer) {
-        this(frame, questions, currentPlayer, null);
+        this(frame, questions, currentPlayer, null, null);
     }
 
     private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
@@ -181,17 +195,17 @@ public class QuizScreen extends JPanel {
                     optionButtons[i].setVisible(false);
                 }
             }
-            
+
             // Restore previously selected answer if any
             int previouslySelected = selectedAnswerIndices.get(currentIndex);
             group.clearSelection();
             if (previouslySelected >= 0 && previouslySelected < optionButtons.length) {
                 optionButtons[previouslySelected].setSelected(true);
             }
-            
+
             // Update button states
             previousButton.setEnabled(currentIndex > 0);
-            
+
             // Change "Next" to "Finish" on last question
             if (currentIndex == numberOfQuestions - 1) {
                 nextButton.setText("Finish Quiz");
@@ -205,7 +219,7 @@ public class QuizScreen extends JPanel {
         // Save the current answer before moving
         String chosen = null;
         int chosenIndex = -1;
-        
+
         for (int i = 0; i < optionButtons.length; i++) {
             if (optionButtons[i].isVisible() && optionButtons[i].isSelected()) {
                 chosen = optionButtons[i].getText();
@@ -213,12 +227,12 @@ public class QuizScreen extends JPanel {
                 break;
             }
         }
-        
+
         if (chosen == null) {
             chosen = ""; // No answer selected
             chosenIndex = -1;
         }
-        
+
         // Update the tracking lists
         if (currentIndex < userAnswers.size()) {
             userAnswers.set(currentIndex, chosen);
@@ -228,7 +242,7 @@ public class QuizScreen extends JPanel {
 
     private void handleNext(ActionEvent e) {
         saveCurrentAnswer();
-        
+
         if (currentIndex == numberOfQuestions - 1) {
             // This is the last question - finish the quiz
             finishQuiz();
@@ -237,10 +251,10 @@ public class QuizScreen extends JPanel {
             loadQuestion();
         }
     }
-    
+
     private void handlePrevious(ActionEvent e) {
         saveCurrentAnswer();
-        
+
         if (currentIndex > 0) {
             currentIndex--;
             loadQuestion();
@@ -322,7 +336,9 @@ public class QuizScreen extends JPanel {
         );
 
         frame.getContentPane().removeAll();
-        frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer));
+        // FIXED: Pass all controllers to SummaryScreen so it can properly navigate back to HomeScreen
+        frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer,
+                generateFromWrongController, controller));
         frame.revalidate();
         frame.repaint();
     }
