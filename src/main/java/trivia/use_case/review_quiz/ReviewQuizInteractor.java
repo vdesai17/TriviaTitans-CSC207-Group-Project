@@ -63,6 +63,9 @@ public class ReviewQuizInteractor implements ReviewQuizInputBoundary {
 
         List<Question> questions = quiz.getQuestions();
         List<Integer> selected = attempt.getSelectedOptionIndices();
+        if (selected == null) {
+            selected = new ArrayList<>();
+        }
 
         List<ReviewQuizResponseModel.QuestionRow> rows = new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {

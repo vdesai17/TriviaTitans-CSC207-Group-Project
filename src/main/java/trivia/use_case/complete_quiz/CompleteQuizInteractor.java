@@ -28,8 +28,24 @@ public class CompleteQuizInteractor implements CompleteQuizInputBoundary {
 
         // 1. Compute the score
         int score = 0;
+        List<Integer> selectedOptionIndices = new java.util.ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {
-            if (questions.get(i).getCorrectAnswer().equals(answers.get(i))) {
+            Question question = questions.get(i);
+            String userAnswer = answers.get(i);
+            int selectedIndex = -1;
+
+            List<String> opts = question.getOptions();
+            if (opts != null) {
+                for (int idx = 0; idx < opts.size(); idx++) {
+                    if (opts.get(idx).equals(userAnswer)) {
+                        selectedIndex = idx;
+                        break;
+                    }
+                }
+            }
+            selectedOptionIndices.add(selectedIndex);
+
+            if (question.getCorrectAnswer().equals(userAnswer)) {
                 score++;
             }
         }
@@ -55,6 +71,7 @@ public class CompleteQuizInteractor implements CompleteQuizInputBoundary {
                 answers,
                 score
         );
+        attempt.setSelectedOptionIndices(selectedOptionIndices);
 
         // 4. Save this attempt to the repository
         repo.saveAttempt(attempt);

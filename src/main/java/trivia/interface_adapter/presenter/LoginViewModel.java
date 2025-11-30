@@ -1,49 +1,43 @@
 package trivia.interface_adapter.presenter;
 
+import trivia.entity.Player;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class CreateQuizViewModel {
-    public static final String CREATE_QUIZ_PROPERTY = "createQuiz";
-    
-    private final PropertyChangeSupport support;
-    private boolean success;
-    private String errorMessage;
-    private String quizId;
+public class LoginViewModel {
+    public static final String LOGIN_SUCCESS_PROPERTY = "loginSuccess";
+    public static final String LOGIN_FAILURE_PROPERTY = "loginFailure";
 
-    public CreateQuizViewModel() {
+    private final PropertyChangeSupport support;
+    private Player loggedInPlayer;
+    private String errorMessage;
+
+    public LoginViewModel() {
         this.support = new PropertyChangeSupport(this);
     }
 
-    public void setSuccess(String quizId) {
-        this.success = true;
-        this.quizId = quizId;
-        support.firePropertyChange(CREATE_QUIZ_PROPERTY, null, quizId);
+    public void setLoginSuccess(Player player) {
+        this.loggedInPlayer = player;
+        support.firePropertyChange(LOGIN_SUCCESS_PROPERTY, null, player);
     }
 
-    public void setFailure(String errorMessage) {
-        this.success = false;
+    public void setLoginFailure(String errorMessage) {
         this.errorMessage = errorMessage;
-        support.firePropertyChange(CREATE_QUIZ_PROPERTY, null, errorMessage);
+        support.firePropertyChange(LOGIN_FAILURE_PROPERTY, null, errorMessage);
     }
 
-    public boolean isSuccess() {
-        return success;
+    public Player getLoggedInPlayer() {
+        return loggedInPlayer;
     }
 
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    public String getQuizId() {
-        return quizId;
-    }
-
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
     }
 
-    // ADD THIS METHOD:
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         support.removePropertyChangeListener(listener);
     }

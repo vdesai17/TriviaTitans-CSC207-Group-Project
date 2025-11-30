@@ -1,40 +1,63 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
-import trivia.entity.Quiz;
-import trivia.entity.Question;
-import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.controller.GenerateFromWrongController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.controller.*;
+import trivia.interface_adapter.presenter.LoadQuizViewModel;
+import trivia.use_case.load_quiz.LoadQuizOutputData;
+import trivia.use_case.start_quiz.StartQuizOutputData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
  * LoadQuizScreen — allows players to view and open their saved custom quizzes.
- * Styled with the dark-teal gradient theme and glass-panel design.
+ * 
+ * ✅ FULLY REFACTORED TO FOLLOW CLEAN ARCHITECTURE:
+ * - Uses LoadQuizController (not DAO)
+ * - Uses StartQuizController to load quiz questions
+ * - Observes LoadQuizViewModel
+ * - No direct DAO access
  */
-public class LoadQuizScreen extends JPanel {
+public class LoadQuizScreen extends JPanel implements PropertyChangeListener {
     private final JFrame frame;
     private final Player player;
-    private final QuizDataAccessObject quizDAO;
+    
+    // Controllers
+    private final LoadQuizController loadQuizController;
+    private final StartQuizController startQuizController;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
+    
+    // ViewModel
+    private final LoadQuizViewModel viewModel;
+    
+    // UI Components
+    private final DefaultListModel<String> listModel;
+    private final JList<String> quizList;
+    private List<LoadQuizOutputData.QuizSummary> currentQuizzes;
 
     public LoadQuizScreen(JFrame frame,
                           Player player,
-                          QuizDataAccessObject quizDAO,
+                          LoadQuizController loadQuizController,
+                          StartQuizController startQuizController,
+                          LoadQuizViewModel viewModel,
                           CompleteQuizController completeQuizController,
                           GenerateFromWrongController generateFromWrongController) {
         this.frame = frame;
         this.player = player;
-        this.quizDAO = quizDAO;
+        this.loadQuizController = loadQuizController;
+        this.startQuizController = startQuizController;
+        this.viewModel = viewModel;
         this.completeQuizController = completeQuizController;
         this.generateFromWrongController = generateFromWrongController;
+
+        // ✅ Listen to ViewModel
+        viewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -49,19 +72,10 @@ public class LoadQuizScreen extends JPanel {
         centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
 
-        // Retrieve quizzes
-        List<Quiz> playerQuizzes = quizDAO.getQuizzesByPlayer(player.getPlayerName());
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel = new DefaultListModel<>();
+        listModel.addElement("Loading quizzes...");
 
-        if (playerQuizzes == null || playerQuizzes.isEmpty()) {
-            listModel.addElement("No saved quizzes found.");
-        } else {
-            for (Quiz q : playerQuizzes) {
-                listModel.addElement(q.getTitle() + "  (" + q.getCategory() + ")");
-            }
-        }
-
-        JList<String> quizList = new JList<>(listModel);
+        quizList = new JList<>(listModel);
         quizList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         quizList.setFont(ThemeUtils.BODY_FONT);
         quizList.setBackground(new Color(255, 255, 255, 230));
@@ -86,20 +100,22 @@ public class LoadQuizScreen extends JPanel {
                 "Back to Home",
                 new Color(200, 70, 70),
                 new Color(220, 90, 90),
-                this::goBackHome);
+                e -> goBackHome());
 
         JButton openButton = createStyledButton(
                 "Open Selected Quiz",
                 ThemeUtils.MINT,
                 ThemeUtils.MINT_HOVER,
-                e -> openSelectedQuiz(quizList, playerQuizzes));
+                e -> openSelectedQuiz());
 
         bottomPanel.add(backButton);
         bottomPanel.add(openButton);
         add(bottomPanel, BorderLayout.SOUTH);
+
+        // ✅ Load quizzes using controller
+        loadQuizController.loadQuizzes(player.getPlayerName());
     }
 
-    /** Creates unified styled button with hover transitions. */
     private JButton createStyledButton(String text, Color base, Color hover,
                                        java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
@@ -121,35 +137,91 @@ public class LoadQuizScreen extends JPanel {
         return button;
     }
 
-    /** Opens the selected quiz from the list */
-    private void openSelectedQuiz(JList<String> quizList, List<Quiz> playerQuizzes) {
-        int index = quizList.getSelectedIndex();
-        if (playerQuizzes == null || playerQuizzes.isEmpty() || index == -1) {
-            JOptionPane.showMessageDialog(frame, "Please select a valid quiz.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+    /**
+     * ✅ CLEAN ARCHITECTURE: React to ViewModel changes
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(LoadQuizViewModel.QUIZZES_PROPERTY)) {
+            updateQuizList();
+        } else if (evt.getPropertyName().equals(LoadQuizViewModel.ERROR_PROPERTY)) {
+            showError();
         }
-
-        Quiz selected = playerQuizzes.get(index);
-        List<Question> questions = selected.getQuestions();
-        if (questions == null || questions.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "This quiz has no questions.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        frame.getContentPane().removeAll();
-        frame.add(new QuizScreen(frame, questions, player, completeQuizController));
-        frame.revalidate();
-        frame.repaint();
     }
 
-    /** Returns to Home Screen */
-    private void goBackHome(ActionEvent e) {
+    /**
+     * Update UI with quizzes from ViewModel
+     */
+    private void updateQuizList() {
+        currentQuizzes = viewModel.getQuizzes();
+        listModel.clear();
+
+        if (currentQuizzes == null || currentQuizzes.isEmpty()) {
+            listModel.addElement("No saved quizzes found.");
+        } else {
+            for (LoadQuizOutputData.QuizSummary quiz : currentQuizzes) {
+                listModel.addElement(quiz.getTitle() + "  (" + quiz.getCategory() + ")");
+            }
+        }
+    }
+
+    /**
+     * Show error from ViewModel
+     */
+    private void showError() {
+        String errorMessage = viewModel.getErrorMessage();
+        listModel.clear();
+        listModel.addElement("Error: " + errorMessage);
+    }
+
+    /**
+     * ✅ CLEAN ARCHITECTURE: Use StartQuizController to load quiz
+     */
+    private void openSelectedQuiz() {
+        int index = quizList.getSelectedIndex();
+        
+        if (currentQuizzes == null || currentQuizzes.isEmpty() || index == -1) {
+            JOptionPane.showMessageDialog(frame, 
+                "Please select a valid quiz.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            LoadQuizOutputData.QuizSummary selected = currentQuizzes.get(index);
+            
+            // ✅ Use controller to start quiz
+            StartQuizOutputData quizData = startQuizController.startQuiz(
+                selected.getQuizId(), 
+                player.getPlayerName()
+            );
+
+            // Clean up listener
+            viewModel.removePropertyChangeListener(this);
+
+            // Navigate to quiz screen
+            frame.getContentPane().removeAll();
+            frame.add(new QuizScreen(frame, quizData.getQuestions(), player, 
+                    completeQuizController, generateFromWrongController));
+            frame.revalidate();
+            frame.repaint();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, 
+                "Failed to load quiz: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void goBackHome() {
+        // Clean up listener
+        viewModel.removePropertyChangeListener(this);
+        
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame,
-                player,
-                generateFromWrongController,
-                completeQuizController,
-                quizDAO));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController,
+                completeQuizController, null));
         frame.revalidate();
         frame.repaint();
     }

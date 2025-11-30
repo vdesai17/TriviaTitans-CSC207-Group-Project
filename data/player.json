@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 15,
+    "score": 17,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -331,6 +331,604 @@
           1
         ],
         "completedAt": "2025-11-29T16:18:23.033544",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764468188777",
+        "quiz": {
+          "id": "quiz-1764468188775",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "f59d4e37-ea09-47b8-98c3-be24344b0604",
+              "questionText": "what color is grass?",
+              "options": [
+                "green",
+                "blue",
+                "red",
+                "yellow"
+              ],
+              "correctAnswer": "green",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 1,
+        "userAnswers": [
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1
+        ],
+        "completedAt": "2025-11-29T21:03:08.7848055",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764468522804",
+        "quiz": {
+          "id": "quiz-1764468522803",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "b06fba42-7094-429c-81d1-1d578006dc99",
+              "questionText": "Who won the 2016 Formula 1 World Driver\u0026#039;s Championship?",
+              "options": [
+                "Nico Rosberg",
+                "Max Verstappen",
+                "Kimi Raikkonen",
+                "Lewis Hamilton"
+              ],
+              "correctAnswer": "Nico Rosberg",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e2faf504-c9d0-4e3b-ab4c-5d98b44ef2e4",
+              "questionText": "Which country hosted the 2018 FIFA World Cup?",
+              "options": [
+                "United States",
+                "Germany",
+                "Russia",
+                "Saudi Arabia"
+              ],
+              "correctAnswer": "Russia",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "63fa338c-8b95-4b90-b46e-9722ad5ec67a",
+              "questionText": "How many soccer players should be on the field at the same time?",
+              "options": [
+                "22",
+                "26",
+                "24",
+                "20"
+              ],
+              "correctAnswer": "22",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b52eb157-59c3-462d-9d4f-e1e40e888e72",
+              "questionText": "Which team won 2014 FIFA World Cup in Brazil?",
+              "options": [
+                "Netherlands",
+                "Argentina",
+                "Brazil",
+                "Germany"
+              ],
+              "correctAnswer": "Germany",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "d821c794-ef87-4530-b896-01424233514a",
+              "questionText": "Which year did Jenson Button won his first ever Formula One World Drivers\u0026#039; Championship?",
+              "options": [
+                "2010",
+                "2007",
+                "2006",
+                "2009"
+              ],
+              "correctAnswer": "2009",
+              "category": "Sports",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 2,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Nico Rosberg",
+          "United States",
+          "22",
+          "Netherlands",
+          "2010"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-29T21:08:42.8120652",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764473897393",
+        "quiz": {
+          "id": "quiz-1764473897390",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "80bfe8f6-bd55-428d-a3e9-a02d20080cee",
+              "questionText": "Which wrestler won the 2019 Men\u0026rsquo;s Royal Rumble?",
+              "options": [
+                "Braun Strowman",
+                "AJ Styles",
+                "Andrade",
+                "Seth Rollins"
+              ],
+              "correctAnswer": "Seth Rollins",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "23b53457-e608-49ba-8653-d5f73bb249cb",
+              "questionText": "When was the FC Schalke 04 founded?",
+              "options": [
+                "2008",
+                "1999",
+                "1904",
+                "1909"
+              ],
+              "correctAnswer": "1904",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "f3db6486-0af4-4259-94f7-8321ea146165",
+              "questionText": "Which NFL team plays for New England?",
+              "options": [
+                "Chiefs",
+                "Dolphins",
+                "49ers",
+                "Patriots"
+              ],
+              "correctAnswer": "Patriots",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "46be2185-a6dd-4c5c-9df4-24cc537ac47e",
+              "questionText": "What team did England beat to win in the 1966 World Cup final?",
+              "options": [
+                "Brazil",
+                "Soviet Union",
+                "Portugal",
+                "West Germany"
+              ],
+              "correctAnswer": "West Germany",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "1d6afb0f-fe6b-41ed-8669-233ed7be7947",
+              "questionText": "Who won the UEFA Champions League in 2016?",
+              "options": [
+                "Real Madrid C.F.",
+                "FC Bayern Munich",
+                "Manchester City F.C.",
+                "Atletico Madrid"
+              ],
+              "correctAnswer": "Real Madrid C.F.",
+              "category": "Sports",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Braun Strowman",
+          "2008",
+          "Chiefs",
+          "Brazil",
+          "Real Madrid C.F."
+        ],
+        "completedAt": "2025-11-29T22:38:17.3989576",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764473939638",
+        "quiz": {
+          "id": "quiz-1764473939638",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "b06fba42-7094-429c-81d1-1d578006dc99",
+              "questionText": "Who won the 2016 Formula 1 World Driver\u0026#039;s Championship?",
+              "options": [
+                "Nico Rosberg",
+                "Max Verstappen",
+                "Kimi Raikkonen",
+                "Lewis Hamilton"
+              ],
+              "correctAnswer": "Nico Rosberg",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e2faf504-c9d0-4e3b-ab4c-5d98b44ef2e4",
+              "questionText": "Which country hosted the 2018 FIFA World Cup?",
+              "options": [
+                "United States",
+                "Germany",
+                "Russia",
+                "Saudi Arabia"
+              ],
+              "correctAnswer": "Russia",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "63fa338c-8b95-4b90-b46e-9722ad5ec67a",
+              "questionText": "How many soccer players should be on the field at the same time?",
+              "options": [
+                "22",
+                "26",
+                "24",
+                "20"
+              ],
+              "correctAnswer": "22",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b52eb157-59c3-462d-9d4f-e1e40e888e72",
+              "questionText": "Which team won 2014 FIFA World Cup in Brazil?",
+              "options": [
+                "Netherlands",
+                "Argentina",
+                "Brazil",
+                "Germany"
+              ],
+              "correctAnswer": "Germany",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "d821c794-ef87-4530-b896-01424233514a",
+              "questionText": "Which year did Jenson Button won his first ever Formula One World Drivers\u0026#039; Championship?",
+              "options": [
+                "2010",
+                "2007",
+                "2006",
+                "2009"
+              ],
+              "correctAnswer": "2009",
+              "category": "Sports",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 5,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Nico Rosberg",
+          "Russia",
+          "22",
+          "Germany",
+          "2009"
+        ],
+        "completedAt": "2025-11-29T22:38:59.6388893",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764474087190",
+        "quiz": {
+          "id": "quiz-1764474087187",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "a18fe4f5-7daf-4199-bd94-5db77558698f",
+              "questionText": "What is the name of Manchester United\u0026#039;s home stadium?",
+              "options": [
+                "Old Trafford",
+                "Anfield",
+                "City of Manchester Stadium",
+                "St James Park"
+              ],
+              "correctAnswer": "Old Trafford",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "1cb4dc1e-63fc-4b1c-92c9-1b78c050136b",
+              "questionText": "Which team has won the most Stanley Cups in the NHL?",
+              "options": [
+                "Chicago Blackhawks",
+                "Montreal Canadians",
+                "Toronto Maple Leafs",
+                "Detroit Red Wings"
+              ],
+              "correctAnswer": "Montreal Canadians",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "6fbd9d60-4a9d-403b-992e-3cd3daf74ba4",
+              "questionText": "Which city did the former NHL team \u0026quot;The Nordiques\u0026quot; originiate from?",
+              "options": [
+                "Quebec City",
+                "Houston",
+                "Montreal",
+                "New York"
+              ],
+              "correctAnswer": "Quebec City",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "3fea3087-b8f7-4070-9147-2acd528b5cf0",
+              "questionText": "Which wrestler won the 2019 Men\u0026rsquo;s Royal Rumble?",
+              "options": [
+                "Andrade",
+                "Seth Rollins",
+                "Braun Strowman",
+                "AJ Styles"
+              ],
+              "correctAnswer": "Seth Rollins",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b123285e-3fb5-442d-888d-6248323802f5",
+              "questionText": "How many players are there in an association football/soccer team?",
+              "options": [
+                "10",
+                "9",
+                "8",
+                "11"
+              ],
+              "correctAnswer": "11",
+              "category": "Sports",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 2,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Old Trafford",
+          "Chicago Blackhawks",
+          "Quebec City",
+          "Andrade",
+          "10"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-29T22:41:27.1968652",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764474120461",
+        "quiz": {
+          "id": "quiz-1764474120461",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "a18fe4f5-7daf-4199-bd94-5db77558698f",
+              "questionText": "What is the name of Manchester United\u0026#039;s home stadium?",
+              "options": [
+                "Old Trafford",
+                "Anfield",
+                "City of Manchester Stadium",
+                "St James Park"
+              ],
+              "correctAnswer": "Old Trafford",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "1cb4dc1e-63fc-4b1c-92c9-1b78c050136b",
+              "questionText": "Which team has won the most Stanley Cups in the NHL?",
+              "options": [
+                "Chicago Blackhawks",
+                "Montreal Canadians",
+                "Toronto Maple Leafs",
+                "Detroit Red Wings"
+              ],
+              "correctAnswer": "Montreal Canadians",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "6fbd9d60-4a9d-403b-992e-3cd3daf74ba4",
+              "questionText": "Which city did the former NHL team \u0026quot;The Nordiques\u0026quot; originiate from?",
+              "options": [
+                "Quebec City",
+                "Houston",
+                "Montreal",
+                "New York"
+              ],
+              "correctAnswer": "Quebec City",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "3fea3087-b8f7-4070-9147-2acd528b5cf0",
+              "questionText": "Which wrestler won the 2019 Men\u0026rsquo;s Royal Rumble?",
+              "options": [
+                "Andrade",
+                "Seth Rollins",
+                "Braun Strowman",
+                "AJ Styles"
+              ],
+              "correctAnswer": "Seth Rollins",
+              "category": "Sports",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b123285e-3fb5-442d-888d-6248323802f5",
+              "questionText": "How many players are there in an association football/soccer team?",
+              "options": [
+                "10",
+                "9",
+                "8",
+                "11"
+              ],
+              "correctAnswer": "11",
+              "category": "Sports",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 3,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Old Trafford",
+          "Montreal Canadians",
+          "Houston",
+          "Andrade",
+          "11"
+        ],
+        "selectedOptionIndices": [
+          0,
+          1,
+          1,
+          0,
+          3
+        ],
+        "completedAt": "2025-11-29T22:42:00.4610961",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764474817299",
+        "quiz": {
+          "id": "quiz-1764474817297",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "baf73412-2f70-4b88-993d-b4842e7f9a8d",
+              "questionText": "What was the name commonly given to the ancient trade routes that connected the East and West of Eurasia?",
+              "options": [
+                "Clay Road",
+                "Salt Road",
+                "Spice Road",
+                "Silk Road"
+              ],
+              "correctAnswer": "Silk Road",
+              "category": "History",
+              "difficulty": "easy"
+            },
+            {
+              "id": "2aaf7234-0ddc-49b0-a294-0ca2765d1fa7",
+              "questionText": "What country joined the EU in 2013?",
+              "options": [
+                "Bulgaria",
+                "Croatia",
+                "Slovenia",
+                "Turkey"
+              ],
+              "correctAnswer": "Croatia",
+              "category": "History",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e074ac56-0282-4ec5-9276-bd4b431ed3da",
+              "questionText": "What was William Frederick Cody better known as?",
+              "options": [
+                "Wild Bill Hickok",
+                "Pawnee Bill",
+                "Billy the Kid",
+                "Buffalo Bill"
+              ],
+              "correctAnswer": "Buffalo Bill",
+              "category": "History",
+              "difficulty": "easy"
+            },
+            {
+              "id": "10116149-8d1f-4229-9869-decba942d083",
+              "questionText": "When did the Battle of the Somme begin?",
+              "options": [
+                "August 1st, 1916",
+                "July 2nd, 1916",
+                "June 30th, 1916",
+                "July 1st, 1916"
+              ],
+              "correctAnswer": "July 1st, 1916",
+              "category": "History",
+              "difficulty": "easy"
+            },
+            {
+              "id": "99419a5b-4fed-43e2-9b28-039b7bf0f52a",
+              "questionText": "What was Manfred von Richthofen\u0026#039;s nickname?",
+              "options": [
+                "The Blue Serpent ",
+                "The High Flying Ace",
+                "The Red Baron",
+                "The Germany Gunner"
+              ],
+              "correctAnswer": "The Red Baron",
+              "category": "History",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Clay Road",
+          "Bulgaria",
+          "Wild Bill Hickok",
+          "August 1st, 1916",
+          "The Blue Serpent "
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-29T22:53:37.307942",
         "editable": false,
         "userName": "test"
       }

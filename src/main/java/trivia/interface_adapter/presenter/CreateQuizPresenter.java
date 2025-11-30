@@ -17,22 +17,11 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
     @Override
     public void prepareSuccessView(CreateQuizOutputData outputData) {
-        viewModel.setQuizId(outputData.getQuizId());
-        viewModel.setTitle(outputData.getTitle());
-        viewModel.setCategory(outputData.getCategory());
-        viewModel.setDifficulty(outputData.getDifficulty());
-        viewModel.setQuestionCount(outputData.getQuestionCount());
-        viewModel.setSuccess(true);
-        viewModel.setErrorMessage(null);
-
-        viewModel.firePropertyChanged();
+        viewModel.setSuccess(outputData.getQuizId());
     }
 
     @Override
     public void prepareFailView(String errorMessage) {
-        viewModel.setSuccess(false);
-        viewModel.setErrorMessage(errorMessage);
-
-        viewModel.firePropertyChanged();
+        viewModel.setFailure(errorMessage);
     }
 }

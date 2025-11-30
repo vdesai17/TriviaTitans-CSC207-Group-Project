@@ -1,36 +1,58 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
-import trivia.entity.Question;
-import trivia.entity.Quiz;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.controller.CreateQuizController;
+import trivia.interface_adapter.presenter.CreateQuizViewModel;
+import trivia.use_case.create_quiz.AddQuestionInputData;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * CreateCustomQuizScreen — allows the user to build and save a custom quiz.
- * Uses the unified dark-teal gradient theme with glass panels and modern buttons.
+ * 
+ * ✅ REFACTORED TO FOLLOW CLEAN ARCHITECTURE:
+ * - NO direct DAO access
+ * - Uses CreateQuizController (not DAO)
+ * - Observes CreateQuizViewModel (via PropertyChangeListener)
+ * - UI logic only - no business logic
  */
-public class CreateCustomQuizScreen extends JPanel {
+public class CreateCustomQuizScreen extends JPanel implements PropertyChangeListener {
     private final JFrame frame;
     private final Player player;
-    private final QuizDataAccessObject quizDAO = new QuizDataAccessObject();
+    private final CreateQuizController controller;
+    private final CreateQuizViewModel viewModel;
 
     private final JTextField quizTitleField;
     private final JTextField questionField;
     private final JTextField[] optionFields;
     private final JComboBox<String> correctAnswerBox;
     private final DefaultListModel<String> questionListModel;
-    private final List<Question> createdQuestions = new ArrayList<>();
+    private final List<AddQuestionInputData> createdQuestions = new ArrayList<>();
 
-    public CreateCustomQuizScreen(JFrame frame, Player player) {
+    /**
+     * Constructor with proper dependency injection
+     * 
+     * @param frame The main application frame
+     * @param player The current player
+     * @param controller The CreateQuiz controller (injected)
+     * @param viewModel The CreateQuiz ViewModel (injected)
+     */
+    public CreateCustomQuizScreen(JFrame frame, Player player,
+                                  CreateQuizController controller,
+                                  CreateQuizViewModel viewModel) {
         this.frame = frame;
         this.player = player;
+        this.controller = controller;
+        this.viewModel = viewModel;
+        
+        // ✅ CLEAN ARCHITECTURE: Listen to ViewModel changes
+        this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -121,7 +143,6 @@ public class CreateCustomQuizScreen extends JPanel {
 
         add(centerScrollPane, BorderLayout.CENTER);
 
-
         // --- Right Sidebar (Added Questions List) ---
         questionListModel = new DefaultListModel<>();
         JList<String> questionList = new JList<>(questionListModel);
@@ -138,72 +159,114 @@ public class CreateCustomQuizScreen extends JPanel {
         saveButton.addActionListener(this::handleSaveQuiz);
 
         JButton backButton = ThemeUtils.createStyledButton("Back to Home", new Color(180, 60, 60), new Color(210, 80, 80));
-        backButton.addActionListener(e -> {
-            frame.getContentPane().removeAll();
-            frame.add(new HomeScreen(frame, player, null));
-            frame.revalidate();
-            frame.repaint();
-        });
+        backButton.addActionListener(e -> navigateToHome());
 
         bottomPanel.add(saveButton);
         bottomPanel.add(backButton);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    /** Handles adding a question to the temporary list */
+    /**
+     * ✅ CLEAN ARCHITECTURE: This is UI logic only - validation happens in use case
+     */
     private void handleAddQuestion(ActionEvent e) {
         String questionText = questionField.getText().trim();
         List<String> options = new ArrayList<>();
-        for (JTextField field : optionFields) options.add(field.getText().trim());
+        for (JTextField field : optionFields) {
+            options.add(field.getText().trim());
+        }
         String correctAnswer = options.get(correctAnswerBox.getSelectedIndex());
 
+        // Basic UI-level validation (empty fields)
         if (questionText.isEmpty() || options.stream().anyMatch(String::isEmpty)) {
             JOptionPane.showMessageDialog(frame, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Question q = new Question(
-                UUID.randomUUID().toString(),
+        // ✅ Create input data for use case (no Quiz ID needed here - temporary storage)
+        AddQuestionInputData questionData = new AddQuestionInputData(
+                null,  // quizId will be assigned when quiz is created
                 questionText,
                 options,
                 correctAnswer,
-                "Custom",
-                "N/A"
+                "Custom",  // category
+                "N/A"      // difficulty
         );
 
-        createdQuestions.add(q);
+        createdQuestions.add(questionData);
         questionListModel.addElement(questionText);
         clearQuestionFields();
     }
 
-    /** Saves the quiz to the DAO */
+    /**
+     * ✅ CLEAN ARCHITECTURE: Calls controller, not DAO directly
+     */
     private void handleSaveQuiz(ActionEvent e) {
-        if (quizTitleField.getText().trim().isEmpty() || createdQuestions.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Please add a title and at least one question.", "Error", JOptionPane.ERROR_MESSAGE);
+        String title = quizTitleField.getText().trim();
+
+        // Basic UI-level validation
+        if (title.isEmpty() || createdQuestions.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, 
+                "Please add a title and at least one question.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Quiz customQuiz = new Quiz(
-                UUID.randomUUID().toString(),
-                quizTitleField.getText().trim(),
-                "Custom",
-                "N/A",
-                player.getPlayerName(),
-                createdQuestions
+        // ✅ CLEAN ARCHITECTURE: Call controller (not DAO)
+        // The use case will handle all business logic and data persistence
+        controller.execute(
+            title,
+            player.getPlayerName(),  // creator name
+            "Custom",                 // category
+            "N/A",                    // difficulty
+            new ArrayList<>(createdQuestions)  // questions
         );
+        
+        // ✅ Don't show success message here - wait for ViewModel update
+        // The propertyChange() method will handle UI updates
+    }
 
-        quizDAO.saveQuiz(customQuiz);
-        JOptionPane.showMessageDialog(frame, "Quiz saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-        frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, null));
-        frame.revalidate();
-        frame.repaint();
+    /**
+     * ✅ CLEAN ARCHITECTURE: React to ViewModel changes (observer pattern)
+     * This is called by the ViewModel when the Presenter updates it
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(CreateQuizViewModel.CREATE_QUIZ_PROPERTY)) {
+            if (viewModel.isSuccess()) {
+                // ✅ Success: Show message and navigate
+                JOptionPane.showMessageDialog(frame, 
+                    "Quiz saved successfully!", 
+                    "Success", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                navigateToHome();
+            } else {
+                // ✅ Failure: Show error message from use case
+                String errorMessage = viewModel.getErrorMessage();
+                if (errorMessage != null && !errorMessage.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, 
+                        errorMessage, 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
     }
 
     private void clearQuestionFields() {
         questionField.setText("");
         for (JTextField f : optionFields) f.setText("");
         correctAnswerBox.setSelectedIndex(0);
+    }
+
+    private void navigateToHome() {
+        // Clean up listener before leaving
+        viewModel.removePropertyChangeListener(this);
+        
+        frame.getContentPane().removeAll();
+        frame.add(new HomeScreen(frame, player, null));
+        frame.revalidate();
+        frame.repaint();
     }
 }

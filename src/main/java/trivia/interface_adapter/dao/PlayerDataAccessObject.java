@@ -6,10 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import trivia.entity.Player;
 import trivia.entity.Quiz;
 import trivia.entity.QuizAttempt;
+import trivia.use_case.complete_quiz.QuizAttemptDataAccessInterface;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
 import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
 import trivia.use_case.review_quiz.ReviewQuizAttemptDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
+import trivia.use_case.login.LoginDataAccessInterface;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -26,7 +28,9 @@ import java.util.Optional;
 public class PlayerDataAccessObject implements 
         GenerateFromWrongDataAccessInterface,
         ReviewQuizAttemptDataAccessInterface,
-        ReviewQuizQuizDataAccessInterface {
+        ReviewQuizQuizDataAccessInterface,
+        LoginDataAccessInterface,
+        QuizAttemptDataAccessInterface {
 
     private static final String FILE_PATH = "data/player.json";
     private final Gson gson;
@@ -141,6 +145,36 @@ public class PlayerDataAccessObject implements
         
         System.out.println("Login failed - incorrect password for: " + name);
         return null;
+    }
+
+    @Override
+    public void saveAttempt(QuizAttempt attempt) {
+        if (attempt == null || attempt.getUserName() == null) {
+            System.err.println("[UC5] Cannot save attempt - missing player information.");
+            return;
+        }
+
+        List<Player> players = loadAllPlayers();
+        boolean found = false;
+
+        for (Player player : players) {
+            if (attempt.getUserName().equalsIgnoreCase(player.getPlayerName())) {
+                player.getPastAttempts().add(attempt);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.err.println("[UC5] Player not found while saving attempt: " + attempt.getUserName());
+            return;
+        }
+
+        try (Writer writer = new FileWriter(FILE_PATH)) {
+            gson.toJson(players, writer);
+        } catch (IOException e) {
+            System.err.println("[UC5] Failed to save attempt: " + e.getMessage());
+        }
     }
 
     //  UC3: Review Quiz Attempt Interface  ↓↓↓↓↓↓↓↓↓↓↓

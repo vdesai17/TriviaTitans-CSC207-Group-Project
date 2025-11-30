@@ -1,33 +1,52 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
-import trivia.interface_adapter.controller.GenerateFromWrongController;
-import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.controller.ReviewController;
+import trivia.interface_adapter.controller.*;
+import trivia.interface_adapter.presenter.*;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
-import trivia.interface_adapter.presenter.PastQuizPresenter;
-import trivia.interface_adapter.presenter.PastQuizViewModel;
 import trivia.use_case.review_quiz.ReviewQuizInteractor;
+import trivia.use_case.create_quiz.CreateQuizInteractor;
+import trivia.use_case.load_quiz.LoadQuizInteractor;
+import trivia.use_case.start_quiz.StartQuizInteractor;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * HomeScreen — central navigation hub after login.
- * Unified dark-teal gradient theme and modernized layout.
+ * 
+ * ✅ FULLY REFACTORED TO FOLLOW CLEAN ARCHITECTURE:
+ * - Initializes ALL controllers, presenters, and ViewModels
+ * - Acts as dependency injection hub
+ * - Injects dependencies into all child screens
+ * - NO business logic - pure navigation
+ * - DAOs only used to create interactors (not accessed directly)
  */
 public class HomeScreen extends JPanel {
     private final JFrame frame;
     private final Player currentPlayer;
+    
+    // Controllers
     private final GenerateFromWrongController generateFromWrongController;
     private final CompleteQuizController completeQuizController;
-    private final QuizDataAccessObject quizDAO;
     private final ReviewController reviewController;
+    private final CreateQuizController createQuizController;
+    private final LoadQuizController loadQuizController;
+    private final StartQuizController startQuizController;
+    
+    // ViewModels
+    private final CreateQuizViewModel createQuizViewModel;
+    private final LoadQuizViewModel loadQuizViewModel;
+    
+    // DAOs (only for creating interactors - never accessed directly by UI)
+    private final QuizDataAccessObject quizDAO;
+    private final PlayerDataAccessObject playerDAO;
 
+    /**
+     * ✅ CLEAN ARCHITECTURE: Constructor with dependency injection
+     */
     public HomeScreen(JFrame frame,
                       Player player,
                       GenerateFromWrongController generateFromWrongController,
@@ -37,23 +56,55 @@ public class HomeScreen extends JPanel {
         this.currentPlayer = player;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
-        this.quizDAO = quizDAO;
+        this.quizDAO = quizDAO != null ? quizDAO : new QuizDataAccessObject();
+        this.playerDAO = new PlayerDataAccessObject();
 
-        // Initialize Review Quiz components
+        // ✅ Initialize Review Quiz (UC3)
         PastQuizViewModel pastQuizViewModel = new PastQuizViewModel();
         PastQuizPresenter pastQuizPresenter = new PastQuizPresenter(pastQuizViewModel);
-        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
         ReviewQuizInteractor reviewQuizInteractor = new ReviewQuizInteractor(
-                playerDAO, // implements ReviewQuizAttemptDataAccessInterface
-                playerDAO, // implements ReviewQuizQuizDataAccessInterface
+                playerDAO,
+                playerDAO,
                 pastQuizPresenter
         );
         this.reviewController = new ReviewController(reviewQuizInteractor);
 
+        // ✅ Initialize Create Quiz (UC1)
+        this.createQuizViewModel = new CreateQuizViewModel();
+        CreateQuizPresenter createQuizPresenter = new CreateQuizPresenter(createQuizViewModel);
+        CreateQuizInteractor createQuizInteractor = new CreateQuizInteractor(
+                this.quizDAO, createQuizPresenter);
+        this.createQuizController = new CreateQuizController(createQuizInteractor);
+
+        // ✅ Initialize Load Quiz (NEW)
+        this.loadQuizViewModel = new LoadQuizViewModel();
+        LoadQuizPresenter loadQuizPresenter = new LoadQuizPresenter(loadQuizViewModel);
+        LoadQuizInteractor loadQuizInteractor = new LoadQuizInteractor(
+                this.quizDAO, loadQuizPresenter);
+        this.loadQuizController = new LoadQuizController(loadQuizInteractor);
+
+        // ✅ Initialize Start Quiz (NEW)
+        StartQuizInteractor startQuizInteractor = new StartQuizInteractor(this.quizDAO);
+        this.startQuizController = new StartQuizController(startQuizInteractor);
+
+        initializeUI();
+    }
+
+    /**
+     * Backward compatibility constructor
+     */
+    public HomeScreen(JFrame frame,
+                      Player player,
+                      GenerateFromWrongController generateFromWrongController) {
+        this(frame, player, generateFromWrongController, null, null);
+    }
+
+    private void initializeUI() {
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
 
-        JLabel title = new JLabel("Welcome, " + player.getPlayerName() + "!", SwingConstants.CENTER);
+        JLabel title = new JLabel("Welcome, " + currentPlayer.getPlayerName() + "!", 
+                SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
         title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
         add(title, BorderLayout.NORTH);
@@ -108,13 +159,8 @@ public class HomeScreen extends JPanel {
         add(buttonPanel, BorderLayout.CENTER);
     }
 
-    public HomeScreen(JFrame frame,
-                      Player player,
-                      GenerateFromWrongController generateFromWrongController) {
-        this(frame, player, generateFromWrongController, null, null);
-    }
-
-    private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
+    private JButton createStyledButton(String text, Color base, Color hover, 
+                                       java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
         button.setBackground(base);
@@ -125,40 +171,61 @@ public class HomeScreen extends JPanel {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) { button.setBackground(hover); }
+            public void mouseEntered(java.awt.event.MouseEvent e) { 
+                button.setBackground(hover); 
+            }
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e) { button.setBackground(base); }
+            public void mouseExited(java.awt.event.MouseEvent e) { 
+                button.setBackground(base); 
+            }
         });
         button.addActionListener(listener);
         return button;
     }
 
+    /**
+     * ✅ CLEAN ARCHITECTURE: Inject controller and ViewModel
+     */
     private void handleCreateCustomQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new CreateCustomQuizScreen(frame, currentPlayer));
+        frame.add(new CreateCustomQuizScreen(frame, currentPlayer, 
+                createQuizController, createQuizViewModel));
         frame.revalidate();
         frame.repaint();
     }
 
+    /**
+     * ✅ CLEAN ARCHITECTURE: Inject controllers
+     */
     private void handleAPIQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new SelectQuizScreen(frame, generateFromWrongController, completeQuizController, currentPlayer));
+        frame.add(new SelectQuizScreen(frame, generateFromWrongController, 
+                completeQuizController, currentPlayer));
         frame.revalidate();
         frame.repaint();
     }
 
+    /**
+     * ✅ CLEAN ARCHITECTURE: Inject all required controllers and ViewModel
+     */
     private void handleLoadQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new LoadQuizScreen(frame, currentPlayer, quizDAO, completeQuizController, generateFromWrongController));
+        frame.add(new LoadQuizScreen(frame, currentPlayer, 
+                loadQuizController, 
+                startQuizController,
+                loadQuizViewModel,
+                completeQuizController, 
+                generateFromWrongController));
         frame.revalidate();
         frame.repaint();
     }
 
+    /**
+     * ✅ CLEAN ARCHITECTURE: Create fresh instances for each navigation
+     */
     private void handleReviewQuizzes(ActionEvent e) {
-        // Create new ViewModel and Presenter for this screen instance
         PastQuizViewModel viewModel = new PastQuizViewModel();
         PastQuizPresenter presenter = new PastQuizPresenter(viewModel);
-        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
         
         ReviewQuizInteractor interactor = new ReviewQuizInteractor(
                 playerDAO,
@@ -175,6 +242,9 @@ public class HomeScreen extends JPanel {
         frame.repaint();
     }
 
+    /**
+     * ✅ Profile screen could be improved with a ViewModel in the future
+     */
     private void handleViewProfile(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new ProfileScreen(frame, currentPlayer, generateFromWrongController));

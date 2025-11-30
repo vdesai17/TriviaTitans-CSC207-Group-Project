@@ -2,34 +2,43 @@ package trivia.framework.ui;
 
 import trivia.entity.Player;
 import trivia.entity.Question;
-import trivia.entity.Quiz;
-import trivia.entity.QuizAttempt;
 import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.interface_adapter.dao.PlayerDataAccessObject;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * QuizScreen — displays quiz questions and handles user answers
+ * 
+ * ✅ FULLY REFACTORED TO FOLLOW CLEAN ARCHITECTURE:
+ * - NO direct DAO imports
+ * - NO direct DAO instantiation
+ * - Uses CompleteQuizController ONLY
+ * - Pure UI logic - no business logic
+ * - No data persistence - delegated to use case
+ */
 public class QuizScreen extends JPanel {
     private final JFrame frame;
     private final List<Question> questions;
     private final Player currentPlayer;
     private int currentIndex = 0;
-    private int score = 0;
     private final int numberOfQuestions;
-    private final CompleteQuizController controller;
-    private final List<String> userAnswers = new ArrayList<>();
     
-    // Track selected answer index for each question (-1 means no selection)
+    // Controllers
+    private final CompleteQuizController completeQuizController;
+    private final GenerateFromWrongController generateFromWrongController;
+    
+    // UI state
+    private final List<String> userAnswers = new ArrayList<>();
     private final List<Integer> selectedAnswerIndices;
 
+    // UI Components
     private final JTextArea questionArea;
     private final JRadioButton[] optionButtons;
     private final ButtonGroup group;
@@ -40,18 +49,20 @@ public class QuizScreen extends JPanel {
     public QuizScreen(JFrame frame,
                       List<Question> questions,
                       Player currentPlayer,
-                      CompleteQuizController controller) {
+                      CompleteQuizController completeQuizController,
+                      GenerateFromWrongController generateFromWrongController) {
         this.frame = frame;
         this.questions = questions;
         this.currentPlayer = currentPlayer;
         this.numberOfQuestions = questions.size();
-        this.controller = controller;
+        this.completeQuizController = completeQuizController;
+        this.generateFromWrongController = generateFromWrongController;
         
         // Initialize tracking lists
         this.selectedAnswerIndices = new ArrayList<>();
         for (int i = 0; i < numberOfQuestions; i++) {
-            selectedAnswerIndices.add(-1); // -1 means no answer selected yet
-            userAnswers.add(""); // Empty string for unanswered
+            selectedAnswerIndices.add(-1);
+            userAnswers.add("");
         }
 
         setLayout(new BorderLayout(20, 20));
@@ -60,7 +71,6 @@ public class QuizScreen extends JPanel {
         JLabel title = new JLabel("Quiz in Progress", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
         
-        // Add progress indicator
         progressLabel = new JLabel("Question 1 of " + numberOfQuestions, SwingConstants.CENTER);
         ThemeUtils.styleLabel(progressLabel, "body");
         
@@ -126,10 +136,12 @@ public class QuizScreen extends JPanel {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         bottomPanel.setOpaque(false);
 
-        previousButton = createStyledButton("Previous", new Color(100, 100, 100), new Color(130, 130, 130), this::handlePrevious);
-        nextButton = createStyledButton("Next", ThemeUtils.MINT, ThemeUtils.MINT_HOVER, this::handleNext);
+        previousButton = createStyledButton("Previous", 
+            new Color(100, 100, 100), new Color(130, 130, 130), this::handlePrevious);
+        nextButton = createStyledButton("Next", 
+            ThemeUtils.MINT, ThemeUtils.MINT_HOVER, this::handleNext);
         
-        previousButton.setEnabled(false); // Disabled on first question
+        previousButton.setEnabled(false);
         
         bottomPanel.add(previousButton);
         bottomPanel.add(nextButton);
@@ -137,14 +149,21 @@ public class QuizScreen extends JPanel {
 
         loadQuestion();
     }
-
-    public QuizScreen(JFrame frame,
-                      List<Question> questions,
-                      Player currentPlayer) {
-        this(frame, questions, currentPlayer, null);
+    
+    /**
+     * Backward compatibility constructors
+     */
+    public QuizScreen(JFrame frame, List<Question> questions, Player currentPlayer,
+                      CompleteQuizController completeQuizController) {
+        this(frame, questions, currentPlayer, completeQuizController, null);
     }
 
-    private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
+    public QuizScreen(JFrame frame, List<Question> questions, Player currentPlayer) {
+        this(frame, questions, currentPlayer, null, null);
+    }
+
+    private JButton createStyledButton(String text, Color base, Color hover, 
+                                       java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
         button.setBackground(base);
@@ -169,7 +188,6 @@ public class QuizScreen extends JPanel {
             Question q = questions.get(currentIndex);
             questionArea.setText(q.getQuestionText());
 
-            // Update progress label
             progressLabel.setText("Question " + (currentIndex + 1) + " of " + numberOfQuestions);
 
             List<String> opts = q.getOptions();
@@ -182,17 +200,14 @@ public class QuizScreen extends JPanel {
                 }
             }
             
-            // Restore previously selected answer if any
             int previouslySelected = selectedAnswerIndices.get(currentIndex);
             group.clearSelection();
             if (previouslySelected >= 0 && previouslySelected < optionButtons.length) {
                 optionButtons[previouslySelected].setSelected(true);
             }
             
-            // Update button states
             previousButton.setEnabled(currentIndex > 0);
             
-            // Change "Next" to "Finish" on last question
             if (currentIndex == numberOfQuestions - 1) {
                 nextButton.setText("Finish Quiz");
             } else {
@@ -202,7 +217,6 @@ public class QuizScreen extends JPanel {
     }
 
     private void saveCurrentAnswer() {
-        // Save the current answer before moving
         String chosen = null;
         int chosenIndex = -1;
         
@@ -215,11 +229,10 @@ public class QuizScreen extends JPanel {
         }
         
         if (chosen == null) {
-            chosen = ""; // No answer selected
+            chosen = "";
             chosenIndex = -1;
         }
         
-        // Update the tracking lists
         if (currentIndex < userAnswers.size()) {
             userAnswers.set(currentIndex, chosen);
             selectedAnswerIndices.set(currentIndex, chosenIndex);
@@ -230,7 +243,6 @@ public class QuizScreen extends JPanel {
         saveCurrentAnswer();
         
         if (currentIndex == numberOfQuestions - 1) {
-            // This is the last question - finish the quiz
             finishQuiz();
         } else {
             currentIndex++;
@@ -247,9 +259,13 @@ public class QuizScreen extends JPanel {
         }
     }
 
+    /**
+     * ✅ CLEAN ARCHITECTURE: Delegate ALL persistence to controller
+     * UI only computes final score for display
+     */
     private void finishQuiz() {
-        // 1. Compute final score based on selected answers
-        score = 0;
+        // Calculate score for display (UI logic)
+        int score = 0;
         for (int i = 0; i < questions.size(); i++) {
             Question q = questions.get(i);
             int correctIndex = q.getCorrectOptionIndex();
@@ -260,69 +276,31 @@ public class QuizScreen extends JPanel {
             }
         }
 
-        // 2. Create a Quiz object as a snapshot of this quiz session
-        String quizId = "quiz-" + System.currentTimeMillis();
-        Quiz quiz = new Quiz(
-                quizId,
-                "API Quiz",
-                "general",
-                "mixed",
-                currentPlayer.getPlayerName(), // use the current player's name
-                questions
-        );
-
-        // 3. Create a QuizAttempt and store the player name in userName
-        QuizAttempt attempt = new QuizAttempt(
-                "attempt-" + System.currentTimeMillis(),
-                quiz,
-                questions.size(),
-                currentPlayer.getPlayerName(),      // store the player name here
-                LocalDateTime.now(),
-                userAnswers,
-                score
-        );
-
-        // Save the selected option indices for review
-        attempt.setSelectedOptionIndices(new ArrayList<>(selectedAnswerIndices));
-
-        // ===== Persist to both data stores =====
-
-        // 3.1 Save quiz and attempt using QuizDataAccessObject
-        QuizDataAccessObject quizDAO = new QuizDataAccessObject();
-        quizDAO.saveQuiz(quiz);
-        quizDAO.saveAttempt(attempt);
-
-        // 3.2 Save attempt under the Player using PlayerDataAccessObject
-        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
-        Player player = playerDAO.loadPlayer(currentPlayer.getPlayerName());
-        if (player != null) {
-            player.addAttempt(attempt);
-            player.setScore(player.getScore() + score); // update total score
-            playerDAO.savePlayer(player);
-            System.out.println("✓ Quiz attempt saved to player: " + player.getPlayerName());
-        } else {
-            System.err.println("⚠ Warning: Could not load player to save attempt");
-        }
-
-        // 4. Call the use case through the controller if available
-        if (controller != null) {
-            controller.execute(
-                    currentPlayer.getPlayerName(), // pass playerName to the interactor
+        // ✅ CLEAN ARCHITECTURE: Call controller to handle ALL data persistence
+        // The use case will:
+        // - Create Quiz entity
+        // - Create QuizAttempt entity
+        // - Save to QuizDataAccessObject
+        // - Save to PlayerDataAccessObject
+        // - Update player score
+        if (completeQuizController != null) {
+            completeQuizController.execute(
+                    currentPlayer.getPlayerName(),
                     questions,
                     userAnswers
             );
         }
 
-        // 5. Show a message and navigate to the summary screen
-        JOptionPane.showMessageDialog(
-                frame,
+        // Show completion message
+        JOptionPane.showMessageDialog(frame,
                 "Quiz complete!",
                 "Summary",
-                JOptionPane.INFORMATION_MESSAGE
-        );
+                JOptionPane.INFORMATION_MESSAGE);
 
+        // Navigate to summary screen
         frame.getContentPane().removeAll();
-        frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer));
+        frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer,
+                generateFromWrongController, completeQuizController));
         frame.revalidate();
         frame.repaint();
     }
