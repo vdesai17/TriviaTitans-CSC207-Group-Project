@@ -128,7 +128,11 @@ public class HomeScreen extends JPanel {
                 frame,
                 currentPlayer,
                 createQuizController,
-                createQuizViewModel
+                createQuizViewModel,
+                generateFromWrongController,
+                completeQuizController,
+                quizDAO,
+                generateFromWrongViewModel
         ));
         frame.revalidate();
         frame.repaint();

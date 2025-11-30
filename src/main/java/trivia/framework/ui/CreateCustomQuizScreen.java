@@ -3,6 +3,10 @@ package trivia.framework.ui;
 import trivia.entity.Player;
 import trivia.interface_adapter.controller.CreateQuizController;
 import trivia.interface_adapter.presenter.CreateQuizViewModel;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
+import trivia.interface_adapter.controller.CompleteQuizController;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +19,6 @@ import java.util.List;
 /**
  * CreateCustomQuizScreen — allows the user to build and save a custom quiz.
  *
- * ✅ CLEAN ARCHITECTURE VERSION:
  * - NO direct DAO access
  * - Does NOT use use_case InputData classes
  * - Talks only to CreateQuizController and CreateQuizViewModel
@@ -27,13 +30,17 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
     private final CreateQuizController controller;
     private final CreateQuizViewModel viewModel;
 
+    private final GenerateFromWrongController generateFromWrongController;
+    private final CompleteQuizController completeQuizController;
+    private final QuizDataAccessObject quizDAO;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
+
     private final JTextField quizTitleField;
     private final JTextField questionField;
     private final JTextField[] optionFields;
     private final JComboBox<String> correctAnswerBox;
     private final DefaultListModel<String> questionListModel;
 
-    // ✅ UI-only data structures (NO use_case InputData here)
     private final List<String> questionTexts = new ArrayList<>();
     private final List<List<String>> optionsList = new ArrayList<>();
     private final List<Integer> correctIndexes = new ArrayList<>();
@@ -41,13 +48,22 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
     public CreateCustomQuizScreen(JFrame frame,
                                   Player player,
                                   CreateQuizController controller,
-                                  CreateQuizViewModel viewModel) {
+                                  CreateQuizViewModel viewModel,
+                                  GenerateFromWrongController generateFromWrongController,
+                                  CompleteQuizController completeQuizController,
+                                  QuizDataAccessObject quizDAO,
+                                  GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.player = player;
         this.controller = controller;
         this.viewModel = viewModel;
 
-        // ✅ 监听 ViewModel 的变化
+        this.generateFromWrongController = generateFromWrongController;
+        this.completeQuizController = completeQuizController;
+        this.quizDAO = quizDAO;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
+
+
         this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout(20, 20));
@@ -175,9 +191,6 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    /**
-     * 收集单个问题，先缓存到本地 List，不直接碰 use_case。
-     */
     private void handleAddQuestion(ActionEvent e) {
         String questionText = questionField.getText().trim();
         List<String> options = new ArrayList<>();
@@ -207,7 +220,6 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
             return;
         }
 
-        // 只存普通数据，真正的 InputData 在 Controller 里创建
         questionTexts.add(questionText);
         optionsList.add(options);
         correctIndexes.add(correctIdx);
@@ -216,9 +228,6 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
         clearQuestionFields();
     }
 
-    /**
-     * 点击“Save Quiz”时，把普通数据交给 Controller。
-     */
     private void handleSaveQuiz(ActionEvent e) {
         String title = quizTitleField.getText().trim();
 
@@ -242,12 +251,8 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
                 new ArrayList<>(optionsList),
                 new ArrayList<>(correctIndexes)
         );
-        // 成功 / 失败的 UI 反馈交给 propertyChange()
     }
 
-    /**
-     * ViewModel 被 Presenter 更新时，触发这个方法。
-     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!CreateQuizViewModel.CREATE_QUIZ_PROPERTY.equals(evt.getPropertyName())) {
@@ -284,12 +289,17 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
     }
 
     private void navigateToHome() {
-        // 离开前取消监听，避免内存泄漏
         viewModel.removePropertyChangeListener(this);
 
         frame.getContentPane().removeAll();
-        // 这里暂时还是用简单构造，你后面可以用 Builder 注入完整 HomeScreen 依赖
-        frame.add(new HomeScreen(frame, player, null));
+        frame.add(new HomeScreen(
+                frame,
+                player,
+                generateFromWrongController,
+                completeQuizController,
+                quizDAO,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }

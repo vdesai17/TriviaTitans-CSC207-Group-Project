@@ -1340,6 +1340,9 @@
         "attemptId": "attempt-1764535979183",
         "quiz": {
           "id": "quiz-1764535979180",
+        "attemptId": "attempt-1764529714070",
+        "quiz": {
+          "id": "quiz-1764529714069",
           "title": "API Quiz",
           "category": "general",
           "difficulty": "mixed",
@@ -1368,6 +1371,111 @@
                 "Crocodile"
               ],
               "correctAnswer": "Gorilla",
+              "id": "80641b3f-79ab-40eb-83da-584ddea5c033",
+              "questionText": "What is the name of the Jewish New Year?",
+              "options": [
+                "Elul",
+                "Rosh Hashanah",
+                "New Year",
+                "Succoss"
+              ],
+              "correctAnswer": "Rosh Hashanah",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "da7054c4-31e9-444e-b7dc-0a51aea4c346",
+              "questionText": "The word \u0026quot;dozen\u0026quot; usually refers to a group of how many objects?",
+              "options": [
+                "20",
+                "10",
+                "6",
+                "12"
+              ],
+              "correctAnswer": "12",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "9d6ccf3c-b8ce-4ab4-93e9-c3a0b4742fd1",
+              "questionText": "Which of the following blood component forms a plug at the site of injuries?",
+              "options": [
+                "Platelets",
+                "White blood cells",
+                "Blood plasma",
+                "Red blood cells"
+              ],
+              "correctAnswer": "Platelets",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "2e929ca5-3348-46d6-a581-d2c74adcaed7",
+              "questionText": "What technology is named after a tenth-century ruler of Denmark and Norway?",
+              "options": [
+                "GPS",
+                "Wi-Fi",
+                "Bluetooth",
+                "Internet"
+              ],
+              "correctAnswer": "Bluetooth",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "016f09d7-1e1f-46d0-a9d5-2acaf67f18af",
+              "questionText": "Which language is most widely spoken in Switzerland?",
+              "options": [
+                "German",
+                "Swiss",
+                "French",
+                "Italian"
+              ],
+              "correctAnswer": "German",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T14:08:34.081396",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764531265048",
+        "quiz": {
+          "id": "quiz-1764531265046",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "According to Sherlock Holmes, \u0026quot;If you eliminate the impossible, whatever remains, however improbable, must be the...\u0026quot;",
+              "options": [
+                "Answer",
+                "Source",
+                "Truth",
+                "Cause"
+              ],
+              "correctAnswer": "Truth",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1381,6 +1489,14 @@
                 "Dirk Hartog"
               ],
               "correctAnswer": "Matthew Flinders",
+              "questionText": "Which language is most widely spoken in Switzerland?",
+              "options": [
+                "German",
+                "Swiss",
+                "French",
+                "Italian"
+              ],
+              "correctAnswer": "German",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1394,6 +1510,14 @@
                 "Whisky"
               ],
               "correctAnswer": "Rum",
+              "questionText": "\u0026quot;A3\u0026quot;, \u0026quot;B1\u0026quot;, and \u0026quot;Legal\u0026quot; are typical names of sizes for what object?",
+              "options": [
+                "Airplanes",
+                "Phone screens",
+                "Law books",
+                "Paper"
+              ],
+              "correctAnswer": "Paper",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1407,6 +1531,19 @@
                 "Silk"
               ],
               "correctAnswer": "Straw",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which restaurant\u0026#039;s mascot is a clown?",
+              "options": [
+                "Whataburger",
+                "McDonald\u0026#039;s",
+                "Burger King",
+                "Sonic"
+              ],
+              "correctAnswer": "McDonald\u0026#039;s",
               "category": "Practice",
               "difficulty": "mixed"
             }
@@ -1419,6 +1556,7 @@
           "",
           "",
           "",
+          "",
           ""
         ],
         "selectedOptionIndices": [
@@ -1426,9 +1564,11 @@
           -1,
           -1,
           -1,
+          -1,
           -1
         ],
         "completedAt": "2025-11-30T15:52:59.190501",
+        "completedAt": "2025-11-30T14:34:25.062442",
         "editable": false,
         "userName": "test"
       },
@@ -1436,11 +1576,40 @@
         "attemptId": "attempt-1764535988831",
         "quiz": {
           "id": "quiz-1764535988831",
+        "attemptId": "attempt-1764531270729",
+        "quiz": {
+          "id": "quiz-1764531270729",
           "title": "API Quiz",
           "category": "general",
           "difficulty": "mixed",
           "creatorName": "test",
           "questions": [
+            {
+              "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which of the following blood component forms a plug at the site of injuries?",
+              "options": [
+                "Platelets",
+                "White blood cells",
+                "Blood plasma",
+                "Red blood cells"
+              ],
+              "correctAnswer": "Platelets",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
             {
               "id": "",
               "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
@@ -1464,6 +1633,14 @@
                 "Crocodile"
               ],
               "correctAnswer": "Gorilla",
+              "questionText": "What is the name of the Jewish New Year?",
+              "options": [
+                "Elul",
+                "Rosh Hashanah",
+                "New Year",
+                "Succoss"
+              ],
+              "correctAnswer": "Rosh Hashanah",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1490,6 +1667,286 @@
                 "Whisky"
               ],
               "correctAnswer": "Rum",
+              "questionText": "What technology is named after a tenth-century ruler of Denmark and Norway?",
+              "options": [
+                "GPS",
+                "Wi-Fi",
+                "Bluetooth",
+                "Internet"
+              ],
+              "correctAnswer": "Bluetooth",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T14:34:30.729939",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764531275413",
+        "quiz": {
+          "id": "quiz-1764531275412",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "e304d3f1-1f63-42ee-bee6-06bde23a96a0",
+              "questionText": "Terry Gilliam was an animator that worked with which British comedy group?",
+              "options": [
+                "The Penny Dreadfuls",
+                "The League of Gentlemen\u0026lrm;",
+                "The Goodies\u0026lrm;",
+                "Monty Python"
+              ],
+              "correctAnswer": "Monty Python",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "dda22a8f-9be6-4dda-aaaa-67e732f7fe64",
+              "questionText": "According to the Book of Genesis in the Old Testament, how many days did it take God to create the world?",
+              "options": [
+                "Six",
+                "Twelve",
+                "Seven",
+                "One"
+              ],
+              "correctAnswer": "Six",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "da555e3d-4b31-4f03-86aa-0bcd8acbd6a4",
+              "questionText": "What does a funambulist walk on?",
+              "options": [
+                "The Moon",
+                "A Tight Rope",
+                "Broken Glass",
+                "Balls"
+              ],
+              "correctAnswer": "A Tight Rope",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "7e0431ef-112e-48ee-925e-da34485de18a",
+              "questionText": "Which country developed the AK-47 assault rifle?",
+              "options": [
+                "Iran",
+                "Israel",
+                "Poland",
+                "Soviet Union"
+              ],
+              "correctAnswer": "Soviet Union",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "2e05a393-e72e-464a-98bc-efcd6dc0c819",
+              "questionText": "Which language is most widely spoken in Switzerland?",
+              "options": [
+                "Swiss",
+                "Italian",
+                "French",
+                "German"
+              ],
+              "correctAnswer": "German",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T14:34:35.413086",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764532051035",
+        "quiz": {
+          "id": "quiz-1764532051034",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "eb710e8a-ffed-47a3-8fcd-5a6d62e21b9e",
+              "questionText": "11",
+              "options": [
+                "11",
+                "11",
+                "1",
+                "1"
+              ],
+              "correctAnswer": "11",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "11"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T14:47:31.042433",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764533253297",
+        "quiz": {
+          "id": "quiz-1764533253295",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "9caccd08-b780-444c-ab31-3cb1792cfc9c",
+              "questionText": "The New York Times slogan is, \u0026ldquo;All the News That\u0026rsquo;s Fit to\u0026hellip;\u0026rdquo;",
+              "options": [
+                "Look",
+                "Digest",
+                "Read",
+                "Print"
+              ],
+              "correctAnswer": "Print",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "5d89f5df-27b7-41a5-a041-5801aa462d17",
+              "questionText": "When was the Playstation 3 released?",
+              "options": [
+                "November 11, 2006",
+                "December 25, 2007",
+                "July 16, 2006",
+                "January 8, 2007"
+              ],
+              "correctAnswer": "November 11, 2006",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "c0af7970-a044-4628-b5d1-dfd32a52e70c",
+              "questionText": "How many syllables make up a haiku?",
+              "options": [
+                "10",
+                "15",
+                "21",
+                "17"
+              ],
+              "correctAnswer": "17",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e4f6a876-dce4-47ae-87bc-3501139a2fc5",
+              "questionText": "Which of the following landmarks is not located in New York City?",
+              "options": [
+                "Central Park",
+                "Times Square",
+                "Lincoln Memorial",
+                "Empire State Building"
+              ],
+              "correctAnswer": "Lincoln Memorial",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "168123db-499b-4af5-bc1b-fe36cc9c322d",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Rum",
+                "Gin",
+                "Vodka",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T15:07:33.309743",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764533258574",
+        "quiz": {
+          "id": "quiz-1764533258574",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "According to Sherlock Holmes, \u0026quot;If you eliminate the impossible, whatever remains, however improbable, must be the...\u0026quot;",
+              "options": [
+                "Answer",
+                "Source",
+                "Truth",
+                "Cause"
+              ],
+              "correctAnswer": "Truth",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1503,6 +1960,53 @@
                 "Silk"
               ],
               "correctAnswer": "Straw",
+              "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
+              "options": [
+                "Plato",
+                "Antoine Lavoiser",
+                "Albert Einstein",
+                "Ren\u0026eacute; Descartes"
+              ],
+              "correctAnswer": "Ren\u0026eacute; Descartes",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What technology is named after a tenth-century ruler of Denmark and Norway?",
+              "options": [
+                "GPS",
+                "Wi-Fi",
+                "Bluetooth",
+                "Internet"
+              ],
+              "correctAnswer": "Bluetooth",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "The buried remains of which English explorer of Australia were found in London  in January 2019? ",
+              "options": [
+                "Matthew Flinders",
+                "Abel Tasman",
+                "William Bourke",
+                "Dirk Hartog"
+              ],
+              "correctAnswer": "Matthew Flinders",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which restaurant\u0026#039;s mascot is a clown?",
+              "options": [
+                "Whataburger",
+                "McDonald\u0026#039;s",
+                "Burger King",
+                "Sonic"
+              ],
+              "correctAnswer": "McDonald\u0026#039;s",
               "category": "Practice",
               "difficulty": "mixed"
             }
@@ -1525,6 +2029,7 @@
           -1
         ],
         "completedAt": "2025-11-30T15:53:08.832033",
+        "completedAt": "2025-11-30T15:07:38.574274",
         "editable": false,
         "userName": "test"
       },
@@ -1532,6 +2037,9 @@
         "attemptId": "attempt-1764536204682",
         "quiz": {
           "id": "quiz-1764536204680",
+        "attemptId": "attempt-1764534665122",
+        "quiz": {
+          "id": "quiz-1764534665121",
           "title": "API Quiz",
           "category": "general",
           "difficulty": "mixed",
@@ -1547,6 +2055,14 @@
                 "Sonic"
               ],
               "correctAnswer": "McDonald\u0026#039;s",
+              "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
+              "options": [
+                "Plato",
+                "Antoine Lavoiser",
+                "Albert Einstein",
+                "Ren\u0026eacute; Descartes"
+              ],
+              "correctAnswer": "Ren\u0026eacute; Descartes",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1560,6 +2076,14 @@
                 "Bootstrap"
               ],
               "correctAnswer": "Bootleg",
+              "questionText": "Terry Gilliam was an animator that worked with which British comedy group?",
+              "options": [
+                "The Penny Dreadfuls",
+                "The League of Gentlemen\u0026lrm;",
+                "The Goodies\u0026lrm;",
+                "Monty Python"
+              ],
+              "correctAnswer": "Monty Python",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1573,6 +2097,14 @@
                 "Whisky"
               ],
               "correctAnswer": "Rum",
+              "questionText": "What is the name of the Jewish New Year?",
+              "options": [
+                "Elul",
+                "Rosh Hashanah",
+                "New Year",
+                "Succoss"
+              ],
+              "correctAnswer": "Rosh Hashanah",
               "category": "Practice",
               "difficulty": "mixed"
             },
@@ -1599,6 +2131,14 @@
                 "Paper"
               ],
               "correctAnswer": "Paper",
+              "questionText": "The word \u0026quot;dozen\u0026quot; usually refers to a group of how many objects?",
+              "options": [
+                "20",
+                "10",
+                "6",
+                "12"
+              ],
+              "correctAnswer": "12",
               "category": "Practice",
               "difficulty": "mixed"
             }
@@ -1611,6 +2151,7 @@
           "",
           "",
           "",
+          "",
           ""
         ],
         "selectedOptionIndices": [
@@ -1618,9 +2159,11 @@
           -1,
           -1,
           -1,
+          -1,
           -1
         ],
         "completedAt": "2025-11-30T15:56:44.697650",
+        "completedAt": "2025-11-30T15:31:05.138060",
         "editable": false,
         "userName": "test"
       },
@@ -1628,6 +2171,9 @@
         "attemptId": "attempt-1764536223865",
         "quiz": {
           "id": "quiz-1764536223865",
+        "attemptId": "attempt-1764534669595",
+        "quiz": {
+          "id": "quiz-1764534669595",
           "title": "API Quiz",
           "category": "general",
           "difficulty": "mixed",
@@ -1657,6 +2203,89 @@
           0
         ],
         "completedAt": "2025-11-30T15:57:03.865817",
+              "id": "eed367a2-f7fe-4045-b774-6e00527f8885",
+              "questionText": "What is on display in the Madame Tussaud\u0026#039;s museum in London?",
+              "options": [
+                "Designer clothing",
+                "Vintage cars",
+                "Unreleased film reels",
+                "Wax sculptures"
+              ],
+              "correctAnswer": "Wax sculptures",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "363c3471-50a2-48bb-ad38-fb7a1129f182",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Silk",
+                "Straw",
+                "Flax"
+              ],
+              "correctAnswer": "Straw",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "696e3429-606a-4022-9c13-777457e76dfe",
+              "questionText": "How many fingers does a single human hand have?",
+              "options": [
+                "Ten",
+                "Five",
+                "Eight",
+                "Four"
+              ],
+              "correctAnswer": "Four",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "f858ad17-47bd-4596-99a7-aa536d37bd38",
+              "questionText": "What is the French word for \u0026quot;fish\u0026quot;?",
+              "options": [
+                "poisson",
+                "fiche",
+                "mer",
+                "escargot"
+              ],
+              "correctAnswer": "poisson",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "6fbf9a08-039f-4204-b556-5e0deed75485",
+              "questionText": "What country does sushi \u0026amp; karaoke come from?",
+              "options": [
+                "China",
+                "South Korea",
+                "Japan",
+                "Vietnam"
+              ],
+              "correctAnswer": "Japan",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T15:31:09.595637",
         "editable": false,
         "userName": "test"
       }
