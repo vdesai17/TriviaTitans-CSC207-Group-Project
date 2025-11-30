@@ -1,9 +1,10 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
-import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
+import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
@@ -26,16 +27,18 @@ public class SummaryScreen extends JPanel {
     private final Player player;
     private final GenerateFromWrongController generateFromWrongController;
     private final CompleteQuizController completeQuizController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player,
                          GenerateFromWrongController generateFromWrongController,
-                         CompleteQuizController completeQuizController) {
+                         CompleteQuizController completeQuizController,
+                         GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.player = player;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
-        // --- ViewModel and Logic ---
         ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
         int accuracy = (numberOfQuestions != 0)
                 ? Math.round(score * 100 / numberOfQuestions)
@@ -48,17 +51,14 @@ public class SummaryScreen extends JPanel {
         ReviewSummaryController controller = new ReviewSummaryController(interactor);
         controller.generateSummary(score, accuracy);
 
-        // --- Layout and Theme ---
         setLayout(new BorderLayout());
         ThemeUtils.applyGradientBackground(this);
 
-        // --- Header ---
         JLabel title = new JLabel("Quiz Summary", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
         title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
         add(title, BorderLayout.NORTH);
 
-        // --- Content Panel (Glass Effect) ---
         JPanel contentPanel = ThemeUtils.createGlassPanel(40);
         contentPanel.setLayout(new GridLayout(3, 1, 15, 15));
         contentPanel.setOpaque(false);
@@ -85,24 +85,20 @@ public class SummaryScreen extends JPanel {
         centerWrapper.add(contentPanel);
         add(centerWrapper, BorderLayout.CENTER);
 
-        // --- Footer Message ---
         JLabel footer = new JLabel("Thank you for playing!", SwingConstants.CENTER);
         ThemeUtils.styleLabel(footer, "subtitle");
         footer.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
         add(footer, BorderLayout.SOUTH);
     }
 
-    /**
-     * Backward compatibility constructor for code that doesn't pass controllers
-     */
     public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
-        this(score, numberOfQuestions, frame, player, null, null);
+        this(score, numberOfQuestions, frame, player, null, null, null);
     }
 
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, player, generateFromWrongController,
-                completeQuizController, new QuizDataAccessObject()));
+                completeQuizController, new QuizDataAccessObject(), generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

@@ -1,9 +1,12 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
-import trivia.entity.Question;
 import trivia.entity.Quiz;
+import trivia.entity.Question;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
+import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +23,9 @@ public class CreateCustomQuizScreen extends JPanel {
     private final JFrame frame;
     private final Player player;
     private final QuizDataAccessObject quizDAO = new QuizDataAccessObject();
+    private final GenerateFromWrongController generateFromWrongController;
+    private final CompleteQuizController completeQuizController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     private final JTextField quizTitleField;
     private final JTextField questionField;
@@ -28,19 +34,25 @@ public class CreateCustomQuizScreen extends JPanel {
     private final DefaultListModel<String> questionListModel;
     private final List<Question> createdQuestions = new ArrayList<>();
 
-    public CreateCustomQuizScreen(JFrame frame, Player player) {
+    public CreateCustomQuizScreen(JFrame frame,
+                                  Player player,
+                                  GenerateFromWrongController generateFromWrongController,
+                                  CompleteQuizController completeQuizController,
+                                  QuizDataAccessObject quizDAO,
+                                  GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.player = player;
+        this.generateFromWrongController = generateFromWrongController;
+        this.completeQuizController = completeQuizController;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
 
-        // --- Header ---
         JLabel title = new JLabel("Create Custom Quiz", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
         add(title, BorderLayout.NORTH);
 
-        // --- Center Input Panel (Glass Effect) ---
         JPanel centerPanel = ThemeUtils.createGlassPanel(60);
         centerPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -49,7 +61,6 @@ public class CreateCustomQuizScreen extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // Quiz Title
         JLabel quizTitleLabel = new JLabel("Quiz Title:");
         ThemeUtils.styleLabel(quizTitleLabel, "body");
         centerPanel.add(quizTitleLabel, gbc);
@@ -64,7 +75,6 @@ public class CreateCustomQuizScreen extends JPanel {
         gbc.gridy++;
         centerPanel.add(Box.createVerticalStrut(20), gbc);
 
-        // Question
         JLabel questionLabel = new JLabel("Question:");
         ThemeUtils.styleLabel(questionLabel, "body");
         gbc.gridy++;
@@ -77,7 +87,6 @@ public class CreateCustomQuizScreen extends JPanel {
         questionField.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
         centerPanel.add(questionField, gbc);
 
-        // Options
         optionFields = new JTextField[4];
         for (int i = 0; i < 4; i++) {
             gbc.gridy++;
@@ -108,7 +117,6 @@ public class CreateCustomQuizScreen extends JPanel {
         addQuestionButton.addActionListener(this::handleAddQuestion);
         centerPanel.add(addQuestionButton, gbc);
 
-        // scroll
         JScrollPane centerScrollPane = new JScrollPane(
                 centerPanel,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -121,8 +129,6 @@ public class CreateCustomQuizScreen extends JPanel {
 
         add(centerScrollPane, BorderLayout.CENTER);
 
-
-        // --- Right Sidebar (Added Questions List) ---
         questionListModel = new DefaultListModel<>();
         JList<String> questionList = new JList<>(questionListModel);
         questionList.setFont(ThemeUtils.BODY_FONT);
@@ -130,7 +136,6 @@ public class CreateCustomQuizScreen extends JPanel {
         questionList.setBackground(new Color(255, 255, 255, 230));
         add(new JScrollPane(questionList), BorderLayout.EAST);
 
-        // --- Bottom Buttons ---
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setOpaque(false);
 
@@ -140,7 +145,7 @@ public class CreateCustomQuizScreen extends JPanel {
         JButton backButton = ThemeUtils.createStyledButton("Back to Home", new Color(180, 60, 60), new Color(210, 80, 80));
         backButton.addActionListener(e -> {
             frame.getContentPane().removeAll();
-            frame.add(new HomeScreen(frame, player, null));
+            frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, quizDAO, generateFromWrongViewModel));
             frame.revalidate();
             frame.repaint();
         });
@@ -150,7 +155,6 @@ public class CreateCustomQuizScreen extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    /** Handles adding a question to the temporary list */
     private void handleAddQuestion(ActionEvent e) {
         String questionText = questionField.getText().trim();
         List<String> options = new ArrayList<>();
@@ -176,7 +180,6 @@ public class CreateCustomQuizScreen extends JPanel {
         clearQuestionFields();
     }
 
-    /** Saves the quiz to the DAO */
     private void handleSaveQuiz(ActionEvent e) {
         if (quizTitleField.getText().trim().isEmpty() || createdQuestions.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Please add a title and at least one question.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -196,7 +199,7 @@ public class CreateCustomQuizScreen extends JPanel {
         JOptionPane.showMessageDialog(frame, "Quiz saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, null));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, quizDAO, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

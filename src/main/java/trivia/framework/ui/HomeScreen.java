@@ -7,10 +7,7 @@ import trivia.interface_adapter.controller.ReviewController;
 import trivia.interface_adapter.controller.LoadQuizController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
-import trivia.interface_adapter.presenter.PastQuizPresenter;
-import trivia.interface_adapter.presenter.PastQuizViewModel;
-import trivia.interface_adapter.presenter.LoadQuizPresenter;
-import trivia.interface_adapter.presenter.LoadQuizViewModel;
+import trivia.interface_adapter.presenter.*;
 import trivia.use_case.load_quiz.LoadQuizInteractor;
 import trivia.use_case.review_quiz.ReviewQuizInteractor;
 
@@ -29,17 +26,20 @@ public class HomeScreen extends JPanel {
     private final CompleteQuizController completeQuizController;
     private final QuizDataAccessObject quizDAO;
     private final ReviewController reviewController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     public HomeScreen(JFrame frame,
                       Player player,
                       GenerateFromWrongController generateFromWrongController,
                       CompleteQuizController completeQuizController,
-                      QuizDataAccessObject quizDAO) {
+                      QuizDataAccessObject quizDAO,
+                      GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.currentPlayer = player;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.quizDAO = quizDAO;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
         // Initialize Review Quiz components
         PastQuizViewModel pastQuizViewModel = new PastQuizViewModel();
@@ -89,7 +89,7 @@ public class HomeScreen extends JPanel {
     public HomeScreen(JFrame frame,
                       Player player,
                       GenerateFromWrongController generateFromWrongController) {
-        this(frame, player, generateFromWrongController, null, null);
+        this(frame, player, generateFromWrongController, null, null, null);
     }
 
     private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
@@ -111,14 +111,25 @@ public class HomeScreen extends JPanel {
 
     private void handleCreateCustomQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new CreateCustomQuizScreen(frame, currentPlayer));
+        frame.add(new CreateCustomQuizScreen(frame,
+                currentPlayer,
+                generateFromWrongController,
+                completeQuizController,
+                quizDAO,
+                generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }
 
     private void handleAPIQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new SelectQuizScreen(frame, generateFromWrongController, completeQuizController, currentPlayer));
+        frame.add(new SelectQuizScreen(
+                frame,
+                generateFromWrongController,
+                completeQuizController,
+                currentPlayer,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
@@ -143,7 +154,8 @@ public class HomeScreen extends JPanel {
             loadQuizViewModel,
             completeQuizController,
             generateFromWrongController,
-            dao // ✅ pass refreshed DAO
+            dao,
+            generateFromWrongViewModel// ✅ pass refreshed DAO
     ));
     frame.revalidate();
     frame.repaint();
@@ -157,15 +169,28 @@ public class HomeScreen extends JPanel {
         ReviewController controller = new ReviewController(interactor);
 
         frame.getContentPane().removeAll();
-        frame.add(new PastQuizScreen(frame, controller, viewModel, currentPlayer,
-                generateFromWrongController, completeQuizController));
+        frame.add(new PastQuizScreen(
+                frame,
+                controller,
+                viewModel,
+                currentPlayer,
+                generateFromWrongController,
+                completeQuizController,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
 
     private void handleViewProfile(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new ProfileScreen(frame, currentPlayer, generateFromWrongController));
+        frame.add(new ProfileScreen(
+                frame,
+                currentPlayer,
+                generateFromWrongController,
+                completeQuizController,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
