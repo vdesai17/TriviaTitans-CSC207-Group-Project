@@ -10,6 +10,7 @@ import trivia.use_case.create_quiz.CreateQuizInteractor;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongQuizInteractor;
 import trivia.use_case.load_quiz.LoadQuizInteractor;
+import trivia.use_case.load_quiz.LoadQuizDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizInteractor;
 import trivia.use_case.register_player.RegisterPlayerInteractor;
 import trivia.use_case.review_summary.ReviewSummaryInteractor;
@@ -22,6 +23,8 @@ import trivia.interface_adapter.api.APIManager;
  * This factory creates all DAOs, Interactors, Presenters, and Controllers.
  * UI screens should NEVER instantiate these directly; they should only receive
  * them through their constructors from this factory.
+ * 
+ * FIXED: SelectQuizController now properly includes presenter and viewmodel
  * 
  * This ensures clean architecture by keeping all dependencies in one place.
  */
@@ -38,6 +41,7 @@ public class AppFactory {
     private static final PastQuizViewModel pastQuizViewModel = new PastQuizViewModel();
     private static final GenerateFromWrongViewModel generateFromWrongViewModel = new GenerateFromWrongViewModel();
     private static final ReviewSummaryViewModel reviewSummaryViewModel = new ReviewSummaryViewModel();
+    private static final SelectQuizViewModel selectQuizViewModel = new SelectQuizViewModel();  // ✅ NEW
     
     // --- DAO Access ---
     public static QuizDataAccessObject getQuizDAO() {
@@ -49,9 +53,20 @@ public class AppFactory {
     }
     
     // --- Select Quiz (Use Case: Select API Quiz) ---
+    /**
+     * FIXED: Now creates SelectQuizController with proper dependencies
+     * 
+     * Dependencies: Interactor, Presenter, ViewModel
+     * Flow: Controller injects into Screen → Screen listens to ViewModel changes
+     */
     public static SelectQuizController createSelectQuizController() {
-        SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
-        return new SelectQuizController(interactor);
+        SelectQuizPresenter presenter = new SelectQuizPresenter(selectQuizViewModel);
+        SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager, presenter);
+        return new SelectQuizController(interactor, presenter, selectQuizViewModel);
+    }
+    
+    public static SelectQuizViewModel createSelectQuizViewModel() {
+        return selectQuizViewModel;
     }
     
     // --- Create Quiz (Use Case: Create Custom Quiz) ---
@@ -68,7 +83,8 @@ public class AppFactory {
     // --- Load Quiz (Use Case: Load Custom Quiz) ---
     public static LoadQuizController createLoadQuizController() {
         LoadQuizPresenter presenter = new LoadQuizPresenter();
-        LoadQuizInteractor interactor = new LoadQuizInteractor(quizDAO, presenter);
+        LoadQuizDataAccessInterface dataAccess = quizDAO;
+        LoadQuizInteractor interactor = new LoadQuizInteractor(dataAccess, presenter);
         return new LoadQuizController(interactor, presenter);
     }
     

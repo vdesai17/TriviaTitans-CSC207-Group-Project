@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 32,
+    "score": 34,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -2629,6 +2629,174 @@
           0
         ],
         "completedAt": "2025-11-30T16:10:10.686168400",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764542003178",
+        "quiz": {
+          "id": "quiz-1764542003177",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "e9445096-9cfe-4279-8337-33019c937538",
+              "questionText": "8",
+              "options": [
+                "8",
+                "8",
+                "8",
+                "8"
+              ],
+              "correctAnswer": "8",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "8"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T17:33:23.186568600",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764542010543",
+        "quiz": {
+          "id": "quiz-1764542010543",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "e9445096-9cfe-4279-8337-33019c937538",
+              "questionText": "8",
+              "options": [
+                "8",
+                "8",
+                "8",
+                "8"
+              ],
+              "correctAnswer": "8",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "8"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T17:33:30.543373300",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764542019941",
+        "quiz": {
+          "id": "quiz-1764542019941",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "35c35cbd-8552-454c-9c66-cba5180e1cb3",
+              "questionText": "What country does sushi \u0026amp; karaoke come from?",
+              "options": [
+                "Vietnam",
+                "China",
+                "South Korea",
+                "Japan"
+              ],
+              "correctAnswer": "Japan",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "f8aae633-9fe9-4330-947e-90976d8bc848",
+              "questionText": "A criminal who has \u0026ldquo;cooked the books\u0026rdquo; has engaged in what kind of illegal behavior?",
+              "options": [
+                "Extortion",
+                "Blackmail",
+                "Accounting Fraud",
+                "Money Laundering"
+              ],
+              "correctAnswer": "Accounting Fraud",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "fd80e323-35c7-4beb-8990-e225a7217534",
+              "questionText": "What is \u0026quot;dabbing\u0026quot;?",
+              "options": [
+                "A medical procedure",
+                "A language",
+                "A dance",
+                "A sport"
+              ],
+              "correctAnswer": "A dance",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "ac68d6b6-1f87-4147-b6d9-3534adfcf5d5",
+              "questionText": "Which of these is NOT considered to be a colour that makes up the rainbow?",
+              "options": [
+                "Blue",
+                "Pink",
+                "Violet",
+                "Orange"
+              ],
+              "correctAnswer": "Pink",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e9be20d1-bbea-42bd-98bb-9c3cfb277258",
+              "questionText": "What is the name of NASA\u0026rsquo;s most famous space telescope?",
+              "options": [
+                "Big Eye",
+                "Millenium Falcon",
+                "Hubble Space Telescope",
+                "Death Star"
+              ],
+              "correctAnswer": "Hubble Space Telescope",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Vietnam",
+          "Extortion",
+          "A medical procedure",
+          "Blue",
+          "Big Eye"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-30T17:33:39.941271400",
         "editable": false,
         "userName": "test"
       }
