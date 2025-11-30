@@ -51,7 +51,7 @@ public class CompleteQuizInteractor implements CompleteQuizInputBoundary {
                 quiz,
                 questions.size(),
                 playerName,          // store the player's name in userName
-                LocalDateTime.now(),
+                java.time.LocalDateTime.now().toString(),
                 answers,
                 score
         );

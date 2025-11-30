@@ -68,9 +68,9 @@ public class ReviewQuizResponseModel {
         private final String attemptId;
         private final String quizTitle;
         private final int score;
-        private final LocalDateTime completedAt;
+        private final String completedAt;
 
-        public PastQuizSummary(String attemptId, String quizTitle, int score, LocalDateTime completedAt) {
+        public PastQuizSummary(String attemptId, String quizTitle, int score, String completedAt) {
             this.attemptId = attemptId;
             this.quizTitle = quizTitle;
             this.score = score;
@@ -89,7 +89,7 @@ public class ReviewQuizResponseModel {
             return score;
         }
 
-        public LocalDateTime getCompletedAt() {
+        public String getCompletedAt() {
             return completedAt;
         }
     }

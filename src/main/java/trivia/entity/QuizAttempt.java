@@ -10,12 +10,12 @@ public class QuizAttempt {
     private int totalQuestions;
     private List<String> userAnswers;
     private List<Integer> selectedOptionIndices;
-    private LocalDateTime completedAt;
+    private String completedAt;
     private boolean editable;
     private String userName;
 
     // Constructor
-    public QuizAttempt(String attemptId, Quiz quiz, int totalQuestions, String userName, LocalDateTime completedAt, List<String> userAnswers, int score) {
+    public QuizAttempt(String attemptId, Quiz quiz, int totalQuestions, String userName, String completedAt, List<String> userAnswers, int score) {
 
         this.attemptId = attemptId;
         this.quiz = quiz;
@@ -32,7 +32,7 @@ public class QuizAttempt {
     public QuizAttempt(String attemptId, Quiz quiz, int totalQuestions) {
         this(attemptId, quiz, totalQuestions,
                 null,
-                LocalDateTime.now(),
+                java.time.LocalDateTime.now().toString(),
                 new ArrayList<>(),
                 0);
         this.editable = true;
@@ -65,7 +65,7 @@ public class QuizAttempt {
         return selectedOptionIndices;
     }
 
-    public LocalDateTime getCompletedAt() {
+    public String getCompletedAt() {
         return completedAt;
     }
 
@@ -92,7 +92,7 @@ public class QuizAttempt {
         this.editable = editable;
     }
 
-    public void setCompletedAt(LocalDateTime completedAt) {
+    public void setCompletedAt(String completedAt) {
         this.completedAt = completedAt;
     }
 
