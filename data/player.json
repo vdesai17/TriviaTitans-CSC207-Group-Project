@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 28,
+    "score": 32,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -2137,6 +2137,498 @@
           -1
         ],
         "completedAt": "2025-11-30T15:31:09.595637",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764534942024",
+        "quiz": {
+          "id": "quiz-1764534942024",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "What type of animal was Harambe, who was shot after a child fell into it\u0026#039;s enclosure at the Cincinnati Zoo?",
+              "options": [
+                "Panda",
+                "Tiger",
+                "Gorilla",
+                "Crocodile"
+              ],
+              "correctAnswer": "Gorilla",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Terry Gilliam was an animator that worked with which British comedy group?",
+              "options": [
+                "The Penny Dreadfuls",
+                "The League of Gentlemen\u0026lrm;",
+                "The Goodies\u0026lrm;",
+                "Monty Python"
+              ],
+              "correctAnswer": "Monty Python",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What is the French word for \u0026quot;fish\u0026quot;?",
+              "options": [
+                "poisson",
+                "fiche",
+                "mer",
+                "escargot"
+              ],
+              "correctAnswer": "poisson",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What technology is named after a tenth-century ruler of Denmark and Norway?",
+              "options": [
+                "GPS",
+                "Wi-Fi",
+                "Bluetooth",
+                "Internet"
+              ],
+              "correctAnswer": "Bluetooth",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "How many fingers does a single human hand have?",
+              "options": [
+                "Ten",
+                "Five",
+                "Eight",
+                "Four"
+              ],
+              "correctAnswer": "Four",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Panda",
+          "The Penny Dreadfuls",
+          "poisson",
+          "GPS",
+          "Ten"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-30T15:35:42.032256300",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764536221880",
+        "quiz": {
+          "id": "quiz-1764536221878",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "132930a2-7cf6-4232-9098-9a89cf606549",
+              "questionText": "What is the name of the main Character from the Series: Dead Space?",
+              "options": [
+                "Ellen Ripley",
+                "Commander Shepard",
+                "Captain Kirk",
+                "Isaac Clarke"
+              ],
+              "correctAnswer": "Isaac Clarke",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "d2c63ee6-4139-44ce-9a48-b57d4f0bdb1d",
+              "questionText": "Which best selling toy of 1983 caused hysteria, resulting in riots breaking out in stores?",
+              "options": [
+                "Rubik\u0026rsquo;s Cube",
+                "Transformers",
+                "Care Bears",
+                "Cabbage Patch Kids"
+              ],
+              "correctAnswer": "Cabbage Patch Kids",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "c82be739-7db0-4aba-b57c-27f8e91e17bb",
+              "questionText": "What do sailors call the right side of a boat?",
+              "options": [
+                "Starboard",
+                "Port",
+                "Stern",
+                "Bow"
+              ],
+              "correctAnswer": "Starboard",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "f1e43da2-9da2-4ec3-91bc-b28e22967369",
+              "questionText": "What is the first book of the Old Testament?",
+              "options": [
+                "Exodus",
+                "Leviticus",
+                "Numbers",
+                "Genesis"
+              ],
+              "correctAnswer": "Genesis",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "93471f14-11d1-45f4-8fbc-e599f552fd5c",
+              "questionText": "The Canadian $1 coin is colloquially known as a what?",
+              "options": [
+                "Moodie",
+                "Boolie",
+                "Foolie",
+                "Loonie"
+              ],
+              "correctAnswer": "Loonie",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Ellen Ripley",
+          "Rubik\u0026rsquo;s Cube",
+          "Starboard",
+          "Exodus",
+          "Moodie"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-30T15:57:01.886848900",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764536235772",
+        "quiz": {
+          "id": "quiz-1764536235772",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "3a978e96-c71a-4a96-9394-d566154be681",
+              "questionText": "4",
+              "options": [
+                "4",
+                "4",
+                "4",
+                "4"
+              ],
+              "correctAnswer": "4",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 1,
+        "userAnswers": [
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1
+        ],
+        "completedAt": "2025-11-30T15:57:15.772715700",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764536454914",
+        "quiz": {
+          "id": "quiz-1764536454913",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "7b229912-db2f-4f13-8e3f-482cdf50a9de",
+              "questionText": "5",
+              "options": [
+                "5",
+                "5",
+                "5",
+                "5"
+              ],
+              "correctAnswer": "5",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "5"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T16:00:54.922717",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764536474578",
+        "quiz": {
+          "id": "quiz-1764536474578",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "Which best selling toy of 1983 caused hysteria, resulting in riots breaking out in stores?",
+              "options": [
+                "Rubik\u0026rsquo;s Cube",
+                "Transformers",
+                "Care Bears",
+                "Cabbage Patch Kids"
+              ],
+              "correctAnswer": "Cabbage Patch Kids",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which restaurant\u0026#039;s mascot is a clown?",
+              "options": [
+                "Whataburger",
+                "McDonald\u0026#039;s",
+                "Burger King",
+                "Sonic"
+              ],
+              "correctAnswer": "McDonald\u0026#039;s",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which of the following landmarks is not located in New York City?",
+              "options": [
+                "Central Park",
+                "Times Square",
+                "Lincoln Memorial",
+                "Empire State Building"
+              ],
+              "correctAnswer": "Lincoln Memorial",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which of the following blood component forms a plug at the site of injuries?",
+              "options": [
+                "Platelets",
+                "White blood cells",
+                "Blood plasma",
+                "Red blood cells"
+              ],
+              "correctAnswer": "Platelets",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Waluigi\u0026#039;s first appearance was in what game?",
+              "options": [
+                "Mario Tennis 64 (N64)",
+                "Super Smash Bros. Ultimate",
+                "Wario Land: Super Mario Land 3",
+                "Mario Party (N64)"
+              ],
+              "correctAnswer": "Mario Tennis 64 (N64)",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T16:01:14.578881200",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764537001975",
+        "quiz": {
+          "id": "quiz-1764537001974",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "b399f348-4077-4b4d-8292-53a1088034fc",
+              "questionText": "How many fingers does a single human hand have?",
+              "options": [
+                "Five",
+                "Eight",
+                "Four",
+                "Ten"
+              ],
+              "correctAnswer": "Four",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "7d4370a0-7dae-4e07-b0b9-342d82d11740",
+              "questionText": "A criminal who has \u0026ldquo;cooked the books\u0026rdquo; has engaged in what kind of illegal behavior?",
+              "options": [
+                "Money Laundering",
+                "Extortion",
+                "Blackmail",
+                "Accounting Fraud"
+              ],
+              "correctAnswer": "Accounting Fraud",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "800c11d9-3d4d-4b60-8f47-fe7550d378b4",
+              "questionText": "Area 51 is located in which US state?",
+              "options": [
+                "Utah",
+                "Nevada",
+                "New Mexico",
+                "Arizona"
+              ],
+              "correctAnswer": "Nevada",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "017cb9e9-cee5-40fa-bdf7-af2654f88b6a",
+              "questionText": "Which candy is NOT made by Mars?",
+              "options": [
+                "M\u0026amp;M\u0026#039;s",
+                "Snickers",
+                "Almond Joy",
+                "Twix"
+              ],
+              "correctAnswer": "Almond Joy",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "d3f7b989-a939-4fbe-a385-e13c5cea2ae1",
+              "questionText": "When was Pong released?",
+              "options": [
+                "November 29, 1970",
+                "November 29, 1972",
+                "March 29, 2017",
+                "December 14, 1974"
+              ],
+              "correctAnswer": "November 29, 1972",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Five",
+          "Money Laundering",
+          "Utah",
+          "M\u0026amp;M\u0026#039;s",
+          "November 29, 1970"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-11-30T16:10:01.983049800",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764537010686",
+        "quiz": {
+          "id": "quiz-1764537010686",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "23e10da0-8d8e-418c-bb3d-6f13533582ac",
+              "questionText": "7",
+              "options": [
+                "7",
+                "7",
+                "7",
+                "7"
+              ],
+              "correctAnswer": "7",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "7"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T16:10:10.686168400",
         "editable": false,
         "userName": "test"
       }

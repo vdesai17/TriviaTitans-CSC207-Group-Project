@@ -3,14 +3,13 @@ package trivia.framework.ui;
 import trivia.entity.Player;
 import trivia.entity.Question;
 import trivia.entity.Quiz;
-import trivia.interface_adapter.api.APIManager;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.SelectQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.presenter.GenerateFromWrongState;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
-import trivia.use_case.select_quiz.SelectQuizInteractor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +21,9 @@ import java.util.List;
 /**
  * SelectQuizScreen — choose quiz category, difficulty, or practice from wrong questions.
  * Styled with unified dark-teal gradient and glass UI design.
+ * 
+ * CLEAN ARCHITECTURE: Dependencies are injected through constructor.
+ * No direct instantiation of DAOs or Interactors.
  */
 public class SelectQuizScreen extends JPanel {
     private final JFrame frame;
@@ -46,9 +48,8 @@ public class SelectQuizScreen extends JPanel {
         this.currentPlayer = currentPlayer;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
 
-        APIManager apiManager = new APIManager();
-        SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
-        this.controller = new SelectQuizController(interactor);
+        // Use factory instead of creating directly
+        this.controller = AppFactory.createSelectQuizController();
 
         if (this.generateFromWrongViewModel != null) {
             this.generateFromWrongViewModel.addPropertyChangeListener(evt -> {
@@ -57,8 +58,7 @@ public class SelectQuizScreen extends JPanel {
                     return;
                 }
                 if (state.getQuizId() != null) {
-                    QuizDataAccessObject quizDAO = new QuizDataAccessObject();
-                    Quiz practiceQuiz = quizDAO.getQuizById(state.getQuizId());
+                    Quiz practiceQuiz = AppFactory.getQuizDAO().getQuizById(state.getQuizId());
 
                     if (practiceQuiz == null) {
                         JOptionPane.showMessageDialog(frame, "Failed to load generated practice quiz.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -224,7 +224,7 @@ public class SelectQuizScreen extends JPanel {
                 currentPlayer,
                 generateFromWrongController,
                 completeQuizController,
-                new QuizDataAccessObject(),
+                AppFactory.getQuizDAO(),
                 generateFromWrongViewModel
         ));
         frame.revalidate();
