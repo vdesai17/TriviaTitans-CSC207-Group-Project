@@ -1,9 +1,6 @@
 package trivia.use_case.load_quiz;
 
 import trivia.entity.Quiz;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.interface_adapter.presenter.LoadQuizPresenter;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -11,23 +8,22 @@ import java.util.List;
  * LoadQuizInteractor — Use case interactor responsible for retrieving
  * all quizzes created by a specific player and sending them to the presenter.
  *
- * Follows Clean Architecture:
- * - Depends only on abstractions (Presenter and DAO)
- * - Handles no UI logic
+ * FIXED: Now depends on interface instead of concrete DAO class.
  */
 public class LoadQuizInteractor implements LoadQuizInputBoundary {
 
-    private final QuizDataAccessObject quizDataAccessObject;
-    private final LoadQuizPresenter presenter;
+    private final LoadQuizDataAccessInterface quizDataAccess;  // ✅ FIXED: Now interface
+    private final LoadQuizOutputBoundary presenter;
 
-    public LoadQuizInteractor(QuizDataAccessObject quizDataAccessObject, LoadQuizPresenter presenter) {
-        if (quizDataAccessObject == null) {
-            throw new IllegalArgumentException("QuizDataAccessObject cannot be null");
+    public LoadQuizInteractor(LoadQuizDataAccessInterface quizDataAccess,
+                              LoadQuizOutputBoundary presenter) {
+        if (quizDataAccess == null) {
+            throw new IllegalArgumentException("QuizDataAccess cannot be null");
         }
         if (presenter == null) {
             throw new IllegalArgumentException("Presenter cannot be null");
         }
-        this.quizDataAccessObject = quizDataAccessObject;
+        this.quizDataAccess = quizDataAccess;
         this.presenter = presenter;
     }
 
@@ -39,7 +35,7 @@ public class LoadQuizInteractor implements LoadQuizInputBoundary {
         }
 
         String playerName = inputData.getPlayerName();
-        List<Quiz> quizzes = quizDataAccessObject.getQuizzesByPlayer(playerName);
+        List<Quiz> quizzes = quizDataAccess.getQuizzesByPlayer(playerName);
 
         if (quizzes == null) {
             quizzes = Collections.emptyList();

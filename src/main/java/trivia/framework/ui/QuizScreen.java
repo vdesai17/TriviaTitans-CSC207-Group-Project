@@ -4,10 +4,9 @@ import trivia.entity.Player;
 import trivia.entity.Question;
 import trivia.entity.Quiz;
 import trivia.entity.QuizAttempt;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.interface_adapter.dao.PlayerDataAccessObject;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
@@ -18,6 +17,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * QuizScreen — displays quiz questions and collects user answers.
+ * 
+ * CLEAN ARCHITECTURE: Dependencies injected through constructor.
+ * Uses AppFactory for DAO access during completion.
+ */
 public class QuizScreen extends JPanel {
     private final JFrame frame;
     private final List<Question> questions;
@@ -297,16 +302,14 @@ public class QuizScreen extends JPanel {
 
         attempt.setSelectedOptionIndices(new ArrayList<>(selectedAnswerIndices));
 
-        QuizDataAccessObject quizDAO = new QuizDataAccessObject();
-        quizDAO.saveQuiz(quiz);
-        quizDAO.saveAttempt(attempt);
+        AppFactory.getQuizDAO().saveQuiz(quiz);
+        AppFactory.getQuizDAO().saveAttempt(attempt);
 
-        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
-        Player player = playerDAO.loadPlayer(currentPlayer.getPlayerName());
+        Player player = AppFactory.getPlayerDAO().loadPlayer(currentPlayer.getPlayerName());
         if (player != null) {
             player.addAttempt(attempt);
             player.setScore(player.getScore() + score);
-            playerDAO.savePlayer(player);
+            AppFactory.getPlayerDAO().savePlayer(player);
             System.out.println("✓ Quiz attempt saved to player: " + player.getPlayerName());
         } else {
             System.err.println("⚠ Warning: Could not load player to save attempt");

@@ -1,0 +1,42 @@
+@startuml
+title Review Quiz Use Case
+
+package trivia.use_case.review_quiz {
+  interface ReviewQuizInputBoundary {
+    +viewPastQuizzes(playerName)
+    +openAttempt(attemptId)
+    +saveEditedAnswers(requestModel)
+    +prepareRedoQuiz(attemptId)
+  }
+
+  interface ReviewQuizOutputBoundary {
+    +presentPastQuizList(responseModel)
+    +presentQuizAttempt(responseModel)
+    +presentSaveResult(responseModel)
+    +presentRedoQuiz(responseModel)
+  }
+
+  class ReviewQuizInteractor implements ReviewQuizInputBoundary
+  class ReviewQuizRequestModel
+  class ReviewQuizResponseModel
+  interface ReviewQuizAttemptDataAccessInterface
+  interface ReviewQuizQuizDataAccessInterface
+}
+
+package trivia.entity {
+  class Quiz
+  class QuizAttempt
+  class Question
+}
+
+ReviewQuizInteractor --> ReviewQuizOutputBoundary : presenter
+ReviewQuizInteractor --> ReviewQuizAttemptDataAccessInterface : attempt DAO
+ReviewQuizInteractor --> ReviewQuizQuizDataAccessInterface : quiz DAO
+ReviewQuizInteractor --> ReviewQuizRequestModel : consumes
+ReviewQuizInteractor --> ReviewQuizResponseModel : produces
+ReviewQuizResponseModel --> Quiz
+ReviewQuizResponseModel --> QuizAttempt
+ReviewQuizResponseModel --> Question
+ReviewQuizAttemptDataAccessInterface --> QuizAttempt
+ReviewQuizQuizDataAccessInterface --> Quiz
+@enduml

@@ -1,13 +1,13 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.use_case.review_summary.ReviewSummaryInteractor;
 import trivia.use_case.review_summary.ReviewSummaryResponseModel;
 
@@ -19,8 +19,6 @@ import java.awt.event.ActionEvent;
  * SummaryScreen — displays the final quiz results (score & accuracy)
  * using the unified dark-teal gradient UI theme.
  * Allows returning to the HomeScreen while keeping the same player session.
- *
- * FIXED: Now properly stores and passes all controllers to HomeScreen
  */
 public class SummaryScreen extends JPanel {
     private final JFrame frame;
@@ -39,16 +37,15 @@ public class SummaryScreen extends JPanel {
         this.completeQuizController = completeQuizController;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
 
-        ReviewSummaryViewModel viewModel = new ReviewSummaryViewModel();
+        ReviewSummaryViewModel viewModel = AppFactory.createReviewSummaryViewModel();
         int accuracy = (numberOfQuestions != 0)
                 ? Math.round(score * 100 / numberOfQuestions)
                 : 0;
 
         ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);
-        ReviewSummaryPresenter presenter = new ReviewSummaryPresenter(viewModel);
+        ReviewSummaryController controller = AppFactory.createReviewSummaryController();
+        ReviewSummaryPresenter presenter = AppFactory.createReviewSummaryPresenter(viewModel);
         presenter.presentReviewSummary(responseModel);
-        ReviewSummaryInteractor interactor = new ReviewSummaryInteractor(presenter);
-        ReviewSummaryController controller = new ReviewSummaryController(interactor);
         controller.generateSummary(score, accuracy);
 
         setLayout(new BorderLayout());
@@ -98,7 +95,7 @@ public class SummaryScreen extends JPanel {
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, player, generateFromWrongController,
-                completeQuizController, new QuizDataAccessObject(), generateFromWrongViewModel));
+                completeQuizController, AppFactory.getQuizDAO(), generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

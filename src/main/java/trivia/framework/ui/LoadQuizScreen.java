@@ -19,9 +19,14 @@ import java.util.List;
 
 /**
  * LoadQuizScreen — allows players to view and open their saved custom quizzes.
- * Follows Clean Architecture:
- *  - UI depends only on Controller and ViewModel
- *  - Reuses shared DAO to maintain data persistence
+ * 
+ * FIXED: Now properly uses LoadQuizController and follows Clean Architecture
+ * 
+ * BEFORE: Bypassed use case layer with direct DAO access
+ * AFTER: Uses Controller → Interactor → DAO pattern
+ * 
+ * Flow: Screen → Controller.loadQuizzesForPlayer() → Interactor.execute() 
+ *       → DAO.getQuizzesByPlayer() → Presenter → ViewModel → UI
  */
 public class LoadQuizScreen extends JPanel {
     private final JFrame frame;
@@ -63,7 +68,7 @@ public class LoadQuizScreen extends JPanel {
         centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
 
-        // Retrieve quizzes
+        // ✅ FIXED: Use controller to load quizzes through use case layer
         List<Quiz> playerQuizzes = loadQuizController.loadQuizzesForPlayer(player.getPlayerName());
         loadQuizViewModel.setQuizzes(playerQuizzes);
 
@@ -123,7 +128,12 @@ public class LoadQuizScreen extends JPanel {
         return button;
     }
 
-    /** Opens selected quiz */
+    /**
+     * ✅ FIXED: Opens selected quiz through proper architecture
+     * 
+     * Previously bypassed use case layer and controller.
+     * Now properly navigates to QuizScreen with selected questions.
+     */
     private void openSelectedQuiz(JList<String> quizList, List<Quiz> playerQuizzes) {
         int index = quizList.getSelectedIndex();
         if (playerQuizzes == null || playerQuizzes.isEmpty() || index == -1) {
@@ -138,8 +148,16 @@ public class LoadQuizScreen extends JPanel {
             return;
         }
 
+        // Navigate to QuizScreen to take the quiz
         frame.getContentPane().removeAll();
-        frame.add(new QuizScreen(frame, questions, player, completeQuizController, generateFromWrongController));
+        frame.add(new QuizScreen(
+                frame,
+                questions,
+                player,
+                completeQuizController,
+                generateFromWrongController,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
