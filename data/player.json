@@ -1337,6 +1337,9 @@
         "userName": "test"
       },
       {
+        "attemptId": "attempt-1764535979183",
+        "quiz": {
+          "id": "quiz-1764535979180",
         "attemptId": "attempt-1764529714070",
         "quiz": {
           "id": "quiz-1764529714069",
@@ -1346,6 +1349,28 @@
           "creatorName": "test",
           "questions": [
             {
+              "id": "",
+              "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
+              "options": [
+                "Plato",
+                "Antoine Lavoiser",
+                "Albert Einstein",
+                "Ren\u0026eacute; Descartes"
+              ],
+              "correctAnswer": "Ren\u0026eacute; Descartes",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What type of animal was Harambe, who was shot after a child fell into it\u0026#039;s enclosure at the Cincinnati Zoo?",
+              "options": [
+                "Panda",
+                "Tiger",
+                "Gorilla",
+                "Crocodile"
+              ],
+              "correctAnswer": "Gorilla",
               "id": "80641b3f-79ab-40eb-83da-584ddea5c033",
               "questionText": "What is the name of the Jewish New Year?",
               "options": [
@@ -1456,6 +1481,14 @@
             },
             {
               "id": "",
+              "questionText": "The buried remains of which English explorer of Australia were found in London  in January 2019? ",
+              "options": [
+                "Matthew Flinders",
+                "Abel Tasman",
+                "William Bourke",
+                "Dirk Hartog"
+              ],
+              "correctAnswer": "Matthew Flinders",
               "questionText": "Which language is most widely spoken in Switzerland?",
               "options": [
                 "German",
@@ -1469,6 +1502,14 @@
             },
             {
               "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
               "questionText": "\u0026quot;A3\u0026quot;, \u0026quot;B1\u0026quot;, and \u0026quot;Legal\u0026quot; are typical names of sizes for what object?",
               "options": [
                 "Airplanes",
@@ -1511,6 +1552,7 @@
         "score": 0,
         "totalQuestions": 5,
         "userAnswers": [
+          "Antoine Lavoiser",
           "",
           "",
           "",
@@ -1518,17 +1560,22 @@
           ""
         ],
         "selectedOptionIndices": [
+          1,
           -1,
           -1,
           -1,
           -1,
           -1
         ],
+        "completedAt": "2025-11-30T15:52:59.190501",
         "completedAt": "2025-11-30T14:34:25.062442",
         "editable": false,
         "userName": "test"
       },
       {
+        "attemptId": "attempt-1764535988831",
+        "quiz": {
+          "id": "quiz-1764535988831",
         "attemptId": "attempt-1764531270729",
         "quiz": {
           "id": "quiz-1764531270729",
@@ -1578,6 +1625,14 @@
             },
             {
               "id": "",
+              "questionText": "What type of animal was Harambe, who was shot after a child fell into it\u0026#039;s enclosure at the Cincinnati Zoo?",
+              "options": [
+                "Panda",
+                "Tiger",
+                "Gorilla",
+                "Crocodile"
+              ],
+              "correctAnswer": "Gorilla",
               "questionText": "What is the name of the Jewish New Year?",
               "options": [
                 "Elul",
@@ -1591,6 +1646,27 @@
             },
             {
               "id": "",
+              "questionText": "The buried remains of which English explorer of Australia were found in London  in January 2019? ",
+              "options": [
+                "Matthew Flinders",
+                "Abel Tasman",
+                "William Bourke",
+                "Dirk Hartog"
+              ],
+              "correctAnswer": "Matthew Flinders",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
               "questionText": "What technology is named after a tenth-century ruler of Denmark and Norway?",
               "options": [
                 "GPS",
@@ -1876,6 +1952,14 @@
             },
             {
               "id": "",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Flax",
+                "Straw",
+                "Silk"
+              ],
+              "correctAnswer": "Straw",
               "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
               "options": [
                 "Plato",
@@ -1944,11 +2028,15 @@
           -1,
           -1
         ],
+        "completedAt": "2025-11-30T15:53:08.832033",
         "completedAt": "2025-11-30T15:07:38.574274",
         "editable": false,
         "userName": "test"
       },
       {
+        "attemptId": "attempt-1764536204682",
+        "quiz": {
+          "id": "quiz-1764536204680",
         "attemptId": "attempt-1764534665122",
         "quiz": {
           "id": "quiz-1764534665121",
@@ -1959,6 +2047,14 @@
           "questions": [
             {
               "id": "",
+              "questionText": "Which restaurant\u0026#039;s mascot is a clown?",
+              "options": [
+                "Whataburger",
+                "McDonald\u0026#039;s",
+                "Burger King",
+                "Sonic"
+              ],
+              "correctAnswer": "McDonald\u0026#039;s",
               "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
               "options": [
                 "Plato",
@@ -1972,6 +2068,14 @@
             },
             {
               "id": "",
+              "questionText": "Which of these words refers to something made, distributed, or sold illegally?",
+              "options": [
+                "Bootlace",
+                "Bootleg",
+                "Bootblack",
+                "Bootstrap"
+              ],
+              "correctAnswer": "Bootleg",
               "questionText": "Terry Gilliam was an animator that worked with which British comedy group?",
               "options": [
                 "The Penny Dreadfuls",
@@ -1985,6 +2089,14 @@
             },
             {
               "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
               "questionText": "What is the name of the Jewish New Year?",
               "options": [
                 "Elul",
@@ -2011,6 +2123,14 @@
             },
             {
               "id": "",
+              "questionText": "\u0026quot;A3\u0026quot;, \u0026quot;B1\u0026quot;, and \u0026quot;Legal\u0026quot; are typical names of sizes for what object?",
+              "options": [
+                "Airplanes",
+                "Phone screens",
+                "Law books",
+                "Paper"
+              ],
+              "correctAnswer": "Paper",
               "questionText": "The word \u0026quot;dozen\u0026quot; usually refers to a group of how many objects?",
               "options": [
                 "20",
@@ -2027,6 +2147,7 @@
         "score": 0,
         "totalQuestions": 5,
         "userAnswers": [
+          "Burger King",
           "",
           "",
           "",
@@ -2034,17 +2155,22 @@
           ""
         ],
         "selectedOptionIndices": [
+          2,
           -1,
           -1,
           -1,
           -1,
           -1
         ],
+        "completedAt": "2025-11-30T15:56:44.697650",
         "completedAt": "2025-11-30T15:31:05.138060",
         "editable": false,
         "userName": "test"
       },
       {
+        "attemptId": "attempt-1764536223865",
+        "quiz": {
+          "id": "quiz-1764536223865",
         "attemptId": "attempt-1764534669595",
         "quiz": {
           "id": "quiz-1764534669595",
@@ -2054,6 +2180,29 @@
           "creatorName": "test",
           "questions": [
             {
+              "id": "ae5da9b1-431d-4a5e-ad73-506869b78da4",
+              "questionText": "1",
+              "options": [
+                "1",
+                "1",
+                "1",
+                "1"
+              ],
+              "correctAnswer": "1",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "1"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T15:57:03.865817",
               "id": "eed367a2-f7fe-4045-b774-6e00527f8885",
               "questionText": "What is on display in the Madame Tussaud\u0026#039;s museum in London?",
               "options": [
