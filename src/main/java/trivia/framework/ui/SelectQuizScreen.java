@@ -30,6 +30,7 @@ public class SelectQuizScreen extends JPanel {
     private final GenerateFromWrongController generateFromWrongController;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
     private final CompleteQuizController completeQuizController;
+    private final QuizDataAccessObject quizDAO; // ✅ injected instead of new instance
 
     private final JComboBox<String> categoryBox;
     private final JComboBox<String> difficultyBox;
@@ -39,12 +40,14 @@ public class SelectQuizScreen extends JPanel {
                             GenerateFromWrongController generateFromWrongController,
                             CompleteQuizController completeQuizController,
                             Player currentPlayer,
-                            GenerateFromWrongViewModel generateFromWrongViewModel) {
+                            GenerateFromWrongViewModel generateFromWrongViewModel,
+                            QuizDataAccessObject quizDAO) { // ✅ added DAO parameter
         this.frame = frame;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.currentPlayer = currentPlayer;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
+        this.quizDAO = quizDAO;
 
         APIManager apiManager = new APIManager();
         SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
@@ -57,7 +60,7 @@ public class SelectQuizScreen extends JPanel {
                     return;
                 }
                 if (state.getQuizId() != null) {
-                    QuizDataAccessObject quizDAO = new QuizDataAccessObject();
+                    // ✅ use injected DAO
                     Quiz practiceQuiz = quizDAO.getQuizById(state.getQuizId());
 
                     if (practiceQuiz == null) {
@@ -215,7 +218,7 @@ public class SelectQuizScreen extends JPanel {
                 currentPlayer,
                 generateFromWrongController,
                 completeQuizController,
-                new QuizDataAccessObject(),
+                quizDAO, // ✅ use injected DAO
                 generateFromWrongViewModel
         ));
         frame.revalidate();

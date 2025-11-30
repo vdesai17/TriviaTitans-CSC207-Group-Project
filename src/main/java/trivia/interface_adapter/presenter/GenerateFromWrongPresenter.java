@@ -3,11 +3,11 @@ package trivia.interface_adapter.presenter;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongOutputBoundary;
 import trivia.use_case.generate_from_wrong.GenerateFromWrongOutputData;
 
-import javax.swing.*;
 import java.util.Collections;
 
 /**
- * Presenter for Use Case 6.
+ * Presenter for Use Case 6 (Generate from Wrong Questions).
+ * Pure CA version — no Swing calls.
  */
 public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBoundary {
 
@@ -27,13 +27,6 @@ public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBounda
 
         viewModel.setState(state);
         viewModel.fireStateChanged();
-
-
-        JOptionPane.showMessageDialog(null,
-                "Generated practice quiz: " + response.getQuizId() +
-                        "\n(" + response.getNumberOfQuestions() + " questions)",
-                "Practice Quiz Ready",
-                JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
@@ -46,10 +39,5 @@ public class GenerateFromWrongPresenter implements GenerateFromWrongOutputBounda
 
         viewModel.setState(state);
         viewModel.fireStateChanged();
-
-        JOptionPane.showMessageDialog(null,
-                errorMessage,
-                "Cannot Generate Practice Quiz",
-                JOptionPane.ERROR_MESSAGE);
     }
 }

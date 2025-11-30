@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 27,
+    "score": 28,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -1333,6 +1333,330 @@
           -1
         ],
         "completedAt": "2025-11-30T14:05:58.850940",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764535979183",
+        "quiz": {
+          "id": "quiz-1764535979180",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
+              "options": [
+                "Plato",
+                "Antoine Lavoiser",
+                "Albert Einstein",
+                "Ren\u0026eacute; Descartes"
+              ],
+              "correctAnswer": "Ren\u0026eacute; Descartes",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What type of animal was Harambe, who was shot after a child fell into it\u0026#039;s enclosure at the Cincinnati Zoo?",
+              "options": [
+                "Panda",
+                "Tiger",
+                "Gorilla",
+                "Crocodile"
+              ],
+              "correctAnswer": "Gorilla",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "The buried remains of which English explorer of Australia were found in London  in January 2019? ",
+              "options": [
+                "Matthew Flinders",
+                "Abel Tasman",
+                "William Bourke",
+                "Dirk Hartog"
+              ],
+              "correctAnswer": "Matthew Flinders",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Flax",
+                "Straw",
+                "Silk"
+              ],
+              "correctAnswer": "Straw",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Antoine Lavoiser",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T15:52:59.190501",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764535988831",
+        "quiz": {
+          "id": "quiz-1764535988831",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "Who is considered the \u0026quot;Father of Modern Philosophy\u0026quot;?",
+              "options": [
+                "Plato",
+                "Antoine Lavoiser",
+                "Albert Einstein",
+                "Ren\u0026eacute; Descartes"
+              ],
+              "correctAnswer": "Ren\u0026eacute; Descartes",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What type of animal was Harambe, who was shot after a child fell into it\u0026#039;s enclosure at the Cincinnati Zoo?",
+              "options": [
+                "Panda",
+                "Tiger",
+                "Gorilla",
+                "Crocodile"
+              ],
+              "correctAnswer": "Gorilla",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "The buried remains of which English explorer of Australia were found in London  in January 2019? ",
+              "options": [
+                "Matthew Flinders",
+                "Abel Tasman",
+                "William Bourke",
+                "Dirk Hartog"
+              ],
+              "correctAnswer": "Matthew Flinders",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Flax",
+                "Straw",
+                "Silk"
+              ],
+              "correctAnswer": "Straw",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T15:53:08.832033",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764536204682",
+        "quiz": {
+          "id": "quiz-1764536204680",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "",
+              "questionText": "Which restaurant\u0026#039;s mascot is a clown?",
+              "options": [
+                "Whataburger",
+                "McDonald\u0026#039;s",
+                "Burger King",
+                "Sonic"
+              ],
+              "correctAnswer": "McDonald\u0026#039;s",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "Which of these words refers to something made, distributed, or sold illegally?",
+              "options": [
+                "Bootlace",
+                "Bootleg",
+                "Bootblack",
+                "Bootstrap"
+              ],
+              "correctAnswer": "Bootleg",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What alcoholic drink is made from molasses?",
+              "options": [
+                "Gin",
+                "Vodka",
+                "Rum",
+                "Whisky"
+              ],
+              "correctAnswer": "Rum",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Flax",
+                "Straw",
+                "Silk"
+              ],
+              "correctAnswer": "Straw",
+              "category": "Practice",
+              "difficulty": "mixed"
+            },
+            {
+              "id": "",
+              "questionText": "\u0026quot;A3\u0026quot;, \u0026quot;B1\u0026quot;, and \u0026quot;Legal\u0026quot; are typical names of sizes for what object?",
+              "options": [
+                "Airplanes",
+                "Phone screens",
+                "Law books",
+                "Paper"
+              ],
+              "correctAnswer": "Paper",
+              "category": "Practice",
+              "difficulty": "mixed"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Burger King",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-11-30T15:56:44.697650",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764536223865",
+        "quiz": {
+          "id": "quiz-1764536223865",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "ae5da9b1-431d-4a5e-ad73-506869b78da4",
+              "questionText": "1",
+              "options": [
+                "1",
+                "1",
+                "1",
+                "1"
+              ],
+              "correctAnswer": "1",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "1"
+        ],
+        "selectedOptionIndices": [
+          0
+        ],
+        "completedAt": "2025-11-30T15:57:03.865817",
         "editable": false,
         "userName": "test"
       }
