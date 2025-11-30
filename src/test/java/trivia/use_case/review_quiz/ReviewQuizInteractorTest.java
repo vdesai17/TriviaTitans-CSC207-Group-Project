@@ -463,7 +463,7 @@ class ReviewQuizInteractorTest {
                 quiz,
                 quiz.getQuestions().size(),
                 "testPlayer",
-                LocalDateTime.now().toString(),
+                LocalDateTime.now().toString(),  // ✅ FIXED: Convert to String
                 Arrays.asList("4", "5"),
                 score
         );
