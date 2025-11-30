@@ -1,17 +1,41 @@
 package trivia.use_case.select_quiz;
 
 import trivia.entity.Question;
-import trivia.interface_adapter.api.APIManager;
 import java.util.List;
 
-public class SelectQuizInteractor {
-    private final APIManager apiManager;
+/**
+ * FIXED: Now follows proper Clean Architecture with boundaries and data objects.
+ */
+public class SelectQuizInteractor implements SelectQuizInputBoundary {
 
-    public SelectQuizInteractor(APIManager apiManager) {
-        this.apiManager = apiManager;
+    private final SelectQuizAPIDataAccessInterface apiDataAccess;
+    private final SelectQuizOutputBoundary presenter;
+
+    public SelectQuizInteractor(SelectQuizAPIDataAccessInterface apiDataAccess,
+                                SelectQuizOutputBoundary presenter) {
+        this.apiDataAccess = apiDataAccess;
+        this.presenter = presenter;
     }
 
-    public List<Question> loadQuestions(String categoryId, String difficulty, int amount) {
-        return apiManager.fetchQuestions(categoryId, difficulty, amount);
+    @Override
+    public void execute(SelectQuizInputData inputData) {
+        try {
+            List<Question> questions = apiDataAccess.fetchQuestions(
+                    inputData.getCategoryId(),
+                    inputData.getDifficulty(),
+                    inputData.getAmount()
+            );
+
+            if (questions == null || questions.isEmpty()) {
+                presenter.presentFailure("No questions found. Try another combination.");
+                return;
+            }
+
+            SelectQuizOutputData outputData = new SelectQuizOutputData(questions);
+            presenter.presentSuccess(outputData);
+
+        } catch (Exception e) {
+            presenter.presentFailure("Failed to load questions: " + e.getMessage());
+        }
     }
 }

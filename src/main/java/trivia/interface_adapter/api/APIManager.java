@@ -2,15 +2,17 @@ package trivia.interface_adapter.api;
 
 import com.google.gson.*;
 import trivia.entity.Question;
+import trivia.use_case.select_quiz.SelectQuizAPIDataAccessInterface;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class APIManager {
+public class APIManager implements SelectQuizAPIDataAccessInterface {
 
     private final String baseURL = "https://opentdb.com/api.php";
 
+    @Override
     public List<Question> fetchQuestions(String category, String difficulty, int amount) {
         List<Question> questions = new ArrayList<>();
         try {
@@ -27,7 +29,7 @@ public class APIManager {
                 throw new IOException("HTTP error: " + conn.getResponseCode());
 
             InputStreamReader reader =
-                new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
+                    new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
             JsonObject response = JsonParser.parseReader(reader).getAsJsonObject();
             JsonArray results = response.getAsJsonArray("results");
 
@@ -43,7 +45,6 @@ public class APIManager {
                 options.add(correct);
                 Collections.shuffle(options);
 
-                // generate ID for fetched question
                 String id = UUID.randomUUID().toString();
 
                 Question q = new Question(id,
