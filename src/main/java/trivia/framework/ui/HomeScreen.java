@@ -168,7 +168,7 @@ public class HomeScreen extends JPanel {
                 completeQuizController,
                 generateFromWrongController,
                 dao,
-                generateFromWrongViewModel// ✅ pass refreshed DAO
+                generateFromWrongViewModel
         ));
         frame.revalidate();
         frame.repaint();

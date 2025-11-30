@@ -50,25 +50,34 @@ public class SelectQuizScreen extends JPanel {
         SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
         this.controller = new SelectQuizController(interactor);
 
-        this.generateFromWrongViewModel.addPropertyChangeListener(evt -> {
-            GenerateFromWrongState state = generateFromWrongViewModel.getState();
-            if (state.getErrorMessage() != null) {
-                return;
-            }
-            if (state.getQuizId() != null) {
-                QuizDataAccessObject quizDAO = new QuizDataAccessObject();
-                Quiz practiceQuiz = quizDAO.getQuizById(state.getQuizId());
-
-                if (practiceQuiz == null) {
-                    JOptionPane.showMessageDialog(frame, "Failed to load generated practice quiz.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (this.generateFromWrongViewModel != null) {
+            this.generateFromWrongViewModel.addPropertyChangeListener(evt -> {
+                GenerateFromWrongState state = generateFromWrongViewModel.getState();
+                if (state.getErrorMessage() != null) {
                     return;
                 }
-                frame.getContentPane().removeAll();
-                frame.add(new QuizScreen(frame, practiceQuiz.getQuestions(), currentPlayer, completeQuizController));
-                frame.revalidate();
-                frame.repaint();
-            }
-        });
+                if (state.getQuizId() != null) {
+                    QuizDataAccessObject quizDAO = new QuizDataAccessObject();
+                    Quiz practiceQuiz = quizDAO.getQuizById(state.getQuizId());
+
+                    if (practiceQuiz == null) {
+                        JOptionPane.showMessageDialog(frame, "Failed to load generated practice quiz.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    frame.getContentPane().removeAll();
+                    frame.add(new QuizScreen(
+                            frame,
+                            practiceQuiz.getQuestions(),
+                            currentPlayer,
+                            completeQuizController,
+                            generateFromWrongController,
+                            generateFromWrongViewModel
+                    ));
+                    frame.revalidate();
+                    frame.repaint();
+                }
+            });
+        }
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -178,7 +187,7 @@ public class SelectQuizScreen extends JPanel {
                 );
             } else {
                 frame.getContentPane().removeAll();
-                frame.add(new QuizScreen(frame, questions, currentPlayer, completeQuizController));
+                frame.add(new QuizScreen(frame, questions, currentPlayer, completeQuizController, generateFromWrongController, generateFromWrongViewModel));
                 frame.revalidate();
                 frame.repaint();
             }

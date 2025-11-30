@@ -91,9 +91,9 @@ public class SummaryScreen extends JPanel {
         add(footer, BorderLayout.SOUTH);
     }
 
-    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
-        this(score, numberOfQuestions, frame, player, null, null, null);
-    }
+    //public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
+        //this(score, numberOfQuestions, frame, player, null, null, null);
+    //}
 
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
