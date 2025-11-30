@@ -13,20 +13,26 @@ class CreateQuizInteractorTest {
     // ---------- Stub DAO ----------
     private static class InMemoryQuizDAO implements CreateQuizDataAccessInterface {
         Quiz savedQuiz;
-        boolean existsReturn;
-
-        InMemoryQuizDAO(boolean existsReturn) {
-            this.existsReturn = existsReturn;
-        }
 
         @Override
-        public boolean existsById(String id) {
-            return existsReturn;
-        }
-
-        @Override
-        public void save(Quiz quiz) {
+        public void saveQuiz(Quiz quiz) {
             this.savedQuiz = quiz;
+        }
+
+        @Override
+        public List<Quiz> getAllQuizzes() {
+            if (savedQuiz == null) {
+                return List.of();
+            }
+            return List.of(savedQuiz);
+        }
+
+        @Override
+        public List<Quiz> getQuizzesByPlayer(String playerName) {
+            if (savedQuiz == null || !playerName.equals(savedQuiz.getCreatorName())) {
+                return List.of();
+            }
+            return List.of(savedQuiz);
         }
     }
 
@@ -46,7 +52,7 @@ class CreateQuizInteractorTest {
         }
     }
 
-    // ---------- create question----------
+    // ---------- create question ----------
     private AddQuestionInputData validQuestion() {
         return new AddQuestionInputData(
                 "dummyQuizId",
@@ -75,7 +81,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_titleBlank() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -90,7 +96,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_creatorBlank() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -105,7 +111,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_questionsNull() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -119,7 +125,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_questionTextBlank() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -134,7 +140,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_optionsNull() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -149,7 +155,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_correctAnswerBlank() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -164,7 +170,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void fail_correctAnswerNotInOptions() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -177,13 +183,131 @@ class CreateQuizInteractorTest {
         assertEquals("Correct answer must be one of the options.", presenter.failMessage);
     }
 
+    @Test
+    void fail_titleNull() {
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
+        TestPresenter presenter = new TestPresenter();
+        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
+
+        CreateQuizInputData input =
+                new CreateQuizInputData(null, "General", "medium", "Alice",
+                        List.of(validQuestion()));
+
+        interactor.execute(input);
+
+        assertEquals("Quiz title cannot be empty.", presenter.failMessage);
+        assertNull(presenter.successData);
+        assertNull(dao.savedQuiz);
+    }
+
+    @Test
+    void fail_creatorNull() {
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
+        TestPresenter presenter = new TestPresenter();
+        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
+
+        CreateQuizInputData input =
+                new CreateQuizInputData("My Quiz", "General", "medium", null,
+                        List.of(validQuestion()));
+
+        interactor.execute(input);
+
+        assertEquals("Creator name cannot be empty.", presenter.failMessage);
+        assertNull(presenter.successData);
+        assertNull(dao.savedQuiz);
+    }
+
+    @Test
+    void fail_questionsEmptyList() {
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
+        TestPresenter presenter = new TestPresenter();
+        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
+
+        CreateQuizInputData input =
+                new CreateQuizInputData("My Quiz", "General", "medium", "Alice",
+                        List.of()  // empty list
+                );
+
+        interactor.execute(input);
+
+        assertEquals("Quiz must contain at least one question.", presenter.failMessage);
+        assertNull(presenter.successData);
+        assertNull(dao.savedQuiz);
+    }
+
+    @Test
+    void fail_questionTextNull() {
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
+        TestPresenter presenter = new TestPresenter();
+        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
+
+        AddQuestionInputData badQ = new AddQuestionInputData(
+                "quizid",
+                null,                        // questionText == null
+                List.of("A", "B"),
+                "A",
+                "Math",
+                "easy"
+        );
+
+        interactor.execute(validQuiz(List.of(badQ)));
+
+        assertEquals("Question text cannot be empty.", presenter.failMessage);
+        assertNull(presenter.successData);
+        assertNull(dao.savedQuiz);
+    }
+
+    @Test
+    void fail_optionsTooFew() {
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
+        TestPresenter presenter = new TestPresenter();
+        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
+
+        AddQuestionInputData badQ = new AddQuestionInputData(
+                "quizid",
+                "Q?",
+                List.of("A"),                 // test for one option
+                "A",
+                "Math",
+                "easy"
+        );
+
+        interactor.execute(validQuiz(List.of(badQ)));
+
+        assertEquals("Each question must have at least two options.", presenter.failMessage);
+        assertNull(presenter.successData);
+        assertNull(dao.savedQuiz);
+    }
+
+    @Test
+    void fail_correctAnswerNull() {
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
+        TestPresenter presenter = new TestPresenter();
+        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
+
+        AddQuestionInputData badQ = new AddQuestionInputData(
+                "quizid",
+                "Q?",
+                List.of("A", "B"),
+                null,                         // correctAnswer == null
+                "Math",
+                "easy"
+        );
+
+        interactor.execute(validQuiz(List.of(badQ)));
+
+        assertEquals("Correct answer cannot be empty.", presenter.failMessage);
+        assertNull(presenter.successData);
+        assertNull(dao.savedQuiz);
+    }
+
     // ===============================================================
-    //  SUCCESS CASE 1：question using quiz  difficulty
+    //  SUCCESS CASES
     // ===============================================================
 
     @Test
     void success_questionInheritQuizCategoryDifficulty_whenMissing() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false); // existsById → false, so isSuccess = true
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -208,7 +332,7 @@ class CreateQuizInteractorTest {
         assertEquals("QuizCat", out.getCategory());
         assertEquals("hard", out.getDifficulty());
         assertEquals(1, out.getQuestionCount());
-        assertTrue(out.isSuccess());   // !false = true
+        assertTrue(out.isSuccess());   // 新建 quiz，固定为 true
 
         // question inherited quiz category/difficulty
         Question savedQ = dao.savedQuiz.getQuestions().get(0);
@@ -216,13 +340,9 @@ class CreateQuizInteractorTest {
         assertEquals("hard", savedQ.getDifficulty());
     }
 
-    // ===============================================================
-    //  SUCCESS CASE 2：quiz it self category/difficulty
-    // ===============================================================
-
     @Test
     void success_questionUsesOwnCategoryDifficulty_whenProvided() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(true); // existsById → true, so isSuccess = false
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -240,135 +360,18 @@ class CreateQuizInteractorTest {
         assertNotNull(presenter.successData);
         assertNotNull(dao.savedQuiz);
 
-        // existsById = true → isSuccess = !true = false
-        assertFalse(presenter.successData.isSuccess());
+        // 现在不再依赖 existsById，isSuccess 一律为 true
+        assertTrue(presenter.successData.isSuccess());
 
         // question should keep its own values
         Question savedQ = dao.savedQuiz.getQuestions().get(0);
         assertEquals("QCat", savedQ.getCategory());
         assertEquals("easy", savedQ.getDifficulty());
     }
-    @Test
-    void fail_titleNull() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
-        TestPresenter presenter = new TestPresenter();
-        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
-
-        CreateQuizInputData input =
-                new CreateQuizInputData(null, "General", "medium", "Alice",
-                        List.of(validQuestion()));
-
-        interactor.execute(input);
-
-        assertEquals("Quiz title cannot be empty.", presenter.failMessage);
-        assertNull(presenter.successData);
-        assertNull(dao.savedQuiz);
-    }
-
-    @Test
-    void fail_creatorNull() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
-        TestPresenter presenter = new TestPresenter();
-        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
-
-        CreateQuizInputData input =
-                new CreateQuizInputData("My Quiz", "General", "medium", null,
-                        List.of(validQuestion()));
-
-        interactor.execute(input);
-
-        assertEquals("Creator name cannot be empty.", presenter.failMessage);
-        assertNull(presenter.successData);
-        assertNull(dao.savedQuiz);
-    }
-
-    @Test
-    void fail_questionsEmptyList() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
-        TestPresenter presenter = new TestPresenter();
-        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
-
-        CreateQuizInputData input =
-                new CreateQuizInputData("My Quiz", "General", "medium", "Alice",
-                        List.of()  // empty list
-                );
-
-        interactor.execute(input);
-
-        assertEquals("Quiz must contain at least one question.", presenter.failMessage);
-        assertNull(presenter.successData);
-        assertNull(dao.savedQuiz);
-    }
-
-    @Test
-    void fail_questionTextNull() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
-        TestPresenter presenter = new TestPresenter();
-        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
-
-        AddQuestionInputData badQ = new AddQuestionInputData(
-                "quizid",
-                null,                        // questionText == null
-                List.of("A", "B"),
-                "A",
-                "Math",
-                "easy"
-        );
-
-        interactor.execute(validQuiz(List.of(badQ)));
-
-        assertEquals("Question text cannot be empty.", presenter.failMessage);
-        assertNull(presenter.successData);
-        assertNull(dao.savedQuiz);
-    }
-
-    @Test
-    void fail_optionsTooFew() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
-        TestPresenter presenter = new TestPresenter();
-        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
-
-        AddQuestionInputData badQ = new AddQuestionInputData(
-                "quizid",
-                "Q?",
-                List.of("A"),                 // test for one option
-                "A",
-                "Math",
-                "easy"
-        );
-
-        interactor.execute(validQuiz(List.of(badQ)));
-
-        assertEquals("Each question must have at least two options.", presenter.failMessage);
-        assertNull(presenter.successData);
-        assertNull(dao.savedQuiz);
-    }
-
-    @Test
-    void fail_correctAnswerNull() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
-        TestPresenter presenter = new TestPresenter();
-        CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
-
-        AddQuestionInputData badQ = new AddQuestionInputData(
-                "quizid",
-                "Q?",
-                List.of("A", "B"),
-                null,                         // correctAnswer == null
-                "Math",
-                "easy"
-        );
-
-        interactor.execute(validQuiz(List.of(badQ)));
-
-        assertEquals("Correct answer cannot be empty.", presenter.failMessage);
-        assertNull(presenter.successData);
-        assertNull(dao.savedQuiz);
-    }
 
     @Test
     void success_questionCategoryNull_usesQuizCategory() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -397,7 +400,7 @@ class CreateQuizInteractorTest {
 
     @Test
     void success_questionDifficultyEmpty_usesQuizDifficulty() {
-        InMemoryQuizDAO dao = new InMemoryQuizDAO(false);
+        InMemoryQuizDAO dao = new InMemoryQuizDAO();
         TestPresenter presenter = new TestPresenter();
         CreateQuizInteractor interactor = new CreateQuizInteractor(dao, presenter);
 
@@ -408,7 +411,7 @@ class CreateQuizInteractorTest {
                 List.of("A", "B"),
                 "A",
                 "QCat",        // has category
-                ""             // null difficulty
+                ""             // empty difficulty
         );
 
         CreateQuizInputData input =
@@ -420,7 +423,7 @@ class CreateQuizInteractorTest {
         assertNotNull(dao.savedQuiz);
 
         Question savedQ = dao.savedQuiz.getQuestions().get(0);
-        assertEquals("QCat", savedQ.getCategory());      // has  category
+        assertEquals("QCat", savedQ.getCategory());      // has category
         assertEquals("hard", savedQ.getDifficulty());    // quiz difficulty
     }
 

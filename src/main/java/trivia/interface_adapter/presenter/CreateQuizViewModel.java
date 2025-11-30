@@ -3,72 +3,21 @@ package trivia.interface_adapter.presenter;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-/**
- * ViewModel for the Create Quiz use case.
- */
 public class CreateQuizViewModel {
-
     public static final String CREATE_QUIZ_PROPERTY = "createQuiz";
 
-    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport support;
 
-    private String quizId;
-    private String title;
-    private String category;
-    private String difficulty;
-    private int questionCount;
+    // 保存给 UI 用的数据
     private boolean success;
     private String errorMessage;
+    private String quizId;
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        support.addPropertyChangeListener(listener);
+    public CreateQuizViewModel() {
+        this.support = new PropertyChangeSupport(this);
     }
 
-    public void firePropertyChanged() {
-        support.firePropertyChange(CREATE_QUIZ_PROPERTY, null, this);
-    }
-
-    // ---- getters & setters ----
-
-    public String getQuizId() {
-        return quizId;
-    }
-
-    public void setQuizId(String quizId) {
-        this.quizId = quizId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(String difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getQuestionCount() {
-        return questionCount;
-    }
-
-    public void setQuestionCount(int questionCount) {
-        this.questionCount = questionCount;
-    }
+    // ====== 状态字段的 getter / setter（不直接 fire 事件）======
 
     public boolean isSuccess() {
         return success;
@@ -84,5 +33,29 @@ public class CreateQuizViewModel {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getQuizId() {
+        return quizId;
+    }
+
+    public void setQuizId(String quizId) {
+        this.quizId = quizId;
+    }
+
+    // ====== 事件相关 ======
+
+    /** Presenter 在所有 setter 调完之后，调用一次 firePropertyChanged() 通知 UI */
+    public void firePropertyChanged() {
+        // 这里 newValue 不用传具体对象，view 可以直接从 viewModel 读字段
+        support.firePropertyChange(CREATE_QUIZ_PROPERTY, null, null);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
     }
 }

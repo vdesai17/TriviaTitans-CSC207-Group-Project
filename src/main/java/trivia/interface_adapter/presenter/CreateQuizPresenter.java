@@ -18,10 +18,7 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
     @Override
     public void prepareSuccessView(CreateQuizOutputData outputData) {
         viewModel.setQuizId(outputData.getQuizId());
-        viewModel.setTitle(outputData.getTitle());
-        viewModel.setCategory(outputData.getCategory());
-        viewModel.setDifficulty(outputData.getDifficulty());
-        viewModel.setQuestionCount(outputData.getQuestionCount());
+        // 如果你只关心 quizId，也可以不设 title/category 等
         viewModel.setSuccess(true);
         viewModel.setErrorMessage(null);
 
@@ -35,4 +32,5 @@ public class CreateQuizPresenter implements CreateQuizOutputBoundary {
 
         viewModel.firePropertyChanged();
     }
+
 }

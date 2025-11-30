@@ -29,7 +29,7 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
     @Override
     public void execute(CreateQuizInputData inputData) {
 
-        //all information needed for creating quiz
+        // all information needed for creating quiz
         if (inputData.getTitle() == null || inputData.getTitle().trim().isEmpty()) {
             presenter.prepareFailView("Quiz title cannot be empty.");
             return;
@@ -52,32 +52,32 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
         // check all questions in the quiz
         for (AddQuestionInputData qInput : questionInputs) {
 
-                if (qInput.getQuestionText() == null || qInput.getQuestionText().trim().isEmpty()) {
-                    presenter.prepareFailView("Question text cannot be empty.");
-                    return;
-                }
+            if (qInput.getQuestionText() == null || qInput.getQuestionText().trim().isEmpty()) {
+                presenter.prepareFailView("Question text cannot be empty.");
+                return;
+            }
 
-                List<String> options = qInput.getOptions();
-                if (options == null || options.size() < 2) {
-                    presenter.prepareFailView("Each question must have at least two options.");
-                    return;
-                }
+            List<String> options = qInput.getOptions();
+            if (options == null || options.size() < 2) {
+                presenter.prepareFailView("Each question must have at least two options.");
+                return;
+            }
 
-                String correctAnswer = qInput.getCorrectAnswer();
-                if (correctAnswer == null || correctAnswer.trim().isEmpty()) {
-                    presenter.prepareFailView("Correct answer cannot be empty.");
-                    return;
-                }
-                if (!options.contains(correctAnswer)) {
-                    presenter.prepareFailView("Correct answer must be one of the options.");
-                    return;
-                }
+            String correctAnswer = qInput.getCorrectAnswer();
+            if (correctAnswer == null || correctAnswer.trim().isEmpty()) {
+                presenter.prepareFailView("Correct answer cannot be empty.");
+                return;
+            }
+            if (!options.contains(correctAnswer)) {
+                presenter.prepareFailView("Correct answer must be one of the options.");
+                return;
+            }
 
-                // if question has no category/difficulty, generate by quiz's category
-                String questionCategory =
-                        (qInput.getCategory() == null || qInput.getCategory().isEmpty())
-                                ? inputData.getCategory()
-                                : qInput.getCategory();
+            // if question has no category/difficulty, generate by quiz's category
+            String questionCategory =
+                    (qInput.getCategory() == null || qInput.getCategory().isEmpty())
+                            ? inputData.getCategory()
+                            : qInput.getCategory();
 
             String questionDifficulty =
                     (qInput.getDifficulty() == null || qInput.getDifficulty().isEmpty())
@@ -101,7 +101,6 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
 
         // generate quiz id and quiz entity
         String quizId = UUID.randomUUID().toString();
-        boolean existed = quizDataAccess.existsById(quizId);
 
         Quiz quiz = new Quiz(
                 quizId,
@@ -112,17 +111,17 @@ public class CreateQuizInteractor implements CreateQuizInputBoundary {
                 questions
         );
 
-        // save quiz
-        quizDataAccess.save(quiz);
+        // save quiz via DAO
+        quizDataAccess.saveQuiz(quiz);
 
-        // store in outputdata for presenter
+        // store in output data for presenter
         CreateQuizOutputData outputData = new CreateQuizOutputData(
                 quiz.getId(),
                 quiz.getTitle(),
                 quiz.getCategory(),
                 quiz.getDifficulty(),
                 quiz.getQuestions().size(),
-                !existed
+                true
         );
 
         presenter.prepareSuccessView(outputData);
