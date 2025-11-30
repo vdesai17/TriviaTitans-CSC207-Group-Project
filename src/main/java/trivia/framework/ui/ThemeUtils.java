@@ -81,7 +81,7 @@ public class ThemeUtils {
 
             case "subtitle":
                 label.setFont(SUBTITLE_FONT);
-                label.setForeground(new Color(220, 240, 240));
+                label.setForeground(new Color(100, 190, 180));
                 break;
 
             case "body":
