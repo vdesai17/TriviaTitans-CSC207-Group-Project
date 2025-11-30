@@ -117,11 +117,13 @@ public class HomeScreen extends JPanel {
                 generateFromWrongController,
                 completeQuizController,
                 currentPlayer,
-                generateFromWrongViewModel
+                generateFromWrongViewModel,
+                quizDAO // ✅ new 6th argument added
         ));
         frame.revalidate();
         frame.repaint();
     }
+
 
     private void handleLoadQuiz(ActionEvent e) {
         // Reload data from file

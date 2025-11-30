@@ -37,6 +37,7 @@ public class SelectQuizScreen extends JPanel implements PropertyChangeListener {
     private final GenerateFromWrongController generateFromWrongController;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
     private final CompleteQuizController completeQuizController;
+    private final QuizDataAccessObject quizDAO; // ✅ injected instead of new instance
 
     private final JComboBox<String> categoryBox;
     private final JComboBox<String> difficultyBox;
@@ -46,12 +47,14 @@ public class SelectQuizScreen extends JPanel implements PropertyChangeListener {
                             GenerateFromWrongController generateFromWrongController,
                             CompleteQuizController completeQuizController,
                             Player currentPlayer,
-                            GenerateFromWrongViewModel generateFromWrongViewModel) {
+                            GenerateFromWrongViewModel generateFromWrongViewModel,
+                            QuizDataAccessObject quizDAO) { // ✅ added DAO parameter
         this.frame = frame;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.currentPlayer = currentPlayer;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
+        this.quizDAO = quizDAO;
 
         // ✅ FIXED: Get controller and viewmodel from factory (proper dependency injection)
         this.controller = AppFactory.createSelectQuizController();
