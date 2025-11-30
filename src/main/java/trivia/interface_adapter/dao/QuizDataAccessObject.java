@@ -10,6 +10,7 @@ import trivia.use_case.generate_from_wrong.WrongQuestionRecord;
 import trivia.use_case.review_quiz.ReviewQuizAttemptDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizQuizDataAccessInterface;
 import trivia.use_case.complete_quiz.QuizAttemptDataAccessInterface;
+import trivia.use_case.create_quiz.CreateQuizDataAccessInterface;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -21,7 +22,8 @@ public class QuizDataAccessObject
         implements ReviewQuizAttemptDataAccessInterface,
         ReviewQuizQuizDataAccessInterface,
         GenerateFromWrongDataAccessInterface,
-        QuizAttemptDataAccessInterface {
+        QuizAttemptDataAccessInterface,
+        CreateQuizDataAccessInterface {
 
     private static final String FILE_PATH = "data/custom_quizzes.json";
     private static final String ATTEMPT_FILE_PATH = "data/quiz_attempts.json";

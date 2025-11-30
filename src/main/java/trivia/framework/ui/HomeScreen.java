@@ -5,11 +5,14 @@ import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.ReviewController;
 import trivia.interface_adapter.controller.LoadQuizController;
+import trivia.interface_adapter.controller.CreateQuizController;
 import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.dao.PlayerDataAccessObject;
 import trivia.interface_adapter.presenter.*;
+import trivia.interface_adapter.presenter.CreateQuizViewModel;
 import trivia.use_case.load_quiz.LoadQuizInteractor;
 import trivia.use_case.review_quiz.ReviewQuizInteractor;
+import trivia.use_case.create_quiz.CreateQuizInteractor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +30,8 @@ public class HomeScreen extends JPanel {
     private final QuizDataAccessObject quizDAO;
     private final ReviewController reviewController;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
+    private final CreateQuizController createQuizController;
+    private final CreateQuizViewModel createQuizViewModel;
 
     public HomeScreen(JFrame frame,
                       Player player,
@@ -40,6 +45,14 @@ public class HomeScreen extends JPanel {
         this.completeQuizController = completeQuizController;
         this.quizDAO = quizDAO;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
+        // ========== Initialize Create Quiz ==========
+        this.createQuizViewModel = new CreateQuizViewModel();
+        CreateQuizPresenter createQuizPresenter =
+                new CreateQuizPresenter(createQuizViewModel);
+        CreateQuizInteractor createQuizInteractor =
+                new CreateQuizInteractor(this.quizDAO, createQuizPresenter);
+        this.createQuizController = new CreateQuizController(createQuizInteractor);
+
 
         // Initialize Review Quiz components
         PastQuizViewModel pastQuizViewModel = new PastQuizViewModel();
@@ -111,12 +124,12 @@ public class HomeScreen extends JPanel {
 
     private void handleCreateCustomQuiz(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new CreateCustomQuizScreen(frame,
+        frame.add(new CreateCustomQuizScreen(
+                frame,
                 currentPlayer,
-                generateFromWrongController,
-                completeQuizController,
-                quizDAO,
-                generateFromWrongViewModel));
+                createQuizController,
+                createQuizViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
@@ -135,31 +148,31 @@ public class HomeScreen extends JPanel {
     }
 
     private void handleLoadQuiz(ActionEvent e) {
-    // ✅ Ensure DAO is reloaded every time user opens Load Existing Quiz
-    QuizDataAccessObject dao = (quizDAO != null) ? quizDAO : new QuizDataAccessObject();
+        // ✅ Ensure DAO is reloaded every time user opens Load Existing Quiz
+        QuizDataAccessObject dao = (quizDAO != null) ? quizDAO : new QuizDataAccessObject();
 
-    // Reload data from file (fixes “Quiz data not initialized”)
-    dao.getAllQuizzes(); // this call refreshes the internal static list
+        // Reload data from file (fixes “Quiz data not initialized”)
+        dao.getAllQuizzes(); // this call refreshes the internal static list
 
-    LoadQuizPresenter loadQuizPresenter = new LoadQuizPresenter();
-    LoadQuizInteractor loadQuizInteractor = new LoadQuizInteractor(dao, loadQuizPresenter);
-    LoadQuizController loadQuizController = new LoadQuizController(loadQuizInteractor, loadQuizPresenter);
-    LoadQuizViewModel loadQuizViewModel = new LoadQuizViewModel();
+        LoadQuizPresenter loadQuizPresenter = new LoadQuizPresenter();
+        LoadQuizInteractor loadQuizInteractor = new LoadQuizInteractor(dao, loadQuizPresenter);
+        LoadQuizController loadQuizController = new LoadQuizController(loadQuizInteractor, loadQuizPresenter);
+        LoadQuizViewModel loadQuizViewModel = new LoadQuizViewModel();
 
-    frame.getContentPane().removeAll();
-    frame.add(new LoadQuizScreen(
-            frame,
-            currentPlayer,
-            loadQuizController,
-            loadQuizViewModel,
-            completeQuizController,
-            generateFromWrongController,
-            dao,
-            generateFromWrongViewModel// ✅ pass refreshed DAO
-    ));
-    frame.revalidate();
-    frame.repaint();
-}
+        frame.getContentPane().removeAll();
+        frame.add(new LoadQuizScreen(
+                frame,
+                currentPlayer,
+                loadQuizController,
+                loadQuizViewModel,
+                completeQuizController,
+                generateFromWrongController,
+                dao,
+                generateFromWrongViewModel// ✅ pass refreshed DAO
+        ));
+        frame.revalidate();
+        frame.repaint();
+    }
 
     private void handleReviewQuizzes(ActionEvent e) {
         PastQuizViewModel viewModel = new PastQuizViewModel();
