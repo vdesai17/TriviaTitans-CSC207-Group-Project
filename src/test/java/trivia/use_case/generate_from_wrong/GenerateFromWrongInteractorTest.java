@@ -73,12 +73,12 @@ class GenerateFromWrongQuizInteractorTest {
     }
 
     /**
-     * If the user requests more questions than available, we should still succeed
-     * and only use the available questions.
+     * If the user requests more questions than available, we now FAIL with a clear message
+     * and do NOT create a quiz.
      */
     @Test
-    void generatesWithAllAvailableWhenRequestedMoreThanAvailable() {
-        // given only 2 wrong questions
+    void failsWhenRequestedNumberGreaterThanAvailable() {
+        // given only 2 distinct wrong questions
         List<WrongQuestionRecord> wrongQuestions = Arrays.asList(
                 new WrongQuestionRecord(
                         "quiz-1",
@@ -101,7 +101,7 @@ class GenerateFromWrongQuizInteractorTest {
         GenerateFromWrongQuizInteractor interactor =
                 new GenerateFromWrongQuizInteractor(dao, presenter);
 
-        // request 5, but only 2 exist
+        // request 5, but only 2 available
         GenerateFromWrongInputData input =
                 new GenerateFromWrongInputData("test-user", 5);
 
@@ -109,12 +109,81 @@ class GenerateFromWrongQuizInteractorTest {
         interactor.execute(input);
 
         // then
-        assertTrue(presenter.successCalled);
-        assertFalse(presenter.failCalled);
+        assertFalse(presenter.successCalled, "Success view should NOT be called.");
+        assertTrue(presenter.failCalled, "Fail view should be called.");
 
-        // Only 2 questions should be used
-        assertEquals(2, dao.lastCreatedQuestions.size());
-        assertEquals(2, presenter.lastSuccessOutput.getNumberOfQuestions());
+        assertNotNull(presenter.lastErrorMessage, "Error message should not be null.");
+        assertTrue(
+                presenter.lastErrorMessage.contains("only 2 wrong questions"),
+                "Error message should mention the available number of questions."
+        );
+
+        // We should NOT attempt to create a quiz in the DAO
+        assertNull(dao.lastCreatedQuizId, "DAO should not be asked to create a quiz.");
+        assertEquals(0, dao.lastCreatedQuestions.size(),
+                "DAO should not receive any questions when failing early.");
+    }
+
+    /**
+     * Duplicated wrong questions should be removed before sampling.
+     * We check that DAO only receives distinct questions.
+     */
+    @Test
+    void removesDuplicateWrongQuestionsBeforeSelecting() {
+        List<String> options = Arrays.asList("A", "B", "C", "D");
+
+        List<WrongQuestionRecord> wrongQuestions = Arrays.asList(
+                new WrongQuestionRecord(
+                        "quiz-1",
+                        "Quiz 1",
+                        "Q1?",
+                        options,
+                        "A"
+                ),
+                // exact duplicate of the first one
+                new WrongQuestionRecord(
+                        "quiz-1",
+                        "Quiz 1",
+                        "Q1?",
+                        options,
+                        "A"
+                ),
+                new WrongQuestionRecord(
+                        "quiz-2",
+                        "Quiz 2",
+                        "Q2?",
+                        options,
+                        "B"
+                )
+        );
+
+        TestDAO dao = new TestDAO(wrongQuestions, false);
+        TestPresenter presenter = new TestPresenter();
+        GenerateFromWrongQuizInteractor interactor =
+                new GenerateFromWrongQuizInteractor(dao, presenter);
+
+        // We request 2; there are 3 records but only 2 distinct questions
+        GenerateFromWrongInputData input =
+                new GenerateFromWrongInputData("test-user", 2);
+
+        // when
+        interactor.execute(input);
+
+        // then
+        assertTrue(presenter.successCalled, "Success view should be called.");
+        assertFalse(presenter.failCalled, "Fail view should not be called.");
+
+        // DAO should receive exactly 2 questions (no duplicates)
+        assertEquals(2, dao.lastCreatedQuestions.size(),
+                "DAO should receive exactly the requested number of distinct questions.");
+
+        long countQ1 = dao.lastCreatedQuestions.stream()
+                .filter(r -> r.getQuestionText().equals("Q1?"))
+                .count();
+
+        // 因为去重逻辑，Q1? 最多只会出现一次
+        assertTrue(countQ1 <= 1,
+                "Duplicate wrong questions should be removed before creating the quiz.");
     }
 
     /**
