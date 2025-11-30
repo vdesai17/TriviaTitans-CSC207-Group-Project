@@ -31,7 +31,7 @@ public class LoadQuizScreen extends JPanel {
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
     private final QuizDataAccessObject quizDAO;
-    private final GenerateFromWrongViewModel generateFromWrongViewModel;// ✅ added
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     public LoadQuizScreen(JFrame frame,
                           Player player,
@@ -40,7 +40,7 @@ public class LoadQuizScreen extends JPanel {
                           CompleteQuizController completeQuizController,
                           GenerateFromWrongController generateFromWrongController,
                           QuizDataAccessObject quizDAO,
-                          GenerateFromWrongViewModel generateFromWrongViewModel) { // ✅ added parameter
+                          GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.player = player;
         this.loadQuizController = loadQuizController;
@@ -153,8 +153,8 @@ public class LoadQuizScreen extends JPanel {
                 generateFromWrongController,
                 completeQuizController,
                 quizDAO,
-                generateFromWrongViewModel   // ✅ 传入 viewModel
-        )); // ✅ reuse DAO
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
