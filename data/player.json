@@ -4,5 +4,108 @@
     "password": "12345",
     "score": 0,
     "pastAttempts": []
+  },
+  {
+    "playerName": "123",
+    "password": "123",
+    "score": 2,
+    "pastAttempts": [
+      {
+        "attemptId": "attempt-1764619681673",
+        "quiz": {
+          "id": "quiz-1764619681668",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "123",
+          "questions": [
+            {
+              "id": "105a4b10-0afd-46f2-ba82-a91f41451c54",
+              "questionText": "Which one of these is not a typical European sword design?",
+              "options": [
+                "Falchion",
+                "Ulfberht",
+                "Flamberge",
+                "Scimitar"
+              ],
+              "correctAnswer": "Scimitar",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "0ddc86fc-5df9-4b4b-9521-3a1741522211",
+              "questionText": "Which of the following landmarks is not located in New York City?",
+              "options": [
+                "Empire State Building",
+                "Lincoln Memorial",
+                "Central Park",
+                "Times Square"
+              ],
+              "correctAnswer": "Lincoln Memorial",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "0e16eec7-213e-47f5-ad9a-4cecc95208bf",
+              "questionText": "In \u0026quot;Shrek\u0026quot;, what comedic actor voices Donkey?",
+              "options": [
+                "Richard Pryor",
+                "Bernie Mac",
+                "Chris Rock",
+                "Eddie Murphy"
+              ],
+              "correctAnswer": "Eddie Murphy",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "61e994c6-a752-4fd2-8398-9965c199cef8",
+              "questionText": "Which candy is NOT made by Mars?",
+              "options": [
+                "Almond Joy",
+                "M\u0026amp;M\u0026#039;s",
+                "Twix",
+                "Snickers"
+              ],
+              "correctAnswer": "Almond Joy",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "6bcc17e2-9c86-4db2-bfeb-551d0e8aba41",
+              "questionText": "What is the first book of the Old Testament?",
+              "options": [
+                "Numbers",
+                "Leviticus",
+                "Exodus",
+                "Genesis"
+              ],
+              "correctAnswer": "Genesis",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 2,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Flamberge",
+          "Times Square",
+          "Eddie Murphy",
+          "Snickers",
+          "Genesis"
+        ],
+        "selectedOptionIndices": [
+          2,
+          3,
+          3,
+          3,
+          3
+        ],
+        "completedAt": "2025-12-01T15:08:01.675518500",
+        "editable": false,
+        "userName": "123"
+      }
+    ]
   }
 ]
