@@ -2,15 +2,17 @@ package trivia.interface_adapter.api;
 
 import com.google.gson.*;
 import trivia.entity.Question;
+import trivia.use_case.select_quiz.SelectQuizAPIDataAccessInterface;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class APIManager {
+public class APIManager implements SelectQuizAPIDataAccessInterface {
 
     private final String baseURL = "https://opentdb.com/api.php";
 
+    @Override
     public List<Question> fetchQuestions(String category, String difficulty, int amount) {
         List<Question> questions = new ArrayList<>();
         try {
@@ -27,23 +29,23 @@ public class APIManager {
                 throw new IOException("HTTP error: " + conn.getResponseCode());
 
             InputStreamReader reader =
-                new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
+                    new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
             JsonObject response = JsonParser.parseReader(reader).getAsJsonObject();
             JsonArray results = response.getAsJsonArray("results");
 
             for (JsonElement el : results) {
                 JsonObject qObj = el.getAsJsonObject();
-                String questionText = qObj.get("question").getAsString();
-                String correct = qObj.get("correct_answer").getAsString();
+                String questionText = decodeHtml(qObj.get("question").getAsString());
+                String correct = decodeHtml(qObj.get("correct_answer").getAsString());
 
                 List<String> options = new ArrayList<>();
                 JsonArray incorrect = qObj.getAsJsonArray("incorrect_answers");
-                for (JsonElement ans : incorrect)
-                    options.add(ans.getAsString());
+                for (JsonElement ans : incorrect) {
+                    options.add(decodeHtml(ans.getAsString()));
+                }
                 options.add(correct);
                 Collections.shuffle(options);
 
-                // generate ID for fetched question
                 String id = UUID.randomUUID().toString();
 
                 Question q = new Question(id,
@@ -58,5 +60,19 @@ public class APIManager {
             System.err.println("API fetch failed: " + e.getMessage());
         }
         return questions;
+    }
+
+    /**
+     * Minimal HTML entity decoder for OpenTDB responses.
+     * Avoids external dependencies while cleaning up quotes and ampersands.
+     */
+    private String decodeHtml(String s) {
+        if (s == null) return null;
+        return s.replace("&quot;", "\"")
+                .replace("&#039;", "'")
+                .replace("&amp;", "&")
+                .replace("&rsquo;", "’")
+                .replace("&ldquo;", "“")
+                .replace("&rdquo;", "”");
     }
 }

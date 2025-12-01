@@ -1,10 +1,9 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.dao.PlayerDataAccessObject;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
@@ -18,13 +17,14 @@ import java.util.List;
 /**
  * ProfileScreen — displays player statistics and shows
  * how this player performs compared to other players.
+ * 
+ * CLEAN ARCHITECTURE: Uses AppFactory to access player data.
  */
 public class ProfileScreen extends JPanel {
     private final JFrame frame;
     private final GenerateFromWrongController generateFromWrongController;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
-    private final PlayerDataAccessObject playerDAO;
 
     private Player player;
 
@@ -36,9 +36,8 @@ public class ProfileScreen extends JPanel {
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
-        this.playerDAO = new PlayerDataAccessObject();
 
-        Player reloaded = playerDAO.loadPlayer(player.getPlayerName());
+        Player reloaded = AppFactory.getPlayerDAO().loadPlayer(player.getPlayerName());
         if (reloaded != null) {
             this.player = reloaded;
         } else {
@@ -100,7 +99,7 @@ public class ProfileScreen extends JPanel {
     }
 
     private String getRankingText() {
-        List<Player> allPlayers = playerDAO.getAllPlayers();
+        List<Player> allPlayers = AppFactory.getPlayerDAO().getAllPlayers();
         if (allPlayers == null || allPlayers.isEmpty()) {
             return "No players have played any quizzes yet.";
         }
@@ -150,8 +149,13 @@ public class ProfileScreen extends JPanel {
 
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController,
-                completeQuizController, new QuizDataAccessObject(), generateFromWrongViewModel));
+        frame.add(new HomeScreen(
+                frame,
+                player,
+                generateFromWrongController,
+                completeQuizController,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }

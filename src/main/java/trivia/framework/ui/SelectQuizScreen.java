@@ -3,34 +3,40 @@ package trivia.framework.ui;
 import trivia.entity.Player;
 import trivia.entity.Question;
 import trivia.entity.Quiz;
-import trivia.interface_adapter.api.APIManager;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.SelectQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.interface_adapter.presenter.GenerateFromWrongState;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
-import trivia.use_case.select_quiz.SelectQuizInteractor;
+import trivia.interface_adapter.presenter.SelectQuizViewModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
  * SelectQuizScreen — choose quiz category, difficulty, or practice from wrong questions.
  * Styled with unified dark-teal gradient and glass UI design.
+ * 
+ * FIXED: Now properly integrates with ViewModel via PropertyChangeListener
+ * 
+ * CLEAN ARCHITECTURE: Dependencies are injected through constructor.
+ * Screen listens to ViewModel changes via PropertyChangeListener.
+ * No direct instantiation of DAOs, Interactors, or Presenters.
  */
-public class SelectQuizScreen extends JPanel {
+public class SelectQuizScreen extends JPanel implements PropertyChangeListener {
     private final JFrame frame;
     private final Player currentPlayer;
     private final SelectQuizController controller;
+    private final SelectQuizViewModel viewModel;
     private final GenerateFromWrongController generateFromWrongController;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
     private final CompleteQuizController completeQuizController;
-    private final QuizDataAccessObject quizDAO; // ✅ injected instead of new instance
 
     private final JComboBox<String> categoryBox;
     private final JComboBox<String> difficultyBox;
@@ -40,47 +46,19 @@ public class SelectQuizScreen extends JPanel {
                             GenerateFromWrongController generateFromWrongController,
                             CompleteQuizController completeQuizController,
                             Player currentPlayer,
-                            GenerateFromWrongViewModel generateFromWrongViewModel,
-                            QuizDataAccessObject quizDAO) { // ✅ added DAO parameter
+                            GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
         this.currentPlayer = currentPlayer;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
-        this.quizDAO = quizDAO;
 
-        APIManager apiManager = new APIManager();
-        SelectQuizInteractor interactor = new SelectQuizInteractor(apiManager);
-        this.controller = new SelectQuizController(interactor);
-
-        if (this.generateFromWrongViewModel != null) {
-            this.generateFromWrongViewModel.addPropertyChangeListener(evt -> {
-                GenerateFromWrongState state = generateFromWrongViewModel.getState();
-                if (state.getErrorMessage() != null) {
-                    return;
-                }
-                if (state.getQuizId() != null) {
-                    // ✅ use injected DAO
-                    Quiz practiceQuiz = quizDAO.getQuizById(state.getQuizId());
-
-                    if (practiceQuiz == null) {
-                        JOptionPane.showMessageDialog(frame, "Failed to load generated practice quiz.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    frame.getContentPane().removeAll();
-                    frame.add(new QuizScreen(
-                            frame,
-                            practiceQuiz.getQuestions(),
-                            currentPlayer,
-                            completeQuizController,
-                            generateFromWrongController,
-                            generateFromWrongViewModel
-                    ));
-                    frame.revalidate();
-                    frame.repaint();
-                }
-            });
-        }
+        // ✅ FIXED: Get controller and viewmodel from factory (proper dependency injection)
+        this.controller = AppFactory.createSelectQuizController();
+        this.viewModel = AppFactory.createSelectQuizViewModel();
+        
+        // ✅ FIXED: Listen to ViewModel changes (PropertyChangeListener pattern)
+        this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout(20, 20));
         ThemeUtils.applyGradientBackground(this);
@@ -152,6 +130,46 @@ public class SelectQuizScreen extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * ✅ FIXED: Listen to ViewModel property changes
+     * When viewModel fires a property change event, this method is called
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (!"selectQuiz".equals(evt.getPropertyName())) {
+            return;
+        }
+
+        // Check if data was loaded successfully
+        List<Question> questions = viewModel.getQuestions();
+        String errorMessage = viewModel.getErrorMessage();
+
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    errorMessage,
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        if (questions != null && !questions.isEmpty()) {
+            // Navigate to quiz screen with loaded questions
+            frame.getContentPane().removeAll();
+            frame.add(new QuizScreen(
+                    frame,
+                    questions,
+                    currentPlayer,
+                    completeQuizController,
+                    generateFromWrongController,
+                    generateFromWrongViewModel
+            ));
+            frame.revalidate();
+            frame.repaint();
+        }
+    }
+
     /** Creates a unified styled button with hover transition */
     private JButton createStyledButton(String text, Color base, Color hover,
                                        java.awt.event.ActionListener listener) {
@@ -174,26 +192,26 @@ public class SelectQuizScreen extends JPanel {
         return button;
     }
 
+    /**
+     * ✅ FIXED: Now uses controller.execute() properly
+     * 
+     * Flow: onClick → controller.execute() → interactor.execute() 
+     *       → api.fetch() → presenter.presentSuccess() 
+     *       → viewModel.firePropertyChanged() → propertyChange() → navigate
+     */
     private void onStart(ActionEvent e) {
         try {
             String categoryText = (String) categoryBox.getSelectedItem();
             String categoryId = categoryText.split(" - ")[0].trim();
             String difficulty = (String) difficultyBox.getSelectedItem();
 
-            List<Question> questions = controller.getQuestions(categoryId, difficulty, 5);
-            if (questions.isEmpty()) {
-                JOptionPane.showMessageDialog(
-                        frame,
-                        "No questions found. Try another combination.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            } else {
-                frame.getContentPane().removeAll();
-                frame.add(new QuizScreen(frame, questions, currentPlayer, completeQuizController, generateFromWrongController, generateFromWrongViewModel));
-                frame.revalidate();
-                frame.repaint();
-            }
+            // ✅ FIXED: Call controller.execute() - this triggers entire use case
+            // Controller → Interactor → APIManager → Presenter → ViewModel
+            controller.execute(categoryId, difficulty, 5);
+            
+            // ViewModel will fire property change when data is ready
+            // propertyChange() method will handle navigation
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(
                     frame,
@@ -221,13 +239,15 @@ public class SelectQuizScreen extends JPanel {
     }
 
     private void goBackHome(ActionEvent e) {
+        // ✅ Clean up: remove listener before navigation
+        viewModel.removePropertyChangeListener(this);
+        
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(
                 frame,
                 currentPlayer,
                 generateFromWrongController,
                 completeQuizController,
-                quizDAO, // ✅ use injected DAO
                 generateFromWrongViewModel
         ));
         frame.revalidate();

@@ -4,6 +4,7 @@ import trivia.entity.Player;
 import trivia.entity.Quiz;
 import trivia.entity.Question;
 import trivia.entity.QuizAttempt;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.ReviewController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
@@ -22,6 +23,8 @@ import java.util.List;
 /**
  * UI Screen for viewing and editing past quiz attempts (Use Case 3)
  * Now with REDO functionality!
+ * 
+ * CLEAN ARCHITECTURE: Uses AppFactory for DAO access during navigation.
  */
 public class PastQuizScreen extends JPanel implements PropertyChangeListener {
 
@@ -420,8 +423,7 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
     private void navigateToHome() {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, currentPlayer, generateFromWrongController,
-                completeQuizController, new trivia.interface_adapter.dao.QuizDataAccessObject(), 
-                generateFromWrongViewModel));
+                completeQuizController, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

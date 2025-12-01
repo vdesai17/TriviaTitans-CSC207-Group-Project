@@ -1,51 +1,67 @@
 package trivia.use_case.load_quiz;
 
-import trivia.entity.Quiz;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.interface_adapter.presenter.LoadQuizPresenter;
-
 import java.util.Collections;
 import java.util.List;
+import trivia.entity.Quiz;
 
 /**
- * LoadQuizInteractor — Use case interactor responsible for retrieving
- * all quizzes created by a specific player and sending them to the presenter.
- *
- * Follows Clean Architecture:
- * - Depends only on abstractions (Presenter and DAO)
- * - Handles no UI logic
+ * Interactor for the Load Quiz use case.
  */
 public class LoadQuizInteractor implements LoadQuizInputBoundary {
 
-    private final QuizDataAccessObject quizDataAccessObject;
-    private final LoadQuizPresenter presenter;
+    /** The quiz data access interface. */
+    private final LoadQuizDataAccessInterface quizDataAccess;
 
-    public LoadQuizInteractor(QuizDataAccessObject quizDataAccessObject, LoadQuizPresenter presenter) {
-        if (quizDataAccessObject == null) {
-            throw new IllegalArgumentException("QuizDataAccessObject cannot be null");
+    /** The presenter output boundary. */
+    private final LoadQuizOutputBoundary presenter;
+
+    /**
+     * Constructs a LoadQuizInteractor.
+     *
+     * @param quizDataAccessInput the data access interface
+     * @param presenterInput the presenter output boundary
+     */
+    public LoadQuizInteractor(
+            final LoadQuizDataAccessInterface quizDataAccessInput,
+            final LoadQuizOutputBoundary presenterInput) {
+
+        if (quizDataAccessInput == null) {
+            throw new IllegalArgumentException("QuizDataAccess cannot be null");
         }
-        if (presenter == null) {
+
+        if (presenterInput == null) {
             throw new IllegalArgumentException("Presenter cannot be null");
         }
-        this.quizDataAccessObject = quizDataAccessObject;
-        this.presenter = presenter;
+
+        this.quizDataAccess = quizDataAccessInput;
+        this.presenter = presenterInput;
     }
 
+    /**
+     * Executes the load quiz use case.
+     *
+     * @param inputData the input data
+     */
     @Override
-    public void execute(LoadQuizInputData inputData) {
+    public void execute(final LoadQuizInputData inputData) {
+
         if (inputData == null || inputData.getPlayerName() == null) {
-            presenter.present(new LoadQuizResponseModel(Collections.emptyList()));
+            presenter.present(
+                    new LoadQuizResponseModel(Collections.emptyList()));
             return;
         }
 
-        String playerName = inputData.getPlayerName();
-        List<Quiz> quizzes = quizDataAccessObject.getQuizzesByPlayer(playerName);
+        final String playerName = inputData.getPlayerName();
+        List<Quiz> quizzes =
+                quizDataAccess.getQuizzesByPlayer(playerName);
 
         if (quizzes == null) {
             quizzes = Collections.emptyList();
         }
 
-        LoadQuizResponseModel responseModel = new LoadQuizResponseModel(quizzes);
+        final LoadQuizResponseModel responseModel =
+                new LoadQuizResponseModel(quizzes);
+
         presenter.present(responseModel);
     }
 }

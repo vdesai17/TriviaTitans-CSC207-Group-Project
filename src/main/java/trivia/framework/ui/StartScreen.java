@@ -1,22 +1,11 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
+import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.PlayerController;
-import trivia.interface_adapter.dao.PlayerDataAccessObject;
-import trivia.use_case.register_player.RegisterPlayerInteractor;
-
 import trivia.interface_adapter.controller.GenerateFromWrongController;
-import trivia.interface_adapter.presenter.GenerateFromWrongPresenter;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
-import trivia.use_case.generate_from_wrong.GenerateFromWrongDataAccessInterface;
-import trivia.use_case.generate_from_wrong.GenerateFromWrongQuizInteractor;
-import trivia.use_case.generate_from_wrong.GenerateFromWrongOutputBoundary;
-
 import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
-import trivia.use_case.complete_quiz.CompleteQuizInteractor;
-import trivia.use_case.complete_quiz.CompleteQuizOutputBoundary;
-import trivia.use_case.complete_quiz.CompleteQuizOutputData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,46 +16,26 @@ import java.awt.event.MouseEvent;
 /**
  * StartScreen — Login/Register entry page for Trivia Titans.
  * Styled with the unified dark-teal gradient theme.
+ * 
+ * CLEAN ARCHITECTURE: Uses AppFactory for all controller and DAO instantiation.
  */
 public class StartScreen extends JPanel {
     private final JFrame frame;
     private final JTextField nameField;
     private final JPasswordField passwordField;
     private final PlayerController controller;
-    private final PlayerDataAccessObject dao;
     private final GenerateFromWrongController generateFromWrongController;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
-
-    private final QuizDataAccessObject quizDAO;
     private final CompleteQuizController completeQuizController;
 
     public StartScreen(JFrame frame) {
         this.frame = frame;
 
-        dao = new PlayerDataAccessObject();
-        quizDAO = new QuizDataAccessObject();
-
-        RegisterPlayerInteractor interactor = new RegisterPlayerInteractor(dao);
-        this.controller = new PlayerController(interactor);
-
-        GenerateFromWrongViewModel uc6ViewModel = new GenerateFromWrongViewModel();
-        GenerateFromWrongOutputBoundary uc6Presenter = new GenerateFromWrongPresenter(uc6ViewModel);
-        GenerateFromWrongDataAccessInterface uc6DataAccess = quizDAO;
-        GenerateFromWrongQuizInteractor uc6Interactor =
-                new GenerateFromWrongQuizInteractor(uc6DataAccess, uc6Presenter);
-        this.generateFromWrongController = new GenerateFromWrongController(uc6Interactor);
-        this.generateFromWrongViewModel = uc6ViewModel;
-
-        CompleteQuizOutputBoundary completePresenter = new CompleteQuizOutputBoundary() {
-            @Override
-            public void present(CompleteQuizOutputData data) {
-            }
-        };
-
-        CompleteQuizInteractor completeInteractor =
-                new CompleteQuizInteractor(quizDAO, completePresenter);
-
-        this.completeQuizController = new CompleteQuizController(completeInteractor);
+        // Use factory to create controllers
+        this.controller = AppFactory.createPlayerController();
+        this.generateFromWrongController = AppFactory.createGenerateFromWrongController();
+        this.generateFromWrongViewModel = AppFactory.createGenerateFromWrongViewModel();
+        this.completeQuizController = AppFactory.createCompleteQuizController();
 
         setLayout(new BorderLayout());
         ThemeUtils.applyGradientBackground(this);
@@ -172,7 +141,7 @@ public class StartScreen extends JPanel {
             return;
         }
 
-        Player player = dao.validateLogin(name, password);
+        Player player = AppFactory.getPlayerDAO().validateLogin(name, password);
         if (player == null) {
             JOptionPane.showMessageDialog(frame,
                     "Invalid credentials. Please try again or register.",
@@ -186,24 +155,25 @@ public class StartScreen extends JPanel {
     }
 
     private void handleRegister(ActionEvent e) {
-        String name = nameField.getText();
-        String password = new String(passwordField.getPassword());
+        String name = nameField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+
+        if (name.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(frame,
+                    "Please enter both name and password.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         try {
-            Player newPlayer = controller.createPlayer(name, password);
-
+            Player newPlayer = new Player(name, password);
+            AppFactory.getPlayerDAO().savePlayer(newPlayer);
             JOptionPane.showMessageDialog(frame,
                     "Player registered successfully! Welcome, "
                             + newPlayer.getPlayerName() + ".",
                     "Success", JOptionPane.INFORMATION_MESSAGE);
             navigateToHome(newPlayer);
-        } catch (IllegalArgumentException ex) {
-
-            JOptionPane.showMessageDialog(frame,
-                    ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-
             JOptionPane.showMessageDialog(frame,
                     "Failed to register player: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -212,13 +182,14 @@ public class StartScreen extends JPanel {
 
     private void navigateToHome(Player player) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player,
+        frame.add(new HomeScreen(
+                frame, 
+                player,
                 generateFromWrongController,
                 completeQuizController,
-                quizDAO,
-                generateFromWrongViewModel));
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }
 }
-
