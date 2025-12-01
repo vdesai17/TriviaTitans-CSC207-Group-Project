@@ -2799,6 +2799,234 @@
         "completedAt": "2025-11-30T17:33:39.941271400",
         "editable": false,
         "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764625841636",
+        "quiz": {
+          "id": "quiz-1764625841632",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "cfa6d2f7-6887-43f7-9f94-f9ecb2f9d859",
+              "questionText": "The likeness of which president is featured on the rare $2 bill of USA currency?",
+              "options": [
+                "John Quincy Adams",
+                "Ulysses Grant",
+                "Martin Van Buren",
+                "Thomas Jefferson"
+              ],
+              "correctAnswer": "Thomas Jefferson",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b3be147e-ea1f-4bc8-abc0-b37688ab21e9",
+              "questionText": "Which country developed the AK-47 assault rifle?",
+              "options": [
+                "Soviet Union",
+                "Poland",
+                "Iran",
+                "Israel"
+              ],
+              "correctAnswer": "Soviet Union",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "aa9c7a37-46ed-40b6-88ea-f80c56857a10",
+              "questionText": "In aerodynamics, which force pushes an object upwards?",
+              "options": [
+                "Weight",
+                "Lift",
+                "Drag",
+                "Thrust"
+              ],
+              "correctAnswer": "Lift",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "ba634ad2-e45a-4a2a-a87c-b922b929aa95",
+              "questionText": "When was Pong released?",
+              "options": [
+                "November 29, 1972",
+                "December 14, 1974",
+                "March 29, 2017",
+                "November 29, 1970"
+              ],
+              "correctAnswer": "November 29, 1972",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "c81613a6-9091-4287-af43-f74589e46f55",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Flax",
+                "Silk",
+                "Straw"
+              ],
+              "correctAnswer": "Straw",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-12-01T16:50:41.671236",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764625857950",
+        "quiz": {
+          "id": "quiz-1764625857950",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "cfa6d2f7-6887-43f7-9f94-f9ecb2f9d859",
+              "questionText": "The likeness of which president is featured on the rare $2 bill of USA currency?",
+              "options": [
+                "John Quincy Adams",
+                "Ulysses Grant",
+                "Martin Van Buren",
+                "Thomas Jefferson"
+              ],
+              "correctAnswer": "Thomas Jefferson",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b3be147e-ea1f-4bc8-abc0-b37688ab21e9",
+              "questionText": "Which country developed the AK-47 assault rifle?",
+              "options": [
+                "Soviet Union",
+                "Poland",
+                "Iran",
+                "Israel"
+              ],
+              "correctAnswer": "Soviet Union",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "aa9c7a37-46ed-40b6-88ea-f80c56857a10",
+              "questionText": "In aerodynamics, which force pushes an object upwards?",
+              "options": [
+                "Weight",
+                "Lift",
+                "Drag",
+                "Thrust"
+              ],
+              "correctAnswer": "Lift",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "ba634ad2-e45a-4a2a-a87c-b922b929aa95",
+              "questionText": "When was Pong released?",
+              "options": [
+                "November 29, 1972",
+                "December 14, 1974",
+                "March 29, 2017",
+                "November 29, 1970"
+              ],
+              "correctAnswer": "November 29, 1972",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "c81613a6-9091-4287-af43-f74589e46f55",
+              "questionText": "What are Panama hats made out of?",
+              "options": [
+                "Hemp",
+                "Flax",
+                "Silk",
+                "Straw"
+              ],
+              "correctAnswer": "Straw",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "completedAt": "2025-12-01T16:50:57.950581",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764625877580",
+        "quiz": {
+          "id": "quiz-1764625877580",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "7adb1d4b-a4bc-459d-821b-f1dea7465847",
+              "questionText": "1",
+              "options": [
+                "1",
+                "1",
+                "1",
+                "1"
+              ],
+              "correctAnswer": "1",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 1,
+        "userAnswers": [
+          ""
+        ],
+        "selectedOptionIndices": [
+          -1
+        ],
+        "completedAt": "2025-12-01T16:51:17.580828",
+        "editable": false,
+        "userName": "test"
       }
     ]
   },

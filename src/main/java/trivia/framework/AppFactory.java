@@ -1,8 +1,8 @@
 package trivia.framework;
 
 import trivia.interface_adapter.controller.*;
-import trivia.interface_adapter.dao.PlayerDataAccessObject;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.framework.dao.PlayerDataAccessObject;   // ✅ UPDATED
+import trivia.framework.dao.QuizDataAccessObject;    // ✅ UPDATED
 import trivia.interface_adapter.presenter.*;
 import trivia.use_case.complete_quiz.CompleteQuizInteractor;
 import trivia.use_case.complete_quiz.CompleteQuizOutputBoundary;
