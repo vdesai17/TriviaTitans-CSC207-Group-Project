@@ -4,19 +4,16 @@ import trivia.entity.Quiz;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * LoadQuizInteractor — Use case interactor responsible for retrieving
- * all quizzes created by a specific player and sending them to the presenter.
- *
- * FIXED: Now depends on interface instead of concrete DAO class.
- */
+
 public class LoadQuizInteractor implements LoadQuizInputBoundary {
 
-    private final LoadQuizDataAccessInterface quizDataAccess;  // ✅ FIXED: Now interface
+    private final LoadQuizDataAccessInterface quizDataAccess;
     private final LoadQuizOutputBoundary presenter;
 
-    public LoadQuizInteractor(LoadQuizDataAccessInterface quizDataAccess,
+    public LoadQuizInteractor(LoadQuizDataAccessInterface
+                                      quizDataAccess,
                               LoadQuizOutputBoundary presenter) {
+
         if (quizDataAccess == null) {
             throw new IllegalArgumentException("QuizDataAccess cannot be null");
         }
@@ -45,3 +42,11 @@ public class LoadQuizInteractor implements LoadQuizInputBoundary {
         presenter.present(responseModel);
     }
 }
+
+
+
+
+
+
+
+
