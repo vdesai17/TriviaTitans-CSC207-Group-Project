@@ -1,52 +1,67 @@
 package trivia.use_case.load_quiz;
 
-import trivia.entity.Quiz;
 import java.util.Collections;
 import java.util.List;
+import trivia.entity.Quiz;
 
-
+/**
+ * Interactor for the Load Quiz use case.
+ */
 public class LoadQuizInteractor implements LoadQuizInputBoundary {
 
+    /** The quiz data access interface. */
     private final LoadQuizDataAccessInterface quizDataAccess;
+
+    /** The presenter output boundary. */
     private final LoadQuizOutputBoundary presenter;
 
-    public LoadQuizInteractor(LoadQuizDataAccessInterface
-                                      quizDataAccess,
-                              LoadQuizOutputBoundary presenter) {
+    /**
+     * Constructs a LoadQuizInteractor.
+     *
+     * @param quizDataAccessInput the data access interface
+     * @param presenterInput the presenter output boundary
+     */
+    public LoadQuizInteractor(
+            final LoadQuizDataAccessInterface quizDataAccessInput,
+            final LoadQuizOutputBoundary presenterInput) {
 
-        if (quizDataAccess == null) {
+        if (quizDataAccessInput == null) {
             throw new IllegalArgumentException("QuizDataAccess cannot be null");
         }
-        if (presenter == null) {
+
+        if (presenterInput == null) {
             throw new IllegalArgumentException("Presenter cannot be null");
         }
-        this.quizDataAccess = quizDataAccess;
-        this.presenter = presenter;
+
+        this.quizDataAccess = quizDataAccessInput;
+        this.presenter = presenterInput;
     }
 
+    /**
+     * Executes the load quiz use case.
+     *
+     * @param inputData the input data
+     */
     @Override
-    public void execute(LoadQuizInputData inputData) {
+    public void execute(final LoadQuizInputData inputData) {
+
         if (inputData == null || inputData.getPlayerName() == null) {
-            presenter.present(new LoadQuizResponseModel(Collections.emptyList()));
+            presenter.present(
+                    new LoadQuizResponseModel(Collections.emptyList()));
             return;
         }
 
-        String playerName = inputData.getPlayerName();
-        List<Quiz> quizzes = quizDataAccess.getQuizzesByPlayer(playerName);
+        final String playerName = inputData.getPlayerName();
+        List<Quiz> quizzes =
+                quizDataAccess.getQuizzesByPlayer(playerName);
 
         if (quizzes == null) {
             quizzes = Collections.emptyList();
         }
 
-        LoadQuizResponseModel responseModel = new LoadQuizResponseModel(quizzes);
+        final LoadQuizResponseModel responseModel =
+                new LoadQuizResponseModel(quizzes);
+
         presenter.present(responseModel);
     }
 }
-
-
-
-
-
-
-
-
