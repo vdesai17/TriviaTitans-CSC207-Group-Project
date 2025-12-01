@@ -186,25 +186,24 @@ public class StartScreen extends JPanel {
     }
 
     private void handleRegister(ActionEvent e) {
-        String name = nameField.getText().trim();
-        String password = new String(passwordField.getPassword()).trim();
-
-        if (name.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(frame,
-                    "Please enter both name and password.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        String name = nameField.getText();
+        String password = new String(passwordField.getPassword());
 
         try {
-            Player newPlayer = new Player(name, password);
-            dao.savePlayer(newPlayer);
+            Player newPlayer = controller.createPlayer(name, password);
+
             JOptionPane.showMessageDialog(frame,
                     "Player registered successfully! Welcome, "
                             + newPlayer.getPlayerName() + ".",
                     "Success", JOptionPane.INFORMATION_MESSAGE);
             navigateToHome(newPlayer);
+        } catch (IllegalArgumentException ex) {
+
+            JOptionPane.showMessageDialog(frame,
+                    ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
+
             JOptionPane.showMessageDialog(frame,
                     "Failed to register player: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -222,3 +221,4 @@ public class StartScreen extends JPanel {
         frame.repaint();
     }
 }
+
