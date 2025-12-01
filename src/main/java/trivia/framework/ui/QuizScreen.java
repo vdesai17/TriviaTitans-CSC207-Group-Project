@@ -4,9 +4,10 @@ import trivia.entity.Player;
 import trivia.entity.Question;
 import trivia.entity.Quiz;
 import trivia.entity.QuizAttempt;
-import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
+import trivia.interface_adapter.dao.PlayerDataAccessObject;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
@@ -17,14 +18,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * QuizScreen — displays quiz questions and collects user answers.
- * 
- * CLEAN ARCHITECTURE: Dependencies injected through constructor.
- * Uses AppFactory for DAO access during completion.
- * 
- * FIXED: HTML entity decoding for questions and options from API
- */
 public class QuizScreen extends JPanel {
     private final JFrame frame;
     private final List<Question> questions;
@@ -174,23 +167,6 @@ public class QuizScreen extends JPanel {
         this(frame, questions, currentPlayer, null, null, null);
     }
 
-    /**
-     * ✅ FIXED: Decode HTML entities from API responses
-     * Converts &quot; → ", &amp; → &, &lt; → <, etc.
-     */
-    private String decodeHtmlEntities(String text) {
-        if (text == null) return null;
-        return text.replace("&quot;", "\"")
-                   .replace("&#039;", "'")
-                   .replace("&apos;", "'")
-                   .replace("&amp;", "&")
-                   .replace("&lt;", "<")
-                   .replace("&gt;", ">")
-                   .replace("&deg;", "°")
-                   .replace("&ndash;", "–")
-                   .replace("&mdash;", "—");
-    }
-
     private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
@@ -214,17 +190,14 @@ public class QuizScreen extends JPanel {
     private void loadQuestion() {
         if (currentIndex < questions.size()) {
             Question q = questions.get(currentIndex);
-            
-            // ✅ FIXED: Decode HTML entities in question text
-            questionArea.setText(decodeHtmlEntities(q.getQuestionText()));
+            questionArea.setText(q.getQuestionText());
 
             progressLabel.setText("Question " + (currentIndex + 1) + " of " + numberOfQuestions);
 
             List<String> opts = q.getOptions();
             for (int i = 0; i < optionButtons.length; i++) {
                 if (i < opts.size()) {
-                    // ✅ FIXED: Decode HTML entities in option text
-                    optionButtons[i].setText(decodeHtmlEntities(opts.get(i)));
+                    optionButtons[i].setText(opts.get(i));
                     optionButtons[i].setVisible(true);
                 } else {
                     optionButtons[i].setVisible(false);
@@ -324,14 +297,16 @@ public class QuizScreen extends JPanel {
 
         attempt.setSelectedOptionIndices(new ArrayList<>(selectedAnswerIndices));
 
-        AppFactory.getQuizDAO().saveQuiz(quiz);
-        AppFactory.getQuizDAO().saveAttempt(attempt);
+        QuizDataAccessObject quizDAO = new QuizDataAccessObject();
+        quizDAO.saveQuiz(quiz);
+        quizDAO.saveAttempt(attempt);
 
-        Player player = AppFactory.getPlayerDAO().loadPlayer(currentPlayer.getPlayerName());
+        PlayerDataAccessObject playerDAO = new PlayerDataAccessObject();
+        Player player = playerDAO.loadPlayer(currentPlayer.getPlayerName());
         if (player != null) {
             player.addAttempt(attempt);
             player.setScore(player.getScore() + score);
-            AppFactory.getPlayerDAO().savePlayer(player);
+            playerDAO.savePlayer(player);
             System.out.println("✓ Quiz attempt saved to player: " + player.getPlayerName());
         } else {
             System.err.println("⚠ Warning: Could not load player to save attempt");

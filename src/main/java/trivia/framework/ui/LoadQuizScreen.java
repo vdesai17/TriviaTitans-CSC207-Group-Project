@@ -6,6 +6,7 @@ import trivia.entity.Question;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.LoadQuizController;
+import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 import trivia.interface_adapter.presenter.LoadQuizViewModel;
 
@@ -29,6 +30,7 @@ public class LoadQuizScreen extends JPanel {
     private final LoadQuizViewModel loadQuizViewModel;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
+    private final QuizDataAccessObject quizDAO;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     public LoadQuizScreen(JFrame frame,
@@ -37,6 +39,7 @@ public class LoadQuizScreen extends JPanel {
                           LoadQuizViewModel loadQuizViewModel,
                           CompleteQuizController completeQuizController,
                           GenerateFromWrongController generateFromWrongController,
+                          QuizDataAccessObject quizDAO,
                           GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.player = player;
@@ -44,6 +47,7 @@ public class LoadQuizScreen extends JPanel {
         this.loadQuizViewModel = loadQuizViewModel;
         this.completeQuizController = completeQuizController;
         this.generateFromWrongController = generateFromWrongController;
+        this.quizDAO = quizDAO;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
 
         setLayout(new BorderLayout(20, 20));
@@ -148,6 +152,7 @@ public class LoadQuizScreen extends JPanel {
                 player,
                 generateFromWrongController,
                 completeQuizController,
+                quizDAO,
                 generateFromWrongViewModel
         ));
         frame.revalidate();

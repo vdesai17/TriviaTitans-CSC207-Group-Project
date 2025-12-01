@@ -77,15 +77,7 @@ public class QuizDataAccessObject
         try (Reader reader = new FileReader(file)) {
             Type listType = new TypeToken<List<Quiz>>() {}.getType();
             List<Quiz> loaded = gson.fromJson(reader, listType);
-            if (loaded == null) {
-                return new ArrayList<>();
-            }
-
-            List<Quiz> decoded = new ArrayList<>();
-            for (Quiz quiz : loaded) {
-                decoded.add(decodeQuiz(quiz));
-            }
-            return decoded;
+            return loaded != null ? loaded : new ArrayList<>();
         } catch (IOException e) {
             System.err.println("Failed to load quizzes: " + e.getMessage());
             return new ArrayList<>();
@@ -294,55 +286,5 @@ public class QuizDataAccessObject
         saveQuiz(newQuiz);
 
         return quizId;
-    }
-
-    /** Decode HTML entities that may have been saved from API responses. */
-    private Quiz decodeQuiz(Quiz quiz) {
-        if (quiz == null) {
-            return null;
-        }
-
-        List<Question> decodedQuestions = new ArrayList<>();
-        if (quiz.getQuestions() != null) {
-            for (Question q : quiz.getQuestions()) {
-                if (q == null) {
-                    continue;
-                }
-                List<String> decodedOptions = new ArrayList<>();
-                if (q.getOptions() != null) {
-                    for (String opt : q.getOptions()) {
-                        decodedOptions.add(decodeHtml(opt));
-                    }
-                }
-                decodedQuestions.add(new Question(
-                        q.getId(),
-                        decodeHtml(q.getQuestionText()),
-                        decodedOptions,
-                        decodeHtml(q.getCorrectAnswer()),
-                        decodeHtml(q.getCategory()),
-                        decodeHtml(q.getDifficulty())
-                ));
-            }
-        }
-
-        return new Quiz(
-                quiz.getId(),
-                decodeHtml(quiz.getTitle()),
-                decodeHtml(quiz.getCategory()),
-                decodeHtml(quiz.getDifficulty()),
-                decodeHtml(quiz.getCreatorName()),
-                decodedQuestions
-        );
-    }
-
-    /** Minimal HTML entity decoder used when loading persisted quizzes. */
-    private String decodeHtml(String s) {
-        if (s == null) return null;
-        return s.replace("&quot;", "\"")
-                .replace("&#039;", "'")
-                .replace("&amp;", "&")
-                .replace("&rsquo;", "'")
-                .replace("&ldquo;", "\"")
-                .replace("&rdquo;", "\"");
     }
 }
