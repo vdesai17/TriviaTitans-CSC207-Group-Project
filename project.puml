@@ -1,0 +1,152 @@
+@startuml TriviaTitans_Architecture
+skinparam linetype polyline
+skinparam packageBorderColor #333
+skinparam backgroundColor #FAFAFA
+skinparam maxMessageSize 300
+
+title Trivia Titans - Clean Architecture System
+
+' ============================================================================
+' ENTITY LAYER (Business Rules)
+' ============================================================================
+package "ENTITY LAYER" #FFF9C4 {
+  class Player
+  class Quiz
+  class Question
+  class QuizAttempt
+}
+
+' ============================================================================
+' USE CASE LAYER (Business Logic - Interactors)
+' ============================================================================
+package "USE CASE LAYER" #F3E5F5 {
+  interface CreateQuizInputBoundary
+  interface CompleteQuizInputBoundary
+  interface LoadQuizInputBoundary
+  interface ReviewQuizInputBoundary
+  interface SelectQuizInputBoundary
+  interface GenerateFromWrongInputBoundary
+  interface ReviewSummaryInputBoundary
+  interface RegisterPlayerInputBoundary
+  
+  class CreateQuizInteractor
+  class CompleteQuizInteractor
+  class LoadQuizInteractor
+  class ReviewQuizInteractor
+  class SelectQuizInteractor
+  class GenerateFromWrongQuizInteractor
+  class ReviewSummaryInteractor
+  class RegisterPlayerInteractor
+}
+
+' ============================================================================
+' INTERFACE ADAPTER LAYER (Controllers, Presenters, ViewModels, DAOs)
+' ============================================================================
+package "INTERFACE ADAPTER LAYER" #E8F5E9 {
+  class CreateQuizController
+  class CompleteQuizController
+  class LoadQuizController
+  class ReviewController
+  class SelectQuizController
+  class GenerateFromWrongController
+  class ReviewSummaryController
+  class PlayerController
+  
+  class CreateQuizPresenter
+  class CreateQuizViewModel
+  class PastQuizViewModel
+  class SelectQuizViewModel
+  class LoadQuizViewModel
+  class GenerateFromWrongViewModel
+  class ReviewSummaryViewModel
+  
+  class QuizDataAccessObject
+  class PlayerDataAccessObject
+  class APIManager
+}
+
+' ============================================================================
+' FRAMEWORK LAYER (UI, Configuration, Dependency Injection)
+' ============================================================================
+package "FRAMEWORK LAYER" #FFF3E0 {
+  class StartScreen
+  class HomeScreen
+  class CreateCustomQuizScreen
+  class QuizScreen
+  class LoadQuizScreen
+  class PastQuizScreen
+  class SelectQuizScreen
+  class SummaryScreen
+  class ProfileScreen
+  class AppFactory
+}
+
+' ============================================================================
+' KEY RELATIONSHIPS
+' ============================================================================
+
+' Controllers use Interactors
+CreateQuizController --|> CreateQuizInputBoundary
+CompleteQuizController --|> CompleteQuizInputBoundary
+LoadQuizController --|> LoadQuizInputBoundary
+ReviewController --|> ReviewQuizInputBoundary
+SelectQuizController --|> SelectQuizInputBoundary
+GenerateFromWrongController --|> GenerateFromWrongInputBoundary
+ReviewSummaryController --|> ReviewSummaryInputBoundary
+PlayerController --|> RegisterPlayerInputBoundary
+
+' Interactors implement boundaries
+CreateQuizInteractor --|> CreateQuizInputBoundary
+CompleteQuizInteractor --|> CompleteQuizInputBoundary
+LoadQuizInteractor --|> LoadQuizInputBoundary
+ReviewQuizInteractor --|> ReviewQuizInputBoundary
+SelectQuizInteractor --|> SelectQuizInputBoundary
+GenerateFromWrongQuizInteractor --|> GenerateFromWrongInputBoundary
+ReviewSummaryInteractor --|> ReviewSummaryInputBoundary
+RegisterPlayerInteractor --|> RegisterPlayerInputBoundary
+
+' DAOs implement interfaces
+QuizDataAccessObject --|> LoadQuizInputBoundary
+PlayerDataAccessObject --|> RegisterPlayerInputBoundary
+APIManager --|> SelectQuizInputBoundary
+
+' UI uses Factory
+StartScreen ..> AppFactory : uses
+HomeScreen ..> AppFactory : uses
+CreateCustomQuizScreen ..> AppFactory : uses
+QuizScreen ..> AppFactory : uses
+LoadQuizScreen ..> AppFactory : uses
+PastQuizScreen ..> AppFactory : uses
+SelectQuizScreen ..> AppFactory : uses
+SummaryScreen ..> AppFactory : uses
+ProfileScreen ..> AppFactory : uses
+
+' UI uses Controllers & ViewModels
+HomeScreen --> CreateQuizController
+HomeScreen --> CreateQuizViewModel
+CreateCustomQuizScreen --> CreateQuizController
+CreateCustomQuizScreen --> CreateQuizViewModel
+QuizScreen --> CompleteQuizController
+LoadQuizScreen --> LoadQuizController
+PastQuizScreen --> ReviewController
+PastQuizScreen --> PastQuizViewModel
+SelectQuizScreen --> SelectQuizController
+SelectQuizScreen --> SelectQuizViewModel
+SummaryScreen --> ReviewSummaryController
+SummaryScreen --> ReviewSummaryViewModel
+
+' Interactors use Entities
+CreateQuizInteractor --> Quiz
+CompleteQuizInteractor --> Quiz
+ReviewQuizInteractor --> QuizAttempt
+LoadQuizInteractor --> Quiz
+RegisterPlayerInteractor --> Player
+
+legend right
+  |color #FFF9C4 | Entity Layer |
+  |color #F3E5F5 | Use Case Layer |
+  |color #E8F5E9 | Interface Adapter |
+  |color #FFF3E0 | Framework Layer |
+endlegend
+
+@enduml

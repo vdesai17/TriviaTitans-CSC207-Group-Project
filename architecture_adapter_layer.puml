@@ -1,0 +1,88 @@
+@startuml TriviaTitans_AdapterLayer
+skinparam backgroundColor #FAFAFA
+title Trivia Titans - Interface Adapter Layer (Controllers, Presenters, ViewModels, DAOs)
+
+package "INTERFACE ADAPTER LAYER" #E8F5E9 {
+  
+  package "Controllers" {
+    class CreateQuizController
+    class CompleteQuizController
+    class LoadQuizController
+    class ReviewController
+    class SelectQuizController
+    class GenerateFromWrongController
+    class ReviewSummaryController
+    class PlayerController
+  }
+  
+  package "Presenters & ViewModels" #FCE4EC {
+    class CreateQuizPresenter
+    class CreateQuizViewModel
+    class PastQuizPresenter
+    class PastQuizViewModel
+    class SelectQuizPresenter
+    class SelectQuizViewModel
+    class LoadQuizPresenter
+    class LoadQuizViewModel
+    class GenerateFromWrongPresenter
+    class GenerateFromWrongViewModel
+    class ReviewSummaryPresenter
+    class ReviewSummaryViewModel
+  }
+  
+  package "Data Access Objects" #F1F8E9 {
+    interface CreateQuizDataAccessInterface
+    interface LoadQuizDataAccessInterface
+    interface QuizAttemptDataAccessInterface
+    interface ReviewQuizQuizDataAccessInterface
+    interface ReviewQuizAttemptDataAccessInterface
+    interface GenerateFromWrongDataAccessInterface
+    interface RegisterPlayerDataAccessInterface
+    interface SelectQuizAPIDataAccessInterface
+    
+    class QuizDataAccessObject
+    class PlayerDataAccessObject
+    class APIManager
+  }
+  
+  ' Relationships
+  CreateQuizController --> CreateQuizPresenter
+  CreateQuizPresenter --> CreateQuizViewModel
+  
+  ReviewController --> PastQuizPresenter
+  PastQuizPresenter --> PastQuizViewModel
+  
+  SelectQuizController --> SelectQuizPresenter
+  SelectQuizPresenter --> SelectQuizViewModel
+  
+  LoadQuizController --> LoadQuizPresenter
+  LoadQuizPresenter --> LoadQuizViewModel
+  
+  GenerateFromWrongController --> GenerateFromWrongPresenter
+  GenerateFromWrongPresenter --> GenerateFromWrongViewModel
+  
+  ReviewSummaryController --> ReviewSummaryPresenter
+  ReviewSummaryPresenter --> ReviewSummaryViewModel
+  
+  ' DAO Implementations
+  QuizDataAccessObject --|> CreateQuizDataAccessInterface
+  QuizDataAccessObject --|> LoadQuizDataAccessInterface
+  QuizDataAccessObject --|> QuizAttemptDataAccessInterface
+  QuizDataAccessObject --|> ReviewQuizQuizDataAccessInterface
+  QuizDataAccessObject --|> ReviewQuizAttemptDataAccessInterface
+  QuizDataAccessObject --|> GenerateFromWrongDataAccessInterface
+  
+  PlayerDataAccessObject --|> RegisterPlayerDataAccessInterface
+  PlayerDataAccessObject --|> ReviewQuizAttemptDataAccessInterface
+  PlayerDataAccessObject --|> GenerateFromWrongDataAccessInterface
+  
+  APIManager --|> SelectQuizAPIDataAccessInterface
+}
+
+legend right
+  Controllers direct requests to business logic
+  Presenters format output, ViewModels hold state
+  DAOs implement interfaces for data persistence
+endlegend
+
+@enduml

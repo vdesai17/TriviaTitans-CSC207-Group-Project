@@ -1,0 +1,65 @@
+@startuml TriviaTitans_SystemOverview
+skinparam backgroundColor #FAFAFA
+title Trivia Titans - Clean Architecture System Overview
+
+package "ENTITY LAYER" #FFF9C4 {
+  [Player | Quiz | Question | QuizAttempt]
+}
+
+package "USE CASE LAYER" #F3E5F5 {
+  [CreateQuizInteractor]
+  [CompleteQuizInteractor]
+  [LoadQuizInteractor]
+  [ReviewQuizInteractor]
+  [SelectQuizInteractor]
+  [GenerateFromWrongQuizInteractor]
+  [ReviewSummaryInteractor]
+  [RegisterPlayerInteractor]
+}
+
+package "INTERFACE ADAPTER LAYER" #E8F5E9 {
+  [Controllers]
+  [Presenters & ViewModels]
+  [DAOs & APIManager]
+}
+
+package "FRAMEWORK LAYER" #FFF3E0 {
+  [AppFactory]
+  [UI Screens]
+}
+
+' Flow
+[UI Screens] ..> [AppFactory] : requests\ndependencies
+[AppFactory] --> [Controllers]
+[Controllers] --> [CreateQuizInteractor]
+[Controllers] --> [CompleteQuizInteractor]
+[Controllers] --> [LoadQuizInteractor]
+[Controllers] --> [ReviewQuizInteractor]
+[Controllers] --> [SelectQuizInteractor]
+[Controllers] --> [GenerateFromWrongQuizInteractor]
+[Controllers] --> [ReviewSummaryInteractor]
+[Controllers] --> [RegisterPlayerInteractor]
+[CreateQuizInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[CompleteQuizInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[LoadQuizInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[ReviewQuizInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[SelectQuizInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[GenerateFromWrongQuizInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[ReviewSummaryInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[RegisterPlayerInteractor] --> [Player | Quiz | Question | QuizAttempt]
+[CreateQuizInteractor] --> [DAOs & APIManager]
+[CompleteQuizInteractor] --> [DAOs & APIManager]
+[LoadQuizInteractor] --> [DAOs & APIManager]
+[ReviewQuizInteractor] --> [DAOs & APIManager]
+[SelectQuizInteractor] --> [DAOs & APIManager]
+[GenerateFromWrongQuizInteractor] --> [DAOs & APIManager]
+[Presenters & ViewModels] --> [UI Screens]
+
+legend right
+  Layer-by-layer clean architecture
+  Dependencies flow inward (toward entities)
+  UI requests dependencies from AppFactory
+  No dependencies on outer layers
+endlegend
+
+@enduml

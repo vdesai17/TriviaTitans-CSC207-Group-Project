@@ -1,0 +1,49 @@
+@startuml TriviaTitans_EntityLayer
+skinparam backgroundColor #FAFAFA
+title Trivia Titans - Entity Layer (Business Rules)
+
+package "ENTITY LAYER" #FFF9C4 {
+  class Player {
+    -playerName: String
+    -password: String
+    -score: int
+  }
+  
+  class Quiz {
+    -id: String
+    -title: String
+    -category: String
+    -difficulty: String
+    -creatorName: String
+    -questions: List
+  }
+  
+  class Question {
+    -id: String
+    -questionText: String
+    -options: List
+    -correctAnswer: String
+    -category: String
+    -difficulty: String
+  }
+  
+  class QuizAttempt {
+    -attemptId: String
+    -quiz: Quiz
+    -score: int
+    -userAnswers: List
+    -completedAt: LocalDateTime
+  }
+  
+  ' Relationships
+  Quiz "1" *-- "many" Question : contains
+  Player "1" *-- "many" QuizAttempt : attempts
+  Quiz "1" *-- "many" QuizAttempt : tested in
+}
+
+legend right
+  Pure business entities with no dependencies
+  on outer layers
+endlegend
+
+@enduml

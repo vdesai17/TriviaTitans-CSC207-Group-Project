@@ -1,0 +1,108 @@
+@startuml TriviaTitans_UseCaseLayer
+skinparam backgroundColor #FAFAFA
+title Trivia Titans - Use Case Layer (Business Logic)
+
+package "USE CASE LAYER" #F3E5F5 {
+  ' Create Quiz Use Case
+  package "Create Quiz" {
+    interface CreateQuizInputBoundary
+    interface CreateQuizOutputBoundary
+    class CreateQuizInteractor
+    class CreateQuizInputData
+    class CreateQuizOutputData
+  }
+  
+  ' Complete Quiz Use Case
+  package "Complete Quiz" {
+    interface CompleteQuizInputBoundary
+    interface CompleteQuizOutputBoundary
+    class CompleteQuizInteractor
+    class CompleteQuizInputData
+    class CompleteQuizOutputData
+  }
+  
+  ' Load Quiz Use Case
+  package "Load Quiz" {
+    interface LoadQuizInputBoundary
+    interface LoadQuizOutputBoundary
+    class LoadQuizInteractor
+    class LoadQuizInputData
+    class LoadQuizResponseModel
+  }
+  
+  ' Review Quiz Use Case
+  package "Review Quiz" {
+    interface ReviewQuizInputBoundary
+    interface ReviewQuizOutputBoundary
+    class ReviewQuizInteractor
+    class ReviewQuizRequestModel
+    class ReviewQuizResponseModel
+  }
+  
+  ' Select Quiz Use Case
+  package "Select Quiz (API)" {
+    interface SelectQuizInputBoundary
+    interface SelectQuizOutputBoundary
+    class SelectQuizInteractor
+    class SelectQuizInputData
+    class SelectQuizOutputData
+  }
+  
+  ' Generate From Wrong Use Case
+  package "Generate From Wrong" {
+    interface GenerateFromWrongInputBoundary
+    interface GenerateFromWrongOutputBoundary
+    class GenerateFromWrongQuizInteractor
+    class GenerateFromWrongInputData
+    class GenerateFromWrongOutputData
+  }
+  
+  ' Review Summary Use Case
+  package "Review Summary" {
+    interface ReviewSummaryInputBoundary
+    interface ReviewSummaryOutputBoundary
+    class ReviewSummaryInteractor
+    class ReviewSummaryRequestModel
+    class ReviewSummaryResponseModel
+  }
+  
+  ' Register Player Use Case
+  package "Register Player" {
+    interface RegisterPlayerInputBoundary
+    interface RegisterPlayerOutputBoundary
+    class RegisterPlayerInteractor
+    class RegisterPlayerInputData
+  }
+  
+  ' Interactor implementations
+  CreateQuizInteractor --|> CreateQuizInputBoundary
+  CreateQuizInteractor --> CreateQuizOutputBoundary
+  
+  CompleteQuizInteractor --|> CompleteQuizInputBoundary
+  CompleteQuizInteractor --> CompleteQuizOutputBoundary
+  
+  LoadQuizInteractor --|> LoadQuizInputBoundary
+  LoadQuizInteractor --> LoadQuizOutputBoundary
+  
+  ReviewQuizInteractor --|> ReviewQuizInputBoundary
+  ReviewQuizInteractor --> ReviewQuizOutputBoundary
+  
+  SelectQuizInteractor --|> SelectQuizInputBoundary
+  SelectQuizInteractor --> SelectQuizOutputBoundary
+  
+  GenerateFromWrongQuizInteractor --|> GenerateFromWrongInputBoundary
+  GenerateFromWrongQuizInteractor --> GenerateFromWrongOutputBoundary
+  
+  ReviewSummaryInteractor --|> ReviewSummaryInputBoundary
+  ReviewSummaryInteractor --> ReviewSummaryOutputBoundary
+  
+  RegisterPlayerInteractor --|> RegisterPlayerInputBoundary
+  RegisterPlayerInteractor --> RegisterPlayerOutputBoundary
+}
+
+legend right
+  8 use cases with clear input/output boundaries
+  Interactors depend on interfaces, not concrete classes
+endlegend
+
+@enduml

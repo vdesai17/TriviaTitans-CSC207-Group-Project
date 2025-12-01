@@ -1,0 +1,71 @@
+@startuml TriviaTitans_FrameworkLayer
+skinparam backgroundColor #FAFAFA
+title Trivia Titans - Framework Layer (UI & Dependency Injection)
+
+package "FRAMEWORK LAYER" #FFF3E0 {
+  
+  package "UI Screens" {
+    class StartScreen
+    class HomeScreen
+    class CreateCustomQuizScreen
+    class QuizScreen
+    class LoadQuizScreen
+    class PastQuizScreen
+    class SelectQuizScreen
+    class SummaryScreen
+    class ProfileScreen
+  }
+  
+  package "Infrastructure" #E0F2F1 {
+    class AppFactory {
+      + createCreateQuizController()
+      + createCompleteQuizController()
+      + createLoadQuizController()
+      + createReviewController()
+      + createSelectQuizController()
+      + createGenerateFromWrongController()
+      + createReviewSummaryController()
+      + createPlayerController()
+      + getQuizDAO()
+      + getPlayerDAO()
+      + getAPIManager()
+      + getCreateQuizViewModel()
+      + getPastQuizViewModel()
+      + getSelectQuizViewModel()
+      + getLoadQuizViewModel()
+      + getGenerateFromWrongViewModel()
+      + getReviewSummaryViewModel()
+    }
+    class ThemeUtils
+  }
+  
+  ' Relationships - All UI screens use AppFactory
+  StartScreen ..> AppFactory : uses
+  HomeScreen ..> AppFactory : uses
+  CreateCustomQuizScreen ..> AppFactory : uses
+  QuizScreen ..> AppFactory : uses
+  LoadQuizScreen ..> AppFactory : uses
+  PastQuizScreen ..> AppFactory : uses
+  SelectQuizScreen ..> AppFactory : uses
+  SummaryScreen ..> AppFactory : uses
+  ProfileScreen ..> AppFactory : uses
+  
+  ' Theme utility
+  StartScreen --> ThemeUtils
+  HomeScreen --> ThemeUtils
+  CreateCustomQuizScreen --> ThemeUtils
+  QuizScreen --> ThemeUtils
+  LoadQuizScreen --> ThemeUtils
+  PastQuizScreen --> ThemeUtils
+  SelectQuizScreen --> ThemeUtils
+  SummaryScreen --> ThemeUtils
+  ProfileScreen --> ThemeUtils
+}
+
+legend right
+  AppFactory handles all dependency injection
+  All UI screens request dependencies from factory
+  ThemeUtils provides consistent styling
+endlegend
+
+@enduml
