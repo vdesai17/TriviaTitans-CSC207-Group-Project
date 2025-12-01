@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
  * 
  * CLEAN ARCHITECTURE: All dependencies injected through constructor.
  * Controllers and ViewModels created by factory as needed.
+ * NO direct DAO access - DAOs are only accessed through Controllers.
  */
 public class HomeScreen extends JPanel {
     private final JFrame frame;
@@ -29,7 +30,6 @@ public class HomeScreen extends JPanel {
                       Player player,
                       GenerateFromWrongController generateFromWrongController,
                       CompleteQuizController completeQuizController,
-                      Object quizDAO,
                       GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.currentPlayer = player;
@@ -71,12 +71,6 @@ public class HomeScreen extends JPanel {
         add(buttonPanel, BorderLayout.CENTER);
     }
 
-    public HomeScreen(JFrame frame,
-                      Player player,
-                      GenerateFromWrongController generateFromWrongController) {
-        this(frame, player, generateFromWrongController, null, null, null);
-    }
-
     private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
         JButton button = new JButton(text);
         button.setFont(ThemeUtils.BUTTON_FONT);
@@ -103,7 +97,6 @@ public class HomeScreen extends JPanel {
                 AppFactory.createCreateQuizViewModel(),
                 generateFromWrongController,
                 completeQuizController,
-                AppFactory.getQuizDAO(),
                 generateFromWrongViewModel
         ));
         frame.revalidate();
@@ -124,9 +117,6 @@ public class HomeScreen extends JPanel {
     }
 
     private void handleLoadQuiz(ActionEvent e) {
-        // Reload data from file
-        AppFactory.getQuizDAO().getAllQuizzes();
-
         frame.getContentPane().removeAll();
         frame.add(new LoadQuizScreen(
                 frame,
@@ -135,7 +125,6 @@ public class HomeScreen extends JPanel {
                 AppFactory.createLoadQuizViewModel(),
                 completeQuizController,
                 generateFromWrongController,
-                AppFactory.getQuizDAO(),
                 generateFromWrongViewModel
         ));
         frame.revalidate();

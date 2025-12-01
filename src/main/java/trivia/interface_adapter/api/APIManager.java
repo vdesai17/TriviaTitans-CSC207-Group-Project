@@ -35,13 +35,14 @@ public class APIManager implements SelectQuizAPIDataAccessInterface {
 
             for (JsonElement el : results) {
                 JsonObject qObj = el.getAsJsonObject();
-                String questionText = qObj.get("question").getAsString();
-                String correct = qObj.get("correct_answer").getAsString();
+                String questionText = decodeHtml(qObj.get("question").getAsString());
+                String correct = decodeHtml(qObj.get("correct_answer").getAsString());
 
                 List<String> options = new ArrayList<>();
                 JsonArray incorrect = qObj.getAsJsonArray("incorrect_answers");
-                for (JsonElement ans : incorrect)
-                    options.add(ans.getAsString());
+                for (JsonElement ans : incorrect) {
+                    options.add(decodeHtml(ans.getAsString()));
+                }
                 options.add(correct);
                 Collections.shuffle(options);
 
@@ -59,5 +60,19 @@ public class APIManager implements SelectQuizAPIDataAccessInterface {
             System.err.println("API fetch failed: " + e.getMessage());
         }
         return questions;
+    }
+
+    /**
+     * Minimal HTML entity decoder for OpenTDB responses.
+     * Avoids external dependencies while cleaning up quotes and ampersands.
+     */
+    private String decodeHtml(String s) {
+        if (s == null) return null;
+        return s.replace("&quot;", "\"")
+                .replace("&#039;", "'")
+                .replace("&amp;", "&")
+                .replace("&rsquo;", "’")
+                .replace("&ldquo;", "“")
+                .replace("&rdquo;", "”");
     }
 }

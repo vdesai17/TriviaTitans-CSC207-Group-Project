@@ -149,8 +149,13 @@ public class ProfileScreen extends JPanel {
 
     private void goBackHome(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController,
-                completeQuizController, AppFactory.getQuizDAO(), generateFromWrongViewModel));
+        frame.add(new HomeScreen(
+                frame,
+                player,
+                generateFromWrongController,
+                completeQuizController,
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }

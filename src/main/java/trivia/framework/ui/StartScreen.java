@@ -182,11 +182,13 @@ public class StartScreen extends JPanel {
 
     private void navigateToHome(Player player) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player,
+        frame.add(new HomeScreen(
+                frame, 
+                player,
                 generateFromWrongController,
                 completeQuizController,
-                AppFactory.getQuizDAO(),
-                generateFromWrongViewModel));
+                generateFromWrongViewModel
+        ));
         frame.revalidate();
         frame.repaint();
     }

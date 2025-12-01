@@ -423,8 +423,7 @@ public class PastQuizScreen extends JPanel implements PropertyChangeListener {
     private void navigateToHome() {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, currentPlayer, generateFromWrongController,
-                completeQuizController, AppFactory.getQuizDAO(), 
-                generateFromWrongViewModel));
+                completeQuizController, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

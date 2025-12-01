@@ -248,7 +248,6 @@ public class SelectQuizScreen extends JPanel implements PropertyChangeListener {
                 currentPlayer,
                 generateFromWrongController,
                 completeQuizController,
-                AppFactory.getQuizDAO(),
                 generateFromWrongViewModel
         ));
         frame.revalidate();

@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
  * SummaryScreen — displays the final quiz results (score & accuracy)
  * using the unified dark-teal gradient UI theme.
  * Allows returning to the HomeScreen while keeping the same player session.
+ * 
+ * CLEAN ARCHITECTURE: No direct DAO dependencies passed to other screens.
  */
 public class SummaryScreen extends JPanel {
     private final JFrame frame;
@@ -95,7 +97,7 @@ public class SummaryScreen extends JPanel {
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
         frame.add(new HomeScreen(frame, player, generateFromWrongController,
-                completeQuizController, AppFactory.getQuizDAO(), generateFromWrongViewModel));
+                completeQuizController, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

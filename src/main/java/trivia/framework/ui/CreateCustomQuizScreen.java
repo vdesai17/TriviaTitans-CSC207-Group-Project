@@ -5,7 +5,6 @@ import trivia.interface_adapter.controller.CreateQuizController;
 import trivia.interface_adapter.presenter.CreateQuizViewModel;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.dao.QuizDataAccessObject;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 
 import javax.swing.*;
@@ -23,16 +22,15 @@ import java.util.List;
  * - Does NOT use use_case InputData classes
  * - Talks only to CreateQuizController and CreateQuizViewModel
  * - UI logic only (collecting form data + basic empty-field checks)
+ * - CLEAN ARCHITECTURE: All dependencies injected through constructor
  */
 public class CreateCustomQuizScreen extends JPanel implements PropertyChangeListener {
     private final JFrame frame;
     private final Player player;
     private final CreateQuizController controller;
     private final CreateQuizViewModel viewModel;
-
     private final GenerateFromWrongController generateFromWrongController;
     private final CompleteQuizController completeQuizController;
-    private final QuizDataAccessObject quizDAO;
     private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     private final JTextField quizTitleField;
@@ -51,18 +49,14 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
                                   CreateQuizViewModel viewModel,
                                   GenerateFromWrongController generateFromWrongController,
                                   CompleteQuizController completeQuizController,
-                                  QuizDataAccessObject quizDAO,
                                   GenerateFromWrongViewModel generateFromWrongViewModel) {
         this.frame = frame;
         this.player = player;
         this.controller = controller;
         this.viewModel = viewModel;
-
         this.generateFromWrongController = generateFromWrongController;
         this.completeQuizController = completeQuizController;
-        this.quizDAO = quizDAO;
         this.generateFromWrongViewModel = generateFromWrongViewModel;
-
 
         this.viewModel.addPropertyChangeListener(this);
 
@@ -297,7 +291,6 @@ public class CreateCustomQuizScreen extends JPanel implements PropertyChangeList
                 player,
                 generateFromWrongController,
                 completeQuizController,
-                quizDAO,
                 generateFromWrongViewModel
         ));
         frame.revalidate();
