@@ -3144,5 +3144,240 @@
     "password": "asd",
     "score": 0,
     "pastAttempts": []
+  },
+  {
+    "playerName": "test1.2",
+    "password": "12345",
+    "score": 6,
+    "pastAttempts": [
+      {
+        "attemptId": "attempt-1764639077399",
+        "quiz": {
+          "id": "quiz-1764639077399",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test1.2",
+          "questions": [
+            {
+              "id": "851bed98-8709-401c-bbc7-417a289a07a2",
+              "questionText": "how many members are in our group?",
+              "options": [
+                "3",
+                "5",
+                "6",
+                "7"
+              ],
+              "correctAnswer": "6",
+              "category": "Custom",
+              "difficulty": "N/A"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 1,
+        "userAnswers": [
+          "6"
+        ],
+        "selectedOptionIndices": [
+          2
+        ],
+        "completedAt": "2025-12-01T20:31:17.399731",
+        "editable": false,
+        "userName": "test1.2"
+      },
+      {
+        "attemptId": "attempt-1764639108483",
+        "quiz": {
+          "id": "quiz-1764639108483",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test1.2",
+          "questions": [
+            {
+              "id": "213457ae-7ab2-4d4a-b783-a654c0eff4f6",
+              "questionText": "What word represents the letter \u0027T\u0027 in the NATO phonetic alphabet?",
+              "options": [
+                "Target",
+                "Taxi",
+                "Turkey",
+                "Tango"
+              ],
+              "correctAnswer": "Tango",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "64647f4e-8703-4f6a-9e6b-8edabe9ede85",
+              "questionText": "The word \"dozen\" usually refers to a group of how many objects?",
+              "options": [
+                "12",
+                "20",
+                "6",
+                "10"
+              ],
+              "correctAnswer": "12",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "8316c19c-9639-4eaa-aed2-2a51e622aeb4",
+              "questionText": "What was the name of the WWF professional wrestling tag team made up of the wrestlers Ax and Smash?",
+              "options": [
+                "The Dream Team",
+                "The British Bulldogs",
+                "The Bushwhackers",
+                "Demolition"
+              ],
+              "correctAnswer": "Demolition",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "24b90cd9-7919-4c65-bb64-78c1101e8c7a",
+              "questionText": "How many cards are there in a standard deck of playing cards?",
+              "options": [
+                "40",
+                "52",
+                "64",
+                "32"
+              ],
+              "correctAnswer": "52",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "642b97d7-3d9c-4198-b3e1-87a152ca1a97",
+              "questionText": "What was the nickname given to the Hughes H-4 Hercules, a heavy transport flying boat which achieved flight in 1947?",
+              "options": [
+                "Noah\u0027s Ark",
+                "Trojan Horse",
+                "Fat Man",
+                "Spruce Goose"
+              ],
+              "correctAnswer": "Spruce Goose",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 2,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Target",
+          "12",
+          "The Bushwhackers",
+          "52",
+          "Fat Man"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          2,
+          1,
+          2
+        ],
+        "completedAt": "2025-12-01T20:31:48.483484",
+        "editable": false,
+        "userName": "test1.2"
+      },
+      {
+        "attemptId": "attempt-1764639149999",
+        "quiz": {
+          "id": "quiz-1764639149999",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test1.2",
+          "questions": [
+            {
+              "id": "213457ae-7ab2-4d4a-b783-a654c0eff4f6",
+              "questionText": "What word represents the letter \u0027T\u0027 in the NATO phonetic alphabet?",
+              "options": [
+                "Target",
+                "Taxi",
+                "Turkey",
+                "Tango"
+              ],
+              "correctAnswer": "Tango",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "64647f4e-8703-4f6a-9e6b-8edabe9ede85",
+              "questionText": "The word \"dozen\" usually refers to a group of how many objects?",
+              "options": [
+                "12",
+                "20",
+                "6",
+                "10"
+              ],
+              "correctAnswer": "12",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "8316c19c-9639-4eaa-aed2-2a51e622aeb4",
+              "questionText": "What was the name of the WWF professional wrestling tag team made up of the wrestlers Ax and Smash?",
+              "options": [
+                "The Dream Team",
+                "The British Bulldogs",
+                "The Bushwhackers",
+                "Demolition"
+              ],
+              "correctAnswer": "Demolition",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "24b90cd9-7919-4c65-bb64-78c1101e8c7a",
+              "questionText": "How many cards are there in a standard deck of playing cards?",
+              "options": [
+                "40",
+                "52",
+                "64",
+                "32"
+              ],
+              "correctAnswer": "52",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "642b97d7-3d9c-4198-b3e1-87a152ca1a97",
+              "questionText": "What was the nickname given to the Hughes H-4 Hercules, a heavy transport flying boat which achieved flight in 1947?",
+              "options": [
+                "Noah\u0027s Ark",
+                "Trojan Horse",
+                "Fat Man",
+                "Spruce Goose"
+              ],
+              "correctAnswer": "Spruce Goose",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 3,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Tango",
+          "12",
+          "The Bushwhackers",
+          "52",
+          "Trojan Horse"
+        ],
+        "selectedOptionIndices": [
+          3,
+          0,
+          2,
+          1,
+          1
+        ],
+        "completedAt": "2025-12-01T20:32:30.000148",
+        "editable": false,
+        "userName": "test1.2"
+      }
+    ]
   }
 ]
