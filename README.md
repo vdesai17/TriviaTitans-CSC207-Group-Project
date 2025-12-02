@@ -1,11 +1,15 @@
 # TriviaTitans-CSC207-Group-Project
 
 
+
+
 ---
 
 # TriviaTitans — CSC207 Group Project
 
 *A Java Swing Desktop Trivia Game Implementing Clean Architecture*
+
+
 
 ---
 
@@ -26,9 +30,14 @@ The system supports:
 * Viewing profile statistics and quiz history
 * Saving quizzes and attempts locally
 
+
+
 ---
 
 ## 📁 Project Structure (Clean Architecture)
+
+
+
 
 ```
 trivia/
