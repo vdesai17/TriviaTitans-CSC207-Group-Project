@@ -1,4 +1,4 @@
-package trivia.use_case.select_quiz;
+package trivia.use_case.select_quiza;
 
 public class SelectQuizInputData {
     private final String categoryId;

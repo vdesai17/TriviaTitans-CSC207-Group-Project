@@ -1,9 +1,7 @@
 package trivia.interface_adapter.controller;
 
-import trivia.use_case.select_quiz.SelectQuizInputBoundary;
-import trivia.use_case.select_quiz.SelectQuizInputData;
-import trivia.use_case.select_quiz.SelectQuizOutputData;
-import trivia.use_case.select_quiz.SelectQuizOutputBoundary;
+import trivia.use_case.select_quiza.SelectQuizInputBoundary;
+import trivia.use_case.select_quiza.SelectQuizInputData;
 import trivia.entity.Question;
 import trivia.interface_adapter.presenter.SelectQuizViewModel;
 import trivia.interface_adapter.presenter.SelectQuizPresenter;

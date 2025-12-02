@@ -1,7 +1,7 @@
 package trivia.interface_adapter.presenter;
 
-import trivia.use_case.select_quiz.SelectQuizOutputBoundary;
-import trivia.use_case.select_quiz.SelectQuizOutputData;
+import trivia.use_case.select_quiza.SelectQuizOutputBoundary;
+import trivia.use_case.select_quiza.SelectQuizOutputData;
 
 public class SelectQuizPresenter implements SelectQuizOutputBoundary {
 

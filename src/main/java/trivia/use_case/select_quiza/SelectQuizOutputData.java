@@ -1,4 +1,4 @@
-package trivia.use_case.select_quiz;
+package trivia.use_case.select_quiza;
 
 import trivia.entity.Question;
 import java.util.List;
