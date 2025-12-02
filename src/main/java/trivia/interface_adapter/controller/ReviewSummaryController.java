@@ -13,9 +13,8 @@ public class ReviewSummaryController {
         this.input = input;
     }
 
-    //Generates the review summary from the given quiz attempt
-    public void generateSummary(int score, int accuracy) {
-        ReviewSummaryRequestModel requestModel = new ReviewSummaryRequestModel(score, accuracy);
+    //Generates the review summary
+    public void generateSummary(ReviewSummaryRequestModel requestModel) {
         input.generateReviewSummary(requestModel);
     }
 }

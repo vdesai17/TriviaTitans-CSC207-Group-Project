@@ -7,7 +7,9 @@ import trivia.entity.QuizAttempt;
 import trivia.framework.AppFactory;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
+import trivia.interface_adapter.controller.ReviewSummaryController;
 import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
+import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,6 +48,7 @@ public class QuizScreen extends JPanel {
     private final JButton nextButton;
     private final JButton previousButton;
     private final JLabel progressLabel;
+
 
     public QuizScreen(JFrame frame,
                       List<Question> questions,
@@ -352,9 +355,12 @@ public class QuizScreen extends JPanel {
                 JOptionPane.INFORMATION_MESSAGE
         );
 
+        ReviewSummaryViewModel reviewViewModel = AppFactory.createReviewSummaryViewModel();
+        ReviewSummaryController reviewController = AppFactory.createReviewSummaryController();
+
         frame.getContentPane().removeAll();
-        frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer,
-                generateFromWrongController, controller, generateFromWrongViewModel));
+        frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer, reviewViewModel,
+                reviewController, controller, generateFromWrongController));
         frame.revalidate();
         frame.repaint();
     }

@@ -1,22 +1,15 @@
 package trivia.use_case.review_summary;
 
-import trivia.entity.QuizAttempt;
 
 public class ReviewSummaryRequestModel {
     private final int score;
-    private final int accuracy;
+    private final int numberOfQuestions;
 
-    public ReviewSummaryRequestModel(int score, int accuracy) {
+    public ReviewSummaryRequestModel(int score, int numberOfQuestions) {
         this.score = score;
-        this.accuracy = accuracy;
+        this.numberOfQuestions = numberOfQuestions;
     }
 
-    // Getters
-    public int getScore() {
-        return score;
-    }
-
-    public int getAccuracy() {
-        return accuracy;
-    }
+    public int getScore() { return score; }
+    public int getNumberOfQuestions() { return numberOfQuestions; }
 }
