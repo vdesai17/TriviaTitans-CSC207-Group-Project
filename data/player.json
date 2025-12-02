@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 34,
+    "score": 37,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -3025,6 +3025,198 @@
           -1
         ],
         "completedAt": "2025-12-01T16:51:17.580828",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764639717774",
+        "quiz": {
+          "id": "quiz-1764639717773",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "e30af42b-d46b-49cf-b715-26156cee0642",
+              "questionText": "In \"Katamari Damacy\", you control a character known as:",
+              "options": [
+                "The Prince",
+                "Foomin",
+                "Fujio",
+                "Ichigo "
+              ],
+              "correctAnswer": "The Prince",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "cd20cd55-34c3-480a-a2e4-b55743b23c37",
+              "questionText": "What is \"dabbing\"?",
+              "options": [
+                "A sport",
+                "A language",
+                "A medical procedure",
+                "A dance"
+              ],
+              "correctAnswer": "A dance",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "ac6a8b51-0ce2-4c7b-9764-5ee0ea43a954",
+              "questionText": "Where is the train station \"Llanfair\u0026shy;pwllgwyngyll\u0026shy;gogery\u0026shy;chwyrn\u0026shy;drobwll\u0026shy;llan\u0026shy;tysilio\u0026shy;gogo\u0026shy;goch\"?",
+              "options": [
+                "Denmark",
+                "Wales",
+                "Moldova",
+                "Czech Republic"
+              ],
+              "correctAnswer": "Wales",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "6b03fdb4-11c5-4428-9f02-bf464a0fab69",
+              "questionText": "Which of the following presidents is not on Mount Rushmore?",
+              "options": [
+                "John F. Kennedy",
+                "Abraham Lincoln",
+                "Thomas Jefferson",
+                "Theodore Roosevelt"
+              ],
+              "correctAnswer": "John F. Kennedy",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "3c8cb0be-ef46-4015-90a9-6e0e7317bfec",
+              "questionText": "How many syllables make up a haiku?",
+              "options": [
+                "15",
+                "17",
+                "10",
+                "21"
+              ],
+              "correctAnswer": "17",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 2,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "The Prince",
+          "A sport",
+          "Denmark",
+          "John F. Kennedy",
+          "15"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-12-01T20:41:57.780212900",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764641333397",
+        "quiz": {
+          "id": "quiz-1764641333395",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "0e1f7340-ebfb-46da-85e7-f2f4c5d639ee",
+              "questionText": "What is on display in the Madame Tussaud\u0027s museum in London?",
+              "options": [
+                "Wax sculptures",
+                "Vintage cars",
+                "Unreleased film reels",
+                "Designer clothing"
+              ],
+              "correctAnswer": "Wax sculptures",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b268dc78-fd4b-43d1-b2ec-3e118b42a244",
+              "questionText": "Which type of cutlery is most suited for eating soup?",
+              "options": [
+                "Chopsticks",
+                "Spoon",
+                "Knife",
+                "Fork"
+              ],
+              "correctAnswer": "Spoon",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "d64afea4-9c30-4700-9e87-f7e4809449ea",
+              "questionText": "Who is the author of Jurassic Park?",
+              "options": [
+                "Peter Benchley",
+                "Irvine Welsh",
+                "Michael Crichton",
+                "Chuck Paluhniuk"
+              ],
+              "correctAnswer": "Michael Crichton",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "34352863-2b16-41a1-89bd-ee9724e396ea",
+              "questionText": "Who is the youngest person to receive a Nobel Prize?",
+              "options": [
+                "Werner Heisenberg",
+                "Lawrence Bragg",
+                "Yasser Arafat",
+                "Malala Yousafzai"
+              ],
+              "correctAnswer": "Malala Yousafzai",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "7b1875f2-ac8a-46cf-ab07-f09a38b50c59",
+              "questionText": "What is the name of Poland in Polish?",
+              "options": [
+                "P\u0026oacute;land",
+                "Polska",
+                "Polszka",
+                "Pupcia"
+              ],
+              "correctAnswer": "Polska",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 1,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Wax sculptures",
+          "Chopsticks",
+          "Peter Benchley",
+          "Werner Heisenberg",
+          "P\u0026oacute;land"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-12-01T21:08:53.408444800",
         "editable": false,
         "userName": "test"
       }

@@ -29,9 +29,9 @@ class ReviewSummaryInteractorTest {
         ReviewSummaryInteractor interactor = new ReviewSummaryInteractor(presenter);
 
         int score = 10;
-        int accuracy = 15;
+        int numberOfQuestions = 15;
 
-        ReviewSummaryRequestModel request = new ReviewSummaryRequestModel(score, accuracy);
+        ReviewSummaryRequestModel request = new ReviewSummaryRequestModel(score, numberOfQuestions);
 
         interactor.generateReviewSummary(request);
 
@@ -39,7 +39,7 @@ class ReviewSummaryInteractorTest {
         assertNotNull(presenter.responseModel);
         assertEquals(10, presenter.responseModel.getScore(),
                 "Should return the correct Score");
-        assertEquals(15, presenter.responseModel.getAccuracy(),
+        assertEquals(67, presenter.responseModel.getAccuracy(),
                 "Should return the correct Accuracy");
 
     }

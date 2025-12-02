@@ -1,63 +1,59 @@
 package trivia.framework.ui;
 
 import trivia.entity.Player;
-import trivia.framework.AppFactory;
-import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.CompleteQuizController;
-import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
+import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.ReviewSummaryController;
-import trivia.interface_adapter.presenter.ReviewSummaryPresenter;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
-import trivia.use_case.review_summary.ReviewSummaryInteractor;
-import trivia.use_case.review_summary.ReviewSummaryResponseModel;
+import trivia.use_case.review_summary.ReviewSummaryRequestModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-/**
- * SummaryScreen — displays the final quiz results (score & accuracy)
- * using the unified dark-teal gradient UI theme.
- * Allows returning to the HomeScreen while keeping the same player session.
- * 
- * CLEAN ARCHITECTURE: No direct DAO dependencies passed to other screens.
- */
 public class SummaryScreen extends JPanel {
+
     private final JFrame frame;
     private final Player player;
-    private final GenerateFromWrongController generateFromWrongController;
+    private final ReviewSummaryViewModel viewModel;
+    private final ReviewSummaryController reviewSummaryController;
     private final CompleteQuizController completeQuizController;
-    private final GenerateFromWrongViewModel generateFromWrongViewModel;
+    private final GenerateFromWrongController generateFromWrongController;
 
-    public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player,
-                         GenerateFromWrongController generateFromWrongController,
+    public SummaryScreen(int score,
+                         int numberOfQuestions,
+                         JFrame frame,
+                         Player player,
+                         ReviewSummaryViewModel viewModel,
+                         ReviewSummaryController reviewSummaryController,
                          CompleteQuizController completeQuizController,
-                         GenerateFromWrongViewModel generateFromWrongViewModel) {
+                         GenerateFromWrongController generateFromWrongController) {
+
         this.frame = frame;
         this.player = player;
-        this.generateFromWrongController = generateFromWrongController;
+        this.viewModel = viewModel;
+        this.reviewSummaryController = reviewSummaryController;
         this.completeQuizController = completeQuizController;
-        this.generateFromWrongViewModel = generateFromWrongViewModel;
+        this.generateFromWrongController = generateFromWrongController;
 
-        ReviewSummaryViewModel viewModel = AppFactory.createReviewSummaryViewModel();
-        int accuracy = (numberOfQuestions != 0)
-                ? Math.round(score * 100 / numberOfQuestions)
-                : 0;
 
-        ReviewSummaryResponseModel responseModel = new ReviewSummaryResponseModel(score, accuracy);
-        ReviewSummaryController controller = AppFactory.createReviewSummaryController();
-        ReviewSummaryPresenter presenter = AppFactory.createReviewSummaryPresenter(viewModel);
-        presenter.presentReviewSummary(responseModel);
-        controller.generateSummary(score, accuracy);
+        int accuracy = numberOfQuestions == 0 ? 0 : Math.round(score * 100 / numberOfQuestions);
+        ReviewSummaryRequestModel request = new ReviewSummaryRequestModel(score, accuracy);
+
+        reviewSummaryController.generateSummary(request);
 
         setLayout(new BorderLayout());
         ThemeUtils.applyGradientBackground(this);
 
+        //Header
         JLabel title = new JLabel("Quiz Summary", SwingConstants.CENTER);
         ThemeUtils.styleLabel(title, "title");
         title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
         add(title, BorderLayout.NORTH);
 
+        //Content
         JPanel contentPanel = ThemeUtils.createGlassPanel(40);
         contentPanel.setLayout(new GridLayout(3, 1, 15, 15));
         contentPanel.setOpaque(false);
@@ -68,12 +64,14 @@ public class SummaryScreen extends JPanel {
         JLabel accuracyLabel = new JLabel(viewModel.getAccuracy(), SwingConstants.CENTER);
         ThemeUtils.styleLabel(accuracyLabel, "subtitle");
 
-        JButton mainMenuButton = ThemeUtils.createStyledButton(
+
+
+        JButton mainMenuButton = createStyledButton(
                 "Return to Main Menu",
                 ThemeUtils.MINT,
-                ThemeUtils.MINT_HOVER
+                ThemeUtils.MINT_HOVER,
+                this::handleMainMenu
         );
-        mainMenuButton.addActionListener(this::handleMainMenu);
 
         contentPanel.add(scoreLabel);
         contentPanel.add(accuracyLabel);
@@ -84,21 +82,37 @@ public class SummaryScreen extends JPanel {
         centerWrapper.add(contentPanel);
         add(centerWrapper, BorderLayout.CENTER);
 
+        //Footer
         JLabel footer = new JLabel("Thank you for playing!", SwingConstants.CENTER);
         ThemeUtils.styleLabel(footer, "subtitle");
         footer.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
         add(footer, BorderLayout.SOUTH);
     }
 
-    //public SummaryScreen(int score, int numberOfQuestions, JFrame frame, Player player) {
-        //this(score, numberOfQuestions, frame, player, null, null, null);
-    //}
-
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController,
-                completeQuizController, generateFromWrongViewModel));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, null));
         frame.revalidate();
         frame.repaint();
+    }
+    //Make new style Button
+    private JButton createStyledButton(String text, Color base, Color hover, java.awt.event.ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setFont(ThemeUtils.BUTTON_FONT);
+        button.setBackground(base);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setBorder(BorderFactory.createEmptyBorder(12, 25, 12, 25));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) { button.setBackground(hover); }
+            @Override
+            public void mouseExited(MouseEvent e) { button.setBackground(base); }
+        });
+        button.addActionListener(listener);
+        return button;
     }
 }

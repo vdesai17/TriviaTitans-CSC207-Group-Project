@@ -5,20 +5,22 @@ public class ReviewSummaryInteractor implements ReviewSummaryInputBoundary {
     private final ReviewSummaryOutputBoundary output;
 
     public ReviewSummaryInteractor(ReviewSummaryOutputBoundary output) {
-
         this.output = output;
     }
 
-    //generate Summary
     @Override
     public void generateReviewSummary(ReviewSummaryRequestModel request) {
+
         int score = request.getScore();
-        int accuracy = request.getAccuracy();
+        int numberOfQuestions = request.getNumberOfQuestions();
 
-        //Set Response model
-        ReviewSummaryResponseModel response = new ReviewSummaryResponseModel(score, accuracy);
+        int accuracy = (numberOfQuestions == 0)
+                ? 0
+                : Math.round((float) score * 100 / numberOfQuestions);
 
-        //Present Response model
+        ReviewSummaryResponseModel response =
+                new ReviewSummaryResponseModel(score, accuracy);
+
         output.presentReviewSummary(response);
     }
 }

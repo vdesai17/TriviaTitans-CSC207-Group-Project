@@ -7,22 +7,20 @@ public class ReviewSummaryPresenter implements ReviewSummaryOutputBoundary {
 
     private final ReviewSummaryViewModel viewModel;
 
-    // Getting viewModel
     public ReviewSummaryPresenter(ReviewSummaryViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
     @Override
     public void presentReviewSummary(ReviewSummaryResponseModel response) {
-        //Format numbers to strings
-        String scoreString = "Score: " + response.getScore();
-        String accuracyString = "Accuracy: " + response.getAccuracy() + "%";
 
-        //Set view model
-        viewModel.setScore(scoreString);
-        viewModel.setAccuracy(accuracyString);
+        viewModel.setScore("Score: " + response.getScore());
+        viewModel.setAccuracy("Accuracy: " + response.getAccuracy() + "%");
+
+        viewModel.firePropertyChanged();
     }
-
-
-
 }
+
+
+
+
