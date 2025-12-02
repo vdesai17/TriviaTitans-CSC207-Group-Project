@@ -4,6 +4,7 @@ import trivia.entity.Player;
 import trivia.interface_adapter.controller.CompleteQuizController;
 import trivia.interface_adapter.controller.GenerateFromWrongController;
 import trivia.interface_adapter.controller.ReviewSummaryController;
+import trivia.interface_adapter.presenter.GenerateFromWrongViewModel;
 import trivia.interface_adapter.presenter.ReviewSummaryViewModel;
 import trivia.use_case.review_summary.ReviewSummaryRequestModel;
 
@@ -17,32 +18,34 @@ public class SummaryScreen extends JPanel {
 
     private final JFrame frame;
     private final Player player;
-    private final ReviewSummaryViewModel viewModel;
+    private final ReviewSummaryViewModel reviewSummaryViewModel;
     private final ReviewSummaryController reviewSummaryController;
     private final CompleteQuizController completeQuizController;
     private final GenerateFromWrongController generateFromWrongController;
+    private final GenerateFromWrongViewModel generateFromWrongViewModel;
 
     public SummaryScreen(int score,
                          int numberOfQuestions,
                          JFrame frame,
                          Player player,
-                         ReviewSummaryViewModel viewModel,
+                         ReviewSummaryViewModel reviewSummaryViewModel,
                          ReviewSummaryController reviewSummaryController,
                          CompleteQuizController completeQuizController,
-                         GenerateFromWrongController generateFromWrongController) {
+                         GenerateFromWrongController generateFromWrongController,
+                         GenerateFromWrongViewModel generateFromWrongViewModel) {
 
         this.frame = frame;
         this.player = player;
-        this.viewModel = viewModel;
+        this.reviewSummaryViewModel = reviewSummaryViewModel;
         this.reviewSummaryController = reviewSummaryController;
         this.completeQuizController = completeQuizController;
         this.generateFromWrongController = generateFromWrongController;
+        this.generateFromWrongViewModel = generateFromWrongViewModel;
 
 
-        int accuracy = numberOfQuestions == 0 ? 0 : Math.round(score * 100 / numberOfQuestions);
-        ReviewSummaryRequestModel request = new ReviewSummaryRequestModel(score, accuracy);
+        ReviewSummaryRequestModel request = new ReviewSummaryRequestModel(score, numberOfQuestions);
 
-        reviewSummaryController.generateSummary(request);
+        this.reviewSummaryController.generateSummary(request);
 
         setLayout(new BorderLayout());
         ThemeUtils.applyGradientBackground(this);
@@ -58,10 +61,10 @@ public class SummaryScreen extends JPanel {
         contentPanel.setLayout(new GridLayout(3, 1, 15, 15));
         contentPanel.setOpaque(false);
 
-        JLabel scoreLabel = new JLabel(viewModel.getScore(), SwingConstants.CENTER);
+        JLabel scoreLabel = new JLabel(this.reviewSummaryViewModel.getScore(), SwingConstants.CENTER);
         ThemeUtils.styleLabel(scoreLabel, "subtitle");
 
-        JLabel accuracyLabel = new JLabel(viewModel.getAccuracy(), SwingConstants.CENTER);
+        JLabel accuracyLabel = new JLabel(this.reviewSummaryViewModel.getAccuracy(), SwingConstants.CENTER);
         ThemeUtils.styleLabel(accuracyLabel, "subtitle");
 
 
@@ -91,7 +94,7 @@ public class SummaryScreen extends JPanel {
 
     private void handleMainMenu(ActionEvent e) {
         frame.getContentPane().removeAll();
-        frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, null));
+        frame.add(new HomeScreen(frame, player, generateFromWrongController, completeQuizController, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

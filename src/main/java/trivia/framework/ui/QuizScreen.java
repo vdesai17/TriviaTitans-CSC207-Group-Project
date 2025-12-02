@@ -355,12 +355,12 @@ public class QuizScreen extends JPanel {
                 JOptionPane.INFORMATION_MESSAGE
         );
 
-        ReviewSummaryViewModel reviewViewModel = AppFactory.createReviewSummaryViewModel();
         ReviewSummaryController reviewController = AppFactory.createReviewSummaryController();
+        ReviewSummaryViewModel reviewViewModel = AppFactory.createReviewSummaryViewModel();
 
         frame.getContentPane().removeAll();
         frame.add(new SummaryScreen(score, numberOfQuestions, frame, currentPlayer, reviewViewModel,
-                reviewController, controller, generateFromWrongController));
+                reviewController, controller, generateFromWrongController, generateFromWrongViewModel));
         frame.revalidate();
         frame.repaint();
     }

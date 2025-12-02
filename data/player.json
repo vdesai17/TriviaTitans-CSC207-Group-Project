@@ -8,7 +8,7 @@
   {
     "playerName": "test",
     "password": "12345",
-    "score": 37,
+    "score": 47,
     "pastAttempts": [
       {
         "attemptId": "attempt-1764305021449",
@@ -3217,6 +3217,582 @@
           0
         ],
         "completedAt": "2025-12-01T21:08:53.408444800",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764642638020",
+        "quiz": {
+          "id": "quiz-1764642638019",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "f625bf9f-8efb-4988-8973-7e616fe369b6",
+              "questionText": "What is the name of the poker hand containing three of a kind and a pair?",
+              "options": [
+                "Straight",
+                "Flush",
+                "Full House",
+                "High card"
+              ],
+              "correctAnswer": "Full House",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "db77ad9a-1d25-467a-9982-6fc0c2c44a5c",
+              "questionText": "Who is the author of Jurassic Park?",
+              "options": [
+                "Peter Benchley",
+                "Chuck Paluhniuk",
+                "Irvine Welsh",
+                "Michael Crichton"
+              ],
+              "correctAnswer": "Michael Crichton",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "e511780f-010e-498e-b413-c301a548873f",
+              "questionText": "What is the Zodiac symbol for Gemini?",
+              "options": [
+                "Scales",
+                "Maiden",
+                "Fish",
+                "Twins"
+              ],
+              "correctAnswer": "Twins",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "0df533e7-5152-409c-9c8f-dc33eba1d6fa",
+              "questionText": "Which of these Marvel games was released on the Playstation 2?",
+              "options": [
+                "Silver Surfer",
+                "Wolverine: Adamantium Rage",
+                "Howard the Duck",
+                "Spider-Man 2"
+              ],
+              "correctAnswer": "Spider-Man 2",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "5f78cb43-5230-447d-8217-4e8cc024836a",
+              "questionText": "What airline was the owner of the plane that crashed off the coast of Nova Scotia in 1998?",
+              "options": [
+                "Air France",
+                "British Airways",
+                "Swiss Air",
+                "TWA"
+              ],
+              "correctAnswer": "Swiss Air",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Straight",
+          "Peter Benchley",
+          "Scales",
+          "Silver Surfer",
+          "Air France"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-12-01T21:30:38.027003900",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764649572655",
+        "quiz": {
+          "id": "quiz-1764649572653",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "b6efe700-3063-4d3b-b822-7b2fd4cdc77f",
+              "questionText": "The New York Times slogan is, “All the News That’s Fit to\u0026hellip;”",
+              "options": [
+                "Read",
+                "Look",
+                "Print",
+                "Digest"
+              ],
+              "correctAnswer": "Print",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "9bd121f9-dd60-49ed-afc1-f7459f098c0a",
+              "questionText": "The Quran is the holy book of which Abrahamic religion?",
+              "options": [
+                "Judaism",
+                "Christianity",
+                "Rastafarianism",
+                "Islam"
+              ],
+              "correctAnswer": "Islam",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "258b0736-859d-45e5-b2a9-90e03c820111",
+              "questionText": "Which country has the Union Jack in its flag?",
+              "options": [
+                "Canada",
+                "New Zealand",
+                "South Africa",
+                "Hong Kong"
+              ],
+              "correctAnswer": "New Zealand",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "91ab9a36-8da0-4312-b28a-0d0e884fcfec",
+              "questionText": "Who invented the first ever chocolate bar, in 1847?",
+              "options": [
+                "Andrew Johnson",
+                "John Cadbury",
+                "Joseph Fry",
+                "John Tyler"
+              ],
+              "correctAnswer": "Joseph Fry",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "4d9f0872-c187-4306-b2a1-891c7353b7ff",
+              "questionText": "When was the website reddit founded ?",
+              "options": [
+                "2008",
+                "2004",
+                "2006",
+                "2005"
+              ],
+              "correctAnswer": "2005",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Read",
+          "Judaism",
+          "Canada",
+          "Andrew Johnson",
+          "2008"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-12-01T23:26:12.664713500",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764649608511",
+        "quiz": {
+          "id": "quiz-1764649608509",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "bca6e525-2761-4cc9-a21d-81f3f1fe56f5",
+              "questionText": "What is the name of the main Character from the Series: Dead Space?",
+              "options": [
+                "Ellen Ripley",
+                "Isaac Clarke",
+                "Captain Kirk",
+                "Commander Shepard"
+              ],
+              "correctAnswer": "Isaac Clarke",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "da9b8302-8c12-4d71-9a39-659f9ddb71aa",
+              "questionText": "The “fairy” type made it’s debut in which generation of the Pokemon core series games?",
+              "options": [
+                "7th",
+                "6th",
+                "4th",
+                "2nd"
+              ],
+              "correctAnswer": "6th",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "864f638b-5779-4c9e-8777-3fb6a5c17166",
+              "questionText": "The word \"dozen\" usually refers to a group of how many objects?",
+              "options": [
+                "12",
+                "20",
+                "10",
+                "6"
+              ],
+              "correctAnswer": "12",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "1cf9245f-7966-4b9f-99bc-4e84e5d2887f",
+              "questionText": "What kind of aircraft was developed by Igor Sikorsky in the United States in 1942?",
+              "options": [
+                "Jet",
+                "Stealth Blimp",
+                "Helicopter",
+                "Space Capsule"
+              ],
+              "correctAnswer": "Helicopter",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "23bfb18f-840c-4dec-a7f4-599330249750",
+              "questionText": "What technology is named after a tenth-century ruler of Denmark and Norway?",
+              "options": [
+                "Internet",
+                "GPS",
+                "Wi-Fi",
+                "Bluetooth"
+              ],
+              "correctAnswer": "Bluetooth",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 2,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Ellen Ripley",
+          "6th",
+          "12",
+          "Stealth Blimp",
+          "GPS"
+        ],
+        "selectedOptionIndices": [
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "completedAt": "2025-12-01T23:26:48.511111100",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764649765849",
+        "quiz": {
+          "id": "quiz-1764649765849",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "61fbc3e0-be4f-43b8-a62b-ad7f48bfe9cd",
+              "questionText": "The Hyundai Motor Company was founded in which country?",
+              "options": [
+                "Japan",
+                "South Korea",
+                "China",
+                "Russia"
+              ],
+              "correctAnswer": "South Korea",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "b9c5cb4f-0687-4cc7-9611-fc787c414570",
+              "questionText": "In \"Katamari Damacy\", you control a character known as:",
+              "options": [
+                "The Prince",
+                "Foomin",
+                "Fujio",
+                "Ichigo "
+              ],
+              "correctAnswer": "The Prince",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "fb8216af-7949-4a9d-a92b-fcc94efa8398",
+              "questionText": "What is on display in the Madame Tussaud\u0027s museum in London?",
+              "options": [
+                "Wax sculptures",
+                "Unreleased film reels",
+                "Vintage cars",
+                "Designer clothing"
+              ],
+              "correctAnswer": "Wax sculptures",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "d134d919-7e2f-46a1-81c1-7b3f8d4d157c",
+              "questionText": "What element has the chemical symbol Kr?",
+              "options": [
+                "Kineticium",
+                "Curium",
+                "Krypton",
+                "Kerosine"
+              ],
+              "correctAnswer": "Krypton",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "79e7fce6-34d5-41bc-bb8e-9368fda79dae",
+              "questionText": "What is the name of NASA’s most famous space telescope?",
+              "options": [
+                "Hubble Space Telescope",
+                "Death Star",
+                "Big Eye",
+                "Millenium Falcon"
+              ],
+              "correctAnswer": "Hubble Space Telescope",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 4,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Japan",
+          "The Prince",
+          "Wax sculptures",
+          "Krypton",
+          "Hubble Space Telescope"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        "completedAt": "2025-12-01T23:29:25.849060",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764651854697",
+        "quiz": {
+          "id": "quiz-1764651854697",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "b6e56878-2885-4f38-a36b-2f8a8253ae6e",
+              "questionText": "What is the shortest month of the year?",
+              "options": [
+                "December",
+                "September",
+                "February",
+                "April"
+              ],
+              "correctAnswer": "February",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "acc86538-f09f-48d7-b458-3c544a3eebdb",
+              "questionText": "In DC comics where does the Green Arrow (Oliver Queen) live?",
+              "options": [
+                "Gotham City",
+                "Metropolis",
+                "Star City",
+                "Central City"
+              ],
+              "correctAnswer": "Star City",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "18977069-986c-4b11-82b5-f9542b3a75cf",
+              "questionText": "Virgin Trains, Virgin Atlantic and Virgin Racing, are all companies owned by which famous entrepreneur?   ",
+              "options": [
+                "Bill Gates",
+                "Richard Branson",
+                "Donald Trump",
+                "Alan Sugar"
+              ],
+              "correctAnswer": "Richard Branson",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "f2371e1f-608b-49a8-b1c2-81dbf001d7e2",
+              "questionText": "The “fairy” type made it’s debut in which generation of the Pokemon core series games?",
+              "options": [
+                "2nd",
+                "4th",
+                "6th",
+                "7th"
+              ],
+              "correctAnswer": "6th",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "186ad051-9f93-45f7-8c69-cd834111c325",
+              "questionText": "What is the name of the poker hand containing three of a kind and a pair?",
+              "options": [
+                "Flush",
+                "Straight",
+                "Full House",
+                "High card"
+              ],
+              "correctAnswer": "Full House",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 0,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "December",
+          "Gotham City",
+          "Bill Gates",
+          "2nd",
+          "Flush"
+        ],
+        "selectedOptionIndices": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "completedAt": "2025-12-02T00:04:14.703543400",
+        "editable": false,
+        "userName": "test"
+      },
+      {
+        "attemptId": "attempt-1764651887249",
+        "quiz": {
+          "id": "quiz-1764651887249",
+          "title": "API Quiz",
+          "category": "general",
+          "difficulty": "mixed",
+          "creatorName": "test",
+          "questions": [
+            {
+              "id": "2fd790f2-fe3c-4a9c-8a45-f9a9c76bff89",
+              "questionText": "Which of these holidays is NOT usually celebrated in the month of December?",
+              "options": [
+                "Christmas",
+                "Kwanzaa",
+                "Thanksgiving",
+                "Hanukkah"
+              ],
+              "correctAnswer": "Thanksgiving",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "71c5a651-6bfb-46ab-9ef8-fdc16dce2e1b",
+              "questionText": "What zodiac sign is represented by a pair of scales?",
+              "options": [
+                "Capricorn",
+                "Aries",
+                "Sagittarius",
+                "Libra"
+              ],
+              "correctAnswer": "Libra",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "626821fe-823c-4692-91aa-758198a4e53a",
+              "questionText": "In which fast food chain can you order a Jamocha Shake?",
+              "options": [
+                "McDonald\u0027s",
+                "Burger King",
+                "Arby\u0027s",
+                "Wendy\u0027s"
+              ],
+              "correctAnswer": "Arby\u0027s",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "df36305e-c82c-461f-88ab-b800f96adc43",
+              "questionText": " Which chemical element, number 11 in the Periodic table, has the symbol Na?",
+              "options": [
+                "Sodium",
+                "Carbon",
+                "Nitrogen",
+                "Lead"
+              ],
+              "correctAnswer": "Sodium",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            },
+            {
+              "id": "91b47f31-2884-44d6-8287-3a859edd0606",
+              "questionText": "In Half-Life, what is the name of the alien that attaches to heads?",
+              "options": [
+                "Headcrab",
+                "Facehugger",
+                "Vortigaunt",
+                "Bullsquid"
+              ],
+              "correctAnswer": "Headcrab",
+              "category": "General Knowledge",
+              "difficulty": "easy"
+            }
+          ]
+        },
+        "score": 4,
+        "totalQuestions": 5,
+        "userAnswers": [
+          "Thanksgiving",
+          "Libra",
+          "Arby\u0027s",
+          "Sodium",
+          "Facehugger"
+        ],
+        "selectedOptionIndices": [
+          2,
+          3,
+          2,
+          0,
+          1
+        ],
+        "completedAt": "2025-12-02T00:04:47.249602800",
         "editable": false,
         "userName": "test"
       }
