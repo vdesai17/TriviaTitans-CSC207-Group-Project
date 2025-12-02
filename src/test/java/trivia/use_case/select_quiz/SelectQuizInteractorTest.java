@@ -1,4 +1,4 @@
-package trivia.use_case.select_quiza;
+package trivia.use_case.select_quiz;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;

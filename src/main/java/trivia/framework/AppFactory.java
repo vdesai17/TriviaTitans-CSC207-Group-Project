@@ -14,7 +14,7 @@ import trivia.use_case.load_quiz.LoadQuizDataAccessInterface;
 import trivia.use_case.review_quiz.ReviewQuizInteractor;
 import trivia.use_case.register_player.RegisterPlayerInteractor;
 import trivia.use_case.review_summary.ReviewSummaryInteractor;
-import trivia.use_case.select_quiza.SelectQuizInteractor;
+import trivia.use_case.select_quiz.SelectQuizInteractor;
 import trivia.interface_adapter.api.APIManager;
 
 /**

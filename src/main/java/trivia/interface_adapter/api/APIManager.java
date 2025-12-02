@@ -2,7 +2,7 @@ package trivia.interface_adapter.api;
 
 import com.google.gson.*;
 import trivia.entity.Question;
-import trivia.use_case.select_quiza.SelectQuizAPIDataAccessInterface;
+import trivia.use_case.select_quiz.SelectQuizAPIDataAccessInterface;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
