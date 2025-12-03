@@ -392,3 +392,20 @@ java -cp out trivia.framework.ui.Main
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
